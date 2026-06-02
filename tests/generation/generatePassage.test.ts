@@ -3,7 +3,7 @@ import { generatePassage } from "@/domains/generation/application/generatePassag
 import type { OpenRouterCaller } from "@/domains/generation/infrastructure/openrouter";
 import type { StoryContext } from "@/domains/generation/domain/types";
 
-const story: StoryContext = { premise: "A heist", genre: "thriller", tone: "tense" };
+const story: StoryContext = { premise: "A heist", genre: "thriller", tone: "tense", language: "en" };
 
 function fakeCaller(content: string): OpenRouterCaller {
   return vi.fn(async () => content);
@@ -33,6 +33,19 @@ describe("generatePassage", () => {
     const messages = (call as ReturnType<typeof vi.fn>).mock.calls[0][0].messages;
     expect(messages[1].content).toContain("she escapes");
     expect(messages[1].content).toContain("parent");
+  });
+
+  it("instructs the model to write in the story's language", async () => {
+    const call = fakeCaller('{"content":"x","summary":"y"}');
+    await generatePassage({
+      story: { ...story, language: "pt-BR" },
+      apiKey: "k",
+      model: "m",
+      call,
+    });
+
+    const messages = (call as ReturnType<typeof vi.fn>).mock.calls[0][0].messages;
+    expect(messages[1].content).toContain("Brazilian Portuguese");
   });
 
   it("passes apiKey and model through to the caller", async () => {

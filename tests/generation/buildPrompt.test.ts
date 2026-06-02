@@ -6,7 +6,12 @@ import {
 } from "@/domains/generation/domain/buildPrompt";
 import type { StoryContext } from "@/domains/generation/domain/types";
 
-const story: StoryContext = { premise: "A lighthouse keeper", genre: "mystery", tone: "eerie" };
+const story: StoryContext = {
+  premise: "A lighthouse keeper",
+  genre: "mystery",
+  tone: "eerie",
+  language: "en",
+};
 
 describe("buildRootMessages", () => {
   it("includes the system prompt, premise, and metadata", () => {
@@ -19,9 +24,14 @@ describe("buildRootMessages", () => {
   });
 
   it("omits absent metadata gracefully", () => {
-    const [, user] = buildRootMessages({ premise: "P", genre: null, tone: null });
+    const [, user] = buildRootMessages({ premise: "P", genre: null, tone: null, language: "en" });
     expect(user.content).not.toContain("Genre:");
     expect(user.content).not.toContain("Tone:");
+  });
+
+  it("instructs the model to write in the story's language", () => {
+    const [, user] = buildRootMessages({ ...story, language: "pt-BR" });
+    expect(user.content).toContain("Brazilian Portuguese");
   });
 });
 

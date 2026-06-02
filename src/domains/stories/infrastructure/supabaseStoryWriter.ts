@@ -15,6 +15,7 @@ export function supabaseStoryWriter(supabase: SupabaseClient<Database>): StoryWr
           premise: input.premise,
           genre: input.genre,
           tone: input.tone,
+          language: input.language,
         })
         .select("id")
         .single();

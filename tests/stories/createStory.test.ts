@@ -26,7 +26,7 @@ function fakeWriter(): { writer: StoryWriter; calls: Calls } {
   return { writer, calls };
 }
 
-const story: StoryContext = { premise: "A heist", genre: "thriller", tone: "tense" };
+const story: StoryContext = { premise: "A heist", genre: "thriller", tone: "tense", language: "en" };
 const passage: GeneratedPassage = {
   title: "The Vault",
   content: "She cracked the lock.",
@@ -55,6 +55,7 @@ describe("createStory", () => {
         premise: story.premise,
         genre: story.genre,
         tone: story.tone,
+        language: story.language,
       },
     ]);
 

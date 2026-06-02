@@ -42,6 +42,7 @@ export type Database = {
           premise: string;
           genre: string | null;
           tone: string | null;
+          language: string;
           root_node_id: string | null;
           created_at: string;
         };
@@ -52,6 +53,7 @@ export type Database = {
           premise: string;
           genre?: string | null;
           tone?: string | null;
+          language?: string;
           root_node_id?: string | null;
           created_at?: string;
         };
@@ -62,6 +64,7 @@ export type Database = {
           premise?: string;
           genre?: string | null;
           tone?: string | null;
+          language?: string;
           root_node_id?: string | null;
           created_at?: string;
         };

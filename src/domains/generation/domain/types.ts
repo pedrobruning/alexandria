@@ -2,11 +2,13 @@ export type ChatRole = "system" | "user" | "assistant";
 
 export type ChatMessage = { role: ChatRole; content: string };
 
-// The story-level context that conditions every generation.
+// The story-level context that conditions every generation. `language` is a
+// language code (see domain/language.ts); every passage in a story shares it.
 export type StoryContext = {
   premise: string;
   genre: string | null;
   tone: string | null;
+  language: string;
 };
 
 // The path-level context for a branch: ancestor summaries (root→parent) plus

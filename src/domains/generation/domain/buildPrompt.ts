@@ -1,3 +1,4 @@
+import { languagePromptName } from "./language";
 import type { AncestorContext, ChatMessage, StoryContext } from "./types";
 
 export const TARGET_WORDS = 250;
@@ -16,7 +17,8 @@ function storyHeader(story: StoryContext): string {
   const meta = [story.genre && `Genre: ${story.genre}`, story.tone && `Tone: ${story.tone}`]
     .filter(Boolean)
     .join(" · ");
-  return `Premise: ${story.premise}${meta ? `\n${meta}` : ""}`;
+  const language = `Write the title, content, and summary in ${languagePromptName(story.language)}.`;
+  return `Premise: ${story.premise}${meta ? `\n${meta}` : ""}\n${language}`;
 }
 
 // Messages for the root passage of a new story.

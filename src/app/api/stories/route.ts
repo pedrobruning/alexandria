@@ -3,10 +3,11 @@ import { createClient } from "@/lib/supabase/server";
 import { generatePassage } from "@/domains/generation/application/generatePassage";
 import { createStory } from "@/domains/stories/application/createStory";
 import { supabaseStoryWriter } from "@/domains/stories/infrastructure/supabaseStoryWriter";
+import { DEFAULT_LANGUAGE, isLanguageCode } from "@/domains/generation/domain/language";
 
 export const runtime = "nodejs";
 
-type Body = { premise?: unknown; genre?: unknown; tone?: unknown };
+type Body = { premise?: unknown; genre?: unknown; tone?: unknown; language?: unknown };
 
 function asTrimmed(value: unknown): string | null {
   return typeof value === "string" && value.trim() ? value.trim() : null;
@@ -28,6 +29,7 @@ export async function POST(request: Request) {
   }
   const genre = asTrimmed(body.genre);
   const tone = asTrimmed(body.tone);
+  const language = isLanguageCode(body.language) ? body.language : DEFAULT_LANGUAGE;
 
   const apiKey = process.env.OPENROUTER_API_KEY;
   const model = process.env.OPENROUTER_DEFAULT_MODEL;
@@ -35,7 +37,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "generation is not configured" }, { status: 503 });
   }
 
-  const story = { premise, genre, tone };
+  const story = { premise, genre, tone, language };
 
   try {
     const result = await createStory({

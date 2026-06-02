@@ -9,6 +9,7 @@ export type StoryWriter = {
     premise: string;
     genre: string | null;
     tone: string | null;
+    language: string;
   }): Promise<{ id: string }>;
   insertRootNode(input: {
     storyId: string;
@@ -44,6 +45,7 @@ export async function createStory(input: CreateStoryInput): Promise<CreateStoryR
     premise: input.story.premise,
     genre: input.story.genre,
     tone: input.story.tone,
+    language: input.story.language,
   });
 
   const { id: rootNodeId } = await input.writer.insertRootNode({
