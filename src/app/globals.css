@@ -469,6 +469,44 @@ textarea.field { resize: vertical; line-height: 1.6; }
 .settings-panel__body { flex: 1; min-height: 0; overflow-y: auto; padding: 22px 22px 26px; }
 
 /* ============================================================
+   ONBOARDING — hand-built spotlight tour
+   A transparent, click-blocking overlay. The "hole" is a bordered box whose
+   huge box-shadow dims everything but the anchored element; the card sits
+   beside it. With no anchor, .tour-scrim dims the whole screen.
+   ============================================================ */
+.tour-overlay { position: fixed; inset: 0; z-index: 200; }
+.tour-scrim {
+  position: absolute; inset: 0;
+  background: rgba(20,15,10,.82);
+  animation: fadeIn .18s steps(3) both;
+}
+.tour-hole {
+  position: absolute;
+  box-shadow: 0 0 0 9999px rgba(20,15,10,.82);
+  border: 3px solid var(--gold);
+  pointer-events: none;
+  transition: top .15s steps(3), left .15s steps(3), width .15s steps(3), height .15s steps(3);
+}
+.tour-card {
+  position: absolute;
+  width: min(360px, calc(100vw - 32px));
+  padding: 16px 18px 18px;
+  background: var(--basalt);
+  border: 3px solid var(--stone);
+  box-shadow: inset 2px 2px 0 0 var(--stone-light), 6px 6px 0 0 rgba(0,0,0,.55);
+  animation: snapIn .26s steps(4) both;
+}
+.tour-card__head {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 10px;
+}
+.tour-card__body {
+  font-family: var(--font-body); font-size: 15px; line-height: 1.6;
+  color: var(--sand); margin-bottom: 18px;
+}
+.tour-card__controls { display: flex; align-items: center; justify-content: flex-end; gap: 10px; }
+
+/* ============================================================
    NUT'S VEIL — time jump between passages
    The veil surges over the column as a starfield, constellation lines
    ignite, then it parts as the new passage reveals from the center out.
@@ -658,6 +696,122 @@ textarea.field { resize: vertical; line-height: 1.6; }
 
 /* hide scrollbar utility for atlas */
 .no-bar::-webkit-scrollbar { display: none; }
+
+/* ============================================================
+   LANDING PAGE — public marketing surface
+   ============================================================ */
+.landing { background: var(--basalt); color: var(--sand-light); }
+
+.landing-section { position: relative; max-width: 1080px; margin: 0 auto; padding: 72px 18px; }
+.landing-kicker {
+  font-family: var(--font-mono); font-size: 12px; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--gold); margin-bottom: 14px; display: block;
+}
+.landing-h2 {
+  font-family: var(--font-pixel); font-weight: 700;
+  font-size: clamp(24px, 6vw, 38px); line-height: 1.15; color: var(--sand-light);
+  max-width: 20ch;
+}
+.landing-lead {
+  font-family: var(--font-body); font-size: clamp(16px, 4.4vw, 20px); line-height: 1.7;
+  color: var(--sand); max-width: 56ch; margin-top: 18px;
+}
+
+/* ---- HERO ---- */
+.landing-hero {
+  position: relative; min-height: 100svh;
+  display: flex; flex-direction: column;
+  overflow: hidden; isolation: isolate;
+}
+.landing-hero__top {
+  position: relative; z-index: 3;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; flex-wrap: wrap; padding: 16px 18px;
+}
+.landing-hero__tree {
+  position: absolute; inset: 0; z-index: 1;
+  width: 100%; height: 100%; opacity: .16; pointer-events: none;
+}
+.landing-hero__inner {
+  position: relative; z-index: 3; flex: 1;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; padding: 24px 18px 56px;
+}
+.landing-beta { margin-bottom: 20px; }
+.landing-hero__title {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 8.5vw, 64px); line-height: 1.16;
+  color: var(--sand-light); text-shadow: 3px 3px 0 rgba(0,0,0,.55); max-width: 16ch;
+}
+.landing-hero__title-gold { color: var(--gold); }
+.landing-hero__subhead {
+  font-family: var(--font-body); font-style: italic;
+  font-size: clamp(16px, 4.6vw, 22px); color: var(--sand);
+  max-width: 32ch; margin: 22px auto 30px; text-shadow: 2px 2px 0 rgba(0,0,0,.5);
+}
+.landing-hero__foot {
+  margin-top: 34px; color: var(--sand); opacity: .7; text-shadow: 1px 1px 0 rgba(0,0,0,.6);
+}
+
+/* ---- TREE SECTION ---- */
+.landing-tree-grid { display: grid; grid-template-columns: 1fr; gap: 32px; align-items: center; }
+.landing-tree-figure {
+  position: relative; width: 100%; aspect-ratio: 4 / 3;
+  background: #1c150e; border: 3px solid var(--stone);
+  box-shadow: inset 2px 2px 0 0 var(--stone-light), inset -2px -2px 0 0 #1c150e;
+  padding: 18px; display: grid; place-items: center;
+}
+.landing-tree-figure svg { width: 100%; height: 100%; }
+.landing-tree-cap {
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: 1px;
+  text-transform: uppercase; color: var(--muted); text-align: center; margin-top: 12px;
+}
+
+/* ---- STEP / FEATURE CARDS ---- */
+.landing-cards { display: grid; grid-template-columns: 1fr; gap: 18px; margin-top: 36px; }
+.landing-card { display: flex; flex-direction: column; gap: 12px; padding: 22px; }
+.landing-card__icon {
+  width: 44px; height: 44px; display: grid; place-items: center;
+  background: var(--basalt); border: 3px solid var(--stone);
+  box-shadow: inset 2px 2px 0 0 var(--stone-light), inset -2px -2px 0 0 #1c150e;
+}
+.landing-card__step { font-family: var(--font-mono); font-size: 11px; letter-spacing: 1px; color: var(--gold); }
+.landing-card__title { font-family: var(--font-pixel); font-weight: 600; font-size: 18px; color: var(--sand-light); }
+.landing-card__body { font-family: var(--font-body); font-size: 16px; line-height: 1.65; color: var(--sand); }
+
+/* ---- FAQ ---- */
+.landing-faq-list { display: flex; flex-direction: column; gap: 16px; margin-top: 32px; }
+.landing-faq-item { padding: 20px 22px; }
+.landing-faq-q { font-family: var(--font-pixel); font-weight: 600; font-size: 17px; color: var(--sand-light); margin-bottom: 8px; }
+.landing-faq-a { font-family: var(--font-body); font-size: 16px; line-height: 1.65; color: var(--sand); }
+
+/* ---- FOOTER ---- */
+.landing-footer {
+  position: relative; text-align: center; padding: 64px 18px 72px;
+  border-top: 3px solid var(--stone); background: var(--basalt-2);
+  display: flex; flex-direction: column; align-items: center; gap: 22px;
+}
+.landing-footer__tagline { font-family: var(--font-body); font-style: italic; font-size: 18px; color: var(--sand); max-width: 36ch; }
+.landing-footer__rights { font-family: var(--font-mono); font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); }
+
+/* ---- SCROLL REVEAL ---- */
+.reveal { opacity: 0; transform: translateY(22px); transition: opacity .6s ease, transform .6s ease; }
+.reveal.is-in { opacity: 1; transform: none; }
+
+@media (min-width: 760px) {
+  .landing-section { padding: 96px 28px; }
+  .landing-tree-grid { grid-template-columns: 1.1fr 1fr; gap: 48px; }
+  .landing-cards--2 { grid-template-columns: repeat(2, 1fr); gap: 22px; }
+  .landing-cards--3 { grid-template-columns: repeat(3, 1fr); gap: 22px; }
+  .landing-cards--4 { grid-template-columns: repeat(2, 1fr); gap: 22px; }
+}
+@media (min-width: 1040px) {
+  .landing-cards--4 { grid-template-columns: repeat(4, 1fr); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; transition: none; }
+}
 
 /* tweak: disable atlas glow & pulse */
 .no-glow .node--frozen { animation: none !important; }

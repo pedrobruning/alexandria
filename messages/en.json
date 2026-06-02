@@ -103,5 +103,100 @@
     "generating": "unsealing the first scroll…",
     "submit": "Open the first page",
     "failed": "The scroll would not open. Try again."
+  },
+  "onboarding": {
+    "skip": "Skip",
+    "back": "Back",
+    "next": "Next",
+    "finish": "Begin your own",
+    "stepCount": "{current} / {total}",
+    "help": "Tour",
+    "helpAria": "Replay the guided tour",
+    "steps": {
+      "branching": {
+        "title": "A story is a tree",
+        "body": "This isn't one path — it's all of them. Any passage can fork into its own timeline, and they coexist. These are the branches growing from this passage."
+      },
+      "steer": {
+        "title": "Steer the next passage",
+        "body": "Before you fork, whisper a nudge here — \"but she refuses the offer\" — and the new branch grows the way you point."
+      },
+      "atlas": {
+        "title": "Open the Atlas",
+        "body": "The Atlas maps every timeline as a tree. Tap any node to leap there instantly — revisiting is always free."
+      },
+      "quota": {
+        "title": "Your branch allowance",
+        "body": "New branches draw on a shared allowance — 20 every 30 days. Revisiting passages you've already written never counts."
+      },
+      "byok": {
+        "title": "Bring your own key",
+        "body": "Want a different model or more headroom? Add an OpenRouter key in Settings. It stays in your browser and skips the shared limit."
+      },
+      "create": {
+        "title": "Now, your turn",
+        "body": "This was just a demo tale. Unearth your own premise and watch its timelines branch."
+      }
+    },
+    "demo": {
+      "badge": "Demo",
+      "readonly": "A guided demo — forking is off here. Switch its language below, or begin your own story.",
+      "switchLabel": "Demo language"
+    }
+  },
+  "landing": {
+    "hero": {
+      "beta": "Public beta · early access",
+      "headlineA": "Every choice is a door.",
+      "headlineB": "Open all of them.",
+      "subhead": "Every story is a map of the stories it could have been.",
+      "cta": "Begin",
+      "scroll": "Scroll to explore"
+    },
+    "tree": {
+      "kicker": "The idea",
+      "title": "A story is a tree, not a line.",
+      "body": "Most fiction marches in one direction. Alexandria branches. Reach a turning point and you don't pick a single path — you take every path. Each fork becomes its own living timeline, and they all coexist.",
+      "caption": "one premise · many timelines"
+    },
+    "how": {
+      "kicker": "How it works",
+      "title": "Four moves, infinite stories.",
+      "sparkTitle": "Spark a premise",
+      "sparkBody": "Give it a single sentence — a genre, a tone, a what-if. Alexandria writes the opening passage.",
+      "readTitle": "Read a passage",
+      "readBody": "Each beat is about 250 words. Short enough that the tree, not the page count, is the experience.",
+      "forkTitle": "Steer a fork",
+      "forkBody": "Nudge the next passage — \"but she refuses the offer\" — and a new branch grows from where you stood.",
+      "revisitTitle": "Revisit, instantly",
+      "revisitBody": "Every passage is frozen once written. Jump back to any timeline with zero waiting and zero cost."
+    },
+    "why": {
+      "kicker": "Why it's different",
+      "title": "A library you build, not output you discard.",
+      "frozenTitle": "Written once, yours forever",
+      "frozenBody": "Revisiting a passage is instant and free — no regeneration, no surprise bills. The story you wrote stays exactly as you left it.",
+      "byokTitle": "Your model, your key",
+      "byokBody": "Use the included allowance, or bring your own OpenRouter key and pick any model. Your key stays in your browser — never stored, never logged.",
+      "yoursTitle": "Single-player, no noise",
+      "yoursBody": "No feeds, no followers, no algorithm. Just you and the tree of everything your story could become."
+    },
+    "faq": {
+      "kicker": "Questions",
+      "title": "The short version.",
+      "publicQ": "Is it open yet?",
+      "publicA": "Alexandria is in public beta. Sign in with a magic link and start writing — no waitlist.",
+      "keyQ": "Do I need an API key?",
+      "keyA": "No. There's a built-in allowance to get you going. Bring your own OpenRouter key only if you want a specific model or more headroom.",
+      "languagesQ": "What languages can I write in?",
+      "languagesA": "English or Brazilian Portuguese, chosen per story — independent of the language you read the site in.",
+      "oneshotQ": "Is this an AI book generator?",
+      "oneshotA": "No. Alexandria doesn't spit out a finished novel. It grows a branching tree you explore and steer, one passage at a time."
+    },
+    "footer": {
+      "cta": "Open the first page",
+      "tagline": "The pixel library of Alexandria.",
+      "rights": "Unseal · Excavate · Fork"
+    }
   }
 }

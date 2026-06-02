@@ -103,5 +103,100 @@
     "generating": "abrindo o primeiro pergaminho…",
     "submit": "Abrir a primeira página",
     "failed": "O pergaminho não quis abrir. Tente novamente."
+  },
+  "onboarding": {
+    "skip": "Pular",
+    "back": "Voltar",
+    "next": "Próximo",
+    "finish": "Comece a sua",
+    "stepCount": "{current} / {total}",
+    "help": "Tour",
+    "helpAria": "Repetir o tour guiado",
+    "steps": {
+      "branching": {
+        "title": "Uma história é uma árvore",
+        "body": "Não é um só caminho — são todos eles. Qualquer passagem pode se bifurcar na própria linha do tempo, e elas coexistem. Estas são as ramificações que nascem desta passagem."
+      },
+      "steer": {
+        "title": "Conduza a próxima passagem",
+        "body": "Antes de bifurcar, sussurre um rumo aqui — \"mas ela recusa a oferta\" — e o novo ramo cresce na direção que você apontar."
+      },
+      "atlas": {
+        "title": "Abra o Atlas",
+        "body": "O Atlas mapeia cada linha do tempo como uma árvore. Toque em qualquer nó para saltar até lá na hora — revisitar é sempre gratuito."
+      },
+      "quota": {
+        "title": "Seu limite de ramos",
+        "body": "Novos ramos consomem um limite compartilhado — 20 a cada 30 dias. Revisitar passagens que você já escreveu nunca conta."
+      },
+      "byok": {
+        "title": "Use sua própria chave",
+        "body": "Quer outro modelo ou mais folga? Adicione uma chave da OpenRouter nas Configurações. Ela fica no seu navegador e ignora o limite compartilhado."
+      },
+      "create": {
+        "title": "Agora é com você",
+        "body": "Isto foi só uma história de demonstração. Desenterre a sua própria premissa e veja as linhas do tempo se ramificarem."
+      }
+    },
+    "demo": {
+      "badge": "Demo",
+      "readonly": "Uma demonstração guiada — bifurcar está desativado aqui. Troque o idioma abaixo, ou comece a sua própria história.",
+      "switchLabel": "Idioma da demo"
+    }
+  },
+  "landing": {
+    "hero": {
+      "beta": "Beta pública · acesso antecipado",
+      "headlineA": "Toda escolha é uma porta.",
+      "headlineB": "Abra todas elas.",
+      "subhead": "Toda história é um mapa das histórias que ela poderia ter sido.",
+      "cta": "Começar",
+      "scroll": "Role para explorar"
+    },
+    "tree": {
+      "kicker": "A ideia",
+      "title": "Uma história é uma árvore, não uma linha.",
+      "body": "A maior parte da ficção segue numa só direção. Alexandria se ramifica. Ao chegar a uma encruzilhada, você não escolhe um único caminho — você segue todos. Cada bifurcação vira uma linha do tempo viva, e todas coexistem.",
+      "caption": "uma premissa · muitas linhas do tempo"
+    },
+    "how": {
+      "kicker": "Como funciona",
+      "title": "Quatro movimentos, infinitas histórias.",
+      "sparkTitle": "Acenda uma premissa",
+      "sparkBody": "Dê uma única frase — um gênero, um tom, um e-se. Alexandria escreve a passagem de abertura.",
+      "readTitle": "Leia uma passagem",
+      "readBody": "Cada trecho tem cerca de 250 palavras. Curto o bastante para que a árvore, e não o número de páginas, seja a experiência.",
+      "forkTitle": "Conduza uma bifurcação",
+      "forkBody": "Oriente a próxima passagem — \"mas ela recusa a oferta\" — e um novo galho cresce de onde você estava.",
+      "revisitTitle": "Revisite, na hora",
+      "revisitBody": "Toda passagem é congelada assim que escrita. Volte a qualquer linha do tempo sem espera e sem custo."
+    },
+    "why": {
+      "kicker": "Por que é diferente",
+      "title": "Uma biblioteca que você constrói, não um resultado que você descarta.",
+      "frozenTitle": "Escrita uma vez, sua para sempre",
+      "frozenBody": "Revisitar uma passagem é instantâneo e gratuito — sem regeneração, sem contas surpresa. A história que você escreveu permanece exatamente como você a deixou.",
+      "byokTitle": "Seu modelo, sua chave",
+      "byokBody": "Use a cota inclusa ou traga sua própria chave da OpenRouter e escolha qualquer modelo. Sua chave fica no seu navegador — nunca armazenada, nunca registrada.",
+      "yoursTitle": "Um jogador, sem ruído",
+      "yoursBody": "Sem feeds, sem seguidores, sem algoritmo. Só você e a árvore de tudo o que sua história pode se tornar."
+    },
+    "faq": {
+      "kicker": "Perguntas",
+      "title": "A versão curta.",
+      "publicQ": "Já está no ar?",
+      "publicA": "Alexandria está em beta pública. Entre com um link mágico e comece a escrever — sem lista de espera.",
+      "keyQ": "Preciso de uma chave de API?",
+      "keyA": "Não. Há uma cota inclusa para você começar. Traga sua própria chave da OpenRouter só se quiser um modelo específico ou mais espaço.",
+      "languagesQ": "Em quais idiomas posso escrever?",
+      "languagesA": "Inglês ou português do Brasil, escolhido por história — independente do idioma em que você lê o site.",
+      "oneshotQ": "Isto é um gerador de livros com IA?",
+      "oneshotA": "Não. Alexandria não cospe um romance pronto. Ela faz crescer uma árvore ramificada que você explora e conduz, uma passagem por vez."
+    },
+    "footer": {
+      "cta": "Abrir a primeira página",
+      "tagline": "A biblioteca pixel de Alexandria.",
+      "rights": "Desselar · Escavar · Bifurcar"
+    }
   }
 }
