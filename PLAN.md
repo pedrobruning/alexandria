@@ -1,7 +1,7 @@
 # Implementation Plan: Alexandria — Branches (Phase 1 MVP)
 
 > Derived from `SPEC.md`.
-> **Status:** In progress — Phase 2 (Core Loop). Foundation (T1–T4) + Auth (T5) complete; Create (T6) landed, pending end-to-end browser verify. Added scope: pixel design system, per-story generation language, and UI i18n.
+> **Status:** In progress — Phase 2 (Core Loop). Foundation (T1–T4) + Auth (T5) complete; Create (T6) landed, pending end-to-end browser verify; Reader (T7) landed. Next: T8 (branch + steer + quota). Added scope: pixel design system, per-story generation language, and UI i18n.
 > **Last updated:** 2026-06-02
 
 ## Progress Log
@@ -17,6 +17,8 @@
 | 2026-06-02 | `71a08c5` | Archive (stories list) screen (T6) |
 | 2026-06-02 | `a903f34` | Create screen + per-story generation language en/pt-BR (T6 + Added scope B) |
 | 2026-06-02 | `b4299f0` | UI translations en + pt-BR via next-intl (Added scope C) |
+| 2026-06-02 | `177704e` | Tree path/children derivation + tests (T7) |
+| 2026-06-02 | `15d4ce7` | Reader view + `/stories/[id]` route (T7) |
 
 > **DDD note:** the generation layer lives under `src/domains/generation/{domain,application,infrastructure}` (and a new `src/domains/stories/…`), not the flat `src/lib/generation/*` the original task cards named. Domains-by-feature, ports/adapters.
 
@@ -167,7 +169,7 @@ generates the root passage via T4, inserts `stories` + root `nodes`, sets `root_
 **Acceptance criteria:**
 - [x] Submitting the form creates a story and a root node with AI content + summary
 - [x] Story list (Archive) shows the user's stories; "New story" routes to `/stories/new`
-- [ ] Opening a story routes to `/stories/[id]` (reader route lands in T7 — redirect 404s until then)
+- [x] Opening a story routes to `/stories/[id]` (reader route landed in T7)
 **Verification:**
 - [x] Unit: `createStory` use-case test (persists story + root node, sets `root_node_id`;
   nothing persists if generation throws) — `tests/stories/createStory.test.ts`
@@ -178,17 +180,18 @@ generates the root passage via T4, inserts `stories` + root `nodes`, sets `root_
 `src/components/stories/{CreateStoryForm,StoryCard}.tsx`, `src/domains/stories/*`
 **Scope:** M
 
-## Task 7: Reader view
+## Task 7: Reader view ✅
 **Description:** Reader panel for a selected node: full passage text, breadcrumb of the path
 from root, and the list of existing child branches.
 **Acceptance criteria:**
-- [ ] Selecting a node shows its content, an accurate root→node breadcrumb, and its children
-- [ ] Clicking a breadcrumb/child node changes the selection
+- [x] Selecting a node shows its content, an accurate root→node breadcrumb, and its children
+- [x] Clicking a breadcrumb/child node changes the selection (client-side, instant)
 **Verification:**
-- [ ] Unit: breadcrumb/path derivation from adjacency list
-- [ ] Manual: navigation between nodes updates the reader correctly
+- [x] Unit: breadcrumb/path + children derivation from adjacency list — `tests/tree/path.test.ts`
+- [ ] Manual: navigation between nodes updates the reader correctly (needs a multi-node story; lands once T8 branching can create children)
 **Dependencies:** T6
-**Files:** `src/components/reader/*`, `src/lib/tree/path.ts`, `tests/tree/path.test.ts`
+**Files:** `src/components/reader/Reader.tsx`, `src/lib/tree/path.ts`, `tests/tree/path.test.ts`,
+`src/app/(app)/stories/[id]/page.tsx`, `getStory` reader + `StoryNode`/`StoryDetail` types
 **Scope:** M
 
 ## Task 8: Branch generation with steering + quota
