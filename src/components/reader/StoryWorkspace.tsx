@@ -14,10 +14,14 @@ export function StoryWorkspace({
   storyId,
   nodes,
   rootId,
+  isDemo,
+  language,
 }: {
   storyId: string;
   nodes: StoryNode[];
   rootId: string;
+  isDemo: boolean;
+  language: string;
 }) {
   const t = useTranslations("atlas");
   const [selectedId, setSelectedId] = useState(rootId);
@@ -35,11 +39,19 @@ export function StoryWorkspace({
 
   return (
     <>
-      <Reader storyId={storyId} nodes={nodes} selectedId={activeId} onSelect={travel} />
+      <Reader
+        storyId={storyId}
+        nodes={nodes}
+        selectedId={activeId}
+        onSelect={travel}
+        isDemo={isDemo}
+        language={language}
+      />
 
       <button
         type="button"
         className="atlas-fab"
+        data-tour="atlas"
         onClick={() => setAtlasOpen(true)}
         aria-haspopup="dialog"
         aria-expanded={atlasOpen}

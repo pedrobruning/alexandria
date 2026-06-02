@@ -54,7 +54,9 @@ describe("frozen cache — revisiting issues no generation request", () => {
 
   it("selecting an existing child calls onSelect without fetching", () => {
     const onSelect = vi.fn();
-    render(<Reader storyId="s1" nodes={nodes} selectedId="r" onSelect={onSelect} />);
+    render(
+      <Reader storyId="s1" nodes={nodes} selectedId="r" onSelect={onSelect} isDemo={false} language="en" />,
+    );
 
     fireEvent.click(screen.getByText("Branch One"));
 
@@ -63,7 +65,9 @@ describe("frozen cache — revisiting issues no generation request", () => {
   });
 
   it("forking — the write path — does hit the branch endpoint (guard discriminates)", async () => {
-    render(<Reader storyId="s1" nodes={nodes} selectedId="r" onSelect={vi.fn()} />);
+    render(
+      <Reader storyId="s1" nodes={nodes} selectedId="r" onSelect={vi.fn()} isDemo={false} language="en" />,
+    );
 
     fireEvent.click(screen.getByRole("button", { name: "fork" }));
 

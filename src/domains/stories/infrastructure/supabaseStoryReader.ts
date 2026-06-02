@@ -16,7 +16,7 @@ export type BranchContext = {
 export async function listStories(supabase: SupabaseClient<Database>): Promise<StorySummary[]> {
   const { data: stories, error } = await supabase
     .from("stories")
-    .select("id, title, genre, tone, created_at")
+    .select("id, title, genre, tone, created_at, is_demo")
     .order("created_at", { ascending: false });
   if (error) throw new Error(`listStories: ${error.message}`);
 
@@ -35,6 +35,7 @@ export async function listStories(supabase: SupabaseClient<Database>): Promise<S
     tone: s.tone,
     createdAt: s.created_at,
     passageCount: counts.get(s.id) ?? 0,
+    isDemo: s.is_demo,
   }));
 }
 
@@ -46,7 +47,7 @@ export async function getStory(
 ): Promise<StoryDetail | null> {
   const { data: story, error } = await supabase
     .from("stories")
-    .select("id, title, root_node_id")
+    .select("id, title, root_node_id, is_demo, language")
     .eq("id", storyId)
     .maybeSingle();
   if (error) throw new Error(`getStory: ${error.message}`);
@@ -63,6 +64,8 @@ export async function getStory(
     id: story.id,
     title: story.title,
     rootNodeId: story.root_node_id,
+    isDemo: story.is_demo,
+    language: story.language,
     nodes: (nodes ?? []).map((n) => ({
       id: n.id,
       parentId: n.parent_id,
@@ -71,6 +74,24 @@ export async function getStory(
       summary: n.summary,
     })),
   };
+}
+
+// The user's demo story, if one exists. RLS scopes the query to the owner, so
+// `is_demo` already implies "this caller's demo". Used to avoid reseeding on
+// repeat sign-ins and to resolve the redirect target after a language switch.
+export async function findDemoStory(
+  supabase: SupabaseClient<Database>,
+): Promise<{ storyId: string; rootNodeId: string | null; language: string } | null> {
+  const { data, error } = await supabase
+    .from("stories")
+    .select("id, root_node_id, language")
+    .eq("is_demo", true)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  if (error) throw new Error(`findDemoStory: ${error.message}`);
+  if (!data) return null;
+  return { storyId: data.id, rootNodeId: data.root_node_id, language: data.language };
 }
 
 // Loads what's needed to branch from a node: the story's generation context and

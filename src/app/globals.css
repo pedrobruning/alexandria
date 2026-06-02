@@ -234,6 +234,7 @@ input, textarea { font-family: inherit; }
 .tag--lapis { color: var(--lapis-bright); border-color: var(--lapis); }
 .tag--gold  { color: var(--gold); border-color: var(--gold-deep); }
 .tag--carnelian { color: #d07350; border-color: var(--carnelian); }
+.tag--demo { color: var(--ink); border-color: var(--gold-deep); background: var(--gold); }
 
 /* ============================================================
    INPUTS — carved inset

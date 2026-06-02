@@ -9,6 +9,7 @@ import { TimeVeil } from "@/components/reader/TimeVeil";
 import { GeneratingStars } from "@/components/reader/GeneratingStars";
 import { childrenOf, pathFromRoot } from "@/lib/tree/path";
 import { useSettings } from "@/store/settings";
+import { LANGUAGES } from "@/domains/generation/domain/language";
 import type { StoryNode } from "@/domains/stories/domain/types";
 
 export function Reader({
@@ -16,13 +17,18 @@ export function Reader({
   nodes,
   selectedId,
   onSelect,
+  isDemo,
+  language,
 }: {
   storyId: string;
   nodes: StoryNode[];
   selectedId: string;
   onSelect: (id: string) => void;
+  isDemo: boolean;
+  language: string;
 }) {
   const t = useTranslations("reader");
+  const td = useTranslations("onboarding");
   const router = useRouter();
   const apiKey = useSettings((s) => s.apiKey);
   const model = useSettings((s) => s.model);
@@ -30,6 +36,7 @@ export function Reader({
   const [steer, setSteer] = useState("");
   const [forking, setForking] = useState(false);
   const [err, setErr] = useState<string | null>(null);
+  const [switching, setSwitching] = useState(false);
 
   // Reset the steer box / error whenever the selection changes (from anywhere —
   // breadcrumb, child, or Atlas). React's render-time reset pattern. The bumped
@@ -65,7 +72,30 @@ export function Reader({
   const current = trail[trail.length - 1];
   const children = childrenOf(nodes, selectedId);
 
+  // Re-seed the demo in another language. The old demo is deleted server-side,
+  // so the story id changes — replace (not push) the URL to avoid a dead back
+  // entry, then refresh to pull the freshly seeded tree.
+  async function switchLanguage(locale: string) {
+    if (locale === language || switching) return;
+    setSwitching(true);
+    try {
+      const res = await fetch("/api/onboarding/demo", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ locale, replace: true }),
+      });
+      const data = (await res.json().catch(() => ({}))) as { storyId?: string };
+      if (res.ok && data.storyId) {
+        router.replace(`/stories/${data.storyId}`);
+        router.refresh();
+      }
+    } finally {
+      setSwitching(false);
+    }
+  }
+
   async function fork() {
+    if (isDemo) return;
     setForking(true);
     setErr(null);
     try {
@@ -137,7 +167,11 @@ export function Reader({
         </article>
       </div>
 
-      <section className="frame frame--basalt" style={{ marginTop: 22, padding: "20px 22px" }}>
+      <section
+        className="frame frame--basalt"
+        data-tour="steer"
+        style={{ marginTop: 22, padding: "20px 22px" }}
+      >
         <label className="label" htmlFor="steer">
           {t("steerLabel")}
         </label>
@@ -148,21 +182,45 @@ export function Reader({
           value={steer}
           onChange={(e) => setSteer(e.target.value)}
           placeholder={t("steerPlaceholder")}
-          disabled={forking}
+          disabled={forking || isDemo}
         />
         {err && <p className="hint hint--err">{err}</p>}
+        {isDemo && <p className="caption" style={{ marginTop: 10 }}>{td("demo.readonly")}</p>}
         <div style={{ marginTop: 14 }}>
           {forking ? (
             <PixSpinner label={t("forking")} />
           ) : (
-            <button className="btn" type="button" onClick={fork}>
+            <button className="btn" type="button" data-tour="fork" onClick={fork} disabled={isDemo}>
               <PixelIcon name="fork" size={16} color="#2B2118" /> {t("fork")}
             </button>
           )}
         </div>
+        {isDemo && (
+          <div className="row center wrap gap-2" style={{ marginTop: 16 }}>
+            <span className="label" style={{ margin: 0 }}>
+              {td("demo.switchLabel")}
+            </span>
+            {LANGUAGES.map((l) => {
+              const active = l.code === language;
+              return (
+                <button
+                  key={l.code}
+                  type="button"
+                  className="chip"
+                  aria-pressed={active}
+                  disabled={active || switching}
+                  onClick={() => switchLanguage(l.code)}
+                  style={{ cursor: active || switching ? "default" : "pointer" }}
+                >
+                  {l.label}
+                </button>
+              );
+            })}
+          </div>
+        )}
       </section>
 
-      <section style={{ marginTop: 26 }}>
+      <section data-tour="branches" style={{ marginTop: 26 }}>
         <h2 className="node-title" style={{ color: "var(--muted)", marginBottom: 12 }}>
           {t("branchesTitle")}
         </h2>

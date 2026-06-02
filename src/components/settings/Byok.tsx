@@ -151,6 +151,7 @@ export function SettingsButton() {
       <button
         type="button"
         className="btn btn--ghost row center gap-2"
+        data-tour="settings"
         onClick={() => setOpen(true)}
         aria-haspopup="dialog"
         aria-expanded={open}

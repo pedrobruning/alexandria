@@ -50,7 +50,13 @@ export default async function StoryPage({ params }: { params: Promise<{ id: stri
       </header>
 
       <main className="app-main">
-        <StoryWorkspace storyId={story.id} nodes={story.nodes} rootId={story.rootNodeId} />
+        <StoryWorkspace
+          storyId={story.id}
+          nodes={story.nodes}
+          rootId={story.rootNodeId}
+          isDemo={story.isDemo}
+          language={story.language}
+        />
       </main>
     </div>
   );

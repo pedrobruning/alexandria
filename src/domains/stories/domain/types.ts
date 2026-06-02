@@ -6,6 +6,7 @@ export type StorySummary = {
   tone: string | null;
   createdAt: string;
   passageCount: number;
+  isDemo: boolean;
 };
 
 // A single passage in the reader. parentId === null marks the root.
@@ -22,5 +23,7 @@ export type StoryDetail = {
   id: string;
   title: string;
   rootNodeId: string | null;
+  isDemo: boolean;
+  language: string;
   nodes: StoryNode[];
 };
