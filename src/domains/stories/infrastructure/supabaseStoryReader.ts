@@ -1,6 +1,13 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/lib/db.types";
+import type { StoryContext } from "@/domains/generation/domain/types";
 import type { StoryDetail, StorySummary } from "../domain/types";
+
+// Story context plus the minimal node tree needed to branch from a parent.
+export type BranchContext = {
+  story: StoryContext;
+  nodes: { id: string; parentId: string | null; summary: string; content: string }[];
+};
 
 // Lists the signed-in user's stories for the Archive, newest first. RLS scopes
 // both queries to the owner, so node counts only ever cover their own stories.
@@ -60,6 +67,43 @@ export async function getStory(
       title: n.title,
       content: n.content,
       summary: n.summary,
+    })),
+  };
+}
+
+// Loads what's needed to branch from a node: the story's generation context and
+// the node tree (summaries + content for ancestor assembly). Returns null when
+// the story isn't the caller's (RLS scopes both queries to the owner).
+export async function getBranchContext(
+  supabase: SupabaseClient<Database>,
+  storyId: string,
+): Promise<BranchContext | null> {
+  const { data: story, error } = await supabase
+    .from("stories")
+    .select("premise, genre, tone, language")
+    .eq("id", storyId)
+    .maybeSingle();
+  if (error) throw new Error(`getBranchContext: ${error.message}`);
+  if (!story) return null;
+
+  const { data: nodes, error: nodesError } = await supabase
+    .from("nodes")
+    .select("id, parent_id, summary, content")
+    .eq("story_id", storyId);
+  if (nodesError) throw new Error(`getBranchContext: ${nodesError.message}`);
+
+  return {
+    story: {
+      premise: story.premise,
+      genre: story.genre,
+      tone: story.tone,
+      language: story.language,
+    },
+    nodes: (nodes ?? []).map((n) => ({
+      id: n.id,
+      parentId: n.parent_id,
+      summary: n.summary,
+      content: n.content,
     })),
   };
 }

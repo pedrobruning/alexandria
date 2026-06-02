@@ -52,7 +52,7 @@ export default async function StoryPage({ params }: { params: Promise<{ id: stri
       </header>
 
       <div style={{ padding: "32px 28px 64px" }}>
-        <Reader nodes={story.nodes} rootId={story.rootNodeId} />
+        <Reader storyId={story.id} nodes={story.nodes} rootId={story.rootNodeId} />
       </div>
     </div>
   );

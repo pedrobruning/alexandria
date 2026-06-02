@@ -32,7 +32,13 @@
     "backToArchive": "Arquivo",
     "breadcrumb": "Caminho desde a passagem de abertura",
     "branchesTitle": "Bifurcações a partir daqui",
-    "noBranches": "Nenhuma bifurcação ainda. Esta passagem é onde a trilha termina."
+    "noBranches": "Nenhuma bifurcação ainda. Esta passagem é onde a trilha termina.",
+    "steerLabel": "Guie a próxima passagem (opcional)",
+    "steerPlaceholder": "…mas ela recusa a oferta e caminha para dentro da tempestade.",
+    "fork": "Bifurcar daqui",
+    "forking": "desenterrando a próxima passagem…",
+    "forkFailed": "A bifurcação não pegou. Tente novamente.",
+    "quotaExceeded": "Você atingiu seu limite de bifurcações por ora. Adicione sua própria chave OpenRouter para continuar."
   },
   "create": {
     "back": "Voltar ao arquivo",

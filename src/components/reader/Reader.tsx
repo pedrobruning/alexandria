@@ -1,18 +1,59 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { PixelIcon } from "@/components/pixel/PixelIcon";
+import { PixSpinner } from "@/components/pixel/PixSpinner";
 import { childrenOf, pathFromRoot } from "@/lib/tree/path";
 import type { StoryNode } from "@/domains/stories/domain/types";
 
-export function Reader({ nodes, rootId }: { nodes: StoryNode[]; rootId: string }) {
+export function Reader({
+  storyId,
+  nodes,
+  rootId,
+}: {
+  storyId: string;
+  nodes: StoryNode[];
+  rootId: string;
+}) {
   const t = useTranslations("reader");
+  const router = useRouter();
   const [selectedId, setSelectedId] = useState(rootId);
+  const [steer, setSteer] = useState("");
+  const [forking, setForking] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
 
   const trail = pathFromRoot(nodes, selectedId);
   const current = trail[trail.length - 1];
   const children = childrenOf(nodes, selectedId);
+
+  function select(id: string) {
+    setSelectedId(id);
+    setSteer("");
+    setErr(null);
+  }
+
+  async function fork() {
+    setForking(true);
+    setErr(null);
+    try {
+      const res = await fetch(`/api/stories/${storyId}/branch`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ parentId: selectedId, steer: steer.trim() || null }),
+      });
+      const data = (await res.json().catch(() => ({}))) as { nodeId?: string; error?: string };
+      if (res.status === 429) throw new Error(t("quotaExceeded"));
+      if (!res.ok || !data.nodeId) throw new Error(data.error ?? t("forkFailed"));
+      setSteer("");
+      router.refresh();
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : t("forkFailed"));
+    } finally {
+      setForking(false);
+    }
+  }
 
   return (
     <div style={{ maxWidth: 760, margin: "0 auto" }}>
@@ -29,7 +70,7 @@ export function Reader({ nodes, rootId }: { nodes: StoryNode[]; rootId: string }
                 className="chip"
                 aria-current={isCurrent ? "page" : undefined}
                 disabled={isCurrent}
-                onClick={() => setSelectedId(node.id)}
+                onClick={() => select(node.id)}
                 style={{ cursor: isCurrent ? "default" : "pointer" }}
               >
                 {node.title}
@@ -50,6 +91,31 @@ export function Reader({ nodes, rootId }: { nodes: StoryNode[]; rootId: string }
         </div>
       </article>
 
+      <section className="frame frame--basalt" style={{ marginTop: 22, padding: "20px 22px" }}>
+        <label className="label" htmlFor="steer">
+          {t("steerLabel")}
+        </label>
+        <textarea
+          id="steer"
+          className="field field--dark"
+          rows={2}
+          value={steer}
+          onChange={(e) => setSteer(e.target.value)}
+          placeholder={t("steerPlaceholder")}
+          disabled={forking}
+        />
+        {err && <p className="hint hint--err">{err}</p>}
+        <div style={{ marginTop: 14 }}>
+          {forking ? (
+            <PixSpinner label={t("forking")} />
+          ) : (
+            <button className="btn" type="button" onClick={fork}>
+              <PixelIcon name="fork" size={16} color="#2B2118" /> {t("fork")}
+            </button>
+          )}
+        </div>
+      </section>
+
       <section style={{ marginTop: 26 }}>
         <h2 className="node-title" style={{ color: "var(--muted)", marginBottom: 12 }}>
           {t("branchesTitle")}
@@ -63,7 +129,7 @@ export function Reader({ nodes, rootId }: { nodes: StoryNode[]; rootId: string }
                 key={child.id}
                 type="button"
                 className="frame frame--basalt story-card"
-                onClick={() => setSelectedId(child.id)}
+                onClick={() => select(child.id)}
                 style={{ textAlign: "left", padding: "12px 14px", maxWidth: 320, cursor: "pointer" }}
               >
                 <span className="node-title" style={{ color: "var(--sand-light)", display: "block", marginBottom: 4 }}>
