@@ -7,7 +7,7 @@ import { SignOutButton } from "@/components/auth/SignOutButton";
 import { LocaleSwitcher } from "@/components/i18n/LocaleSwitcher";
 import { Wordmark } from "@/components/pixel/Wordmark";
 import { PixelIcon } from "@/components/pixel/PixelIcon";
-import { Reader } from "@/components/reader/Reader";
+import { StoryWorkspace } from "@/components/reader/StoryWorkspace";
 
 export default async function StoryPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -20,15 +20,13 @@ export default async function StoryPage({ params }: { params: Promise<{ id: stri
   }
 
   return (
-    <div className="screen scroll-y" style={{ background: "var(--basalt)" }}>
+    <div className="screen" style={{ background: "var(--basalt)", display: "flex", flexDirection: "column" }}>
       <header
         style={{
-          position: "sticky",
-          top: 0,
+          flexShrink: 0,
           zIndex: 10,
           background: "rgba(43,33,24,.96)",
           borderBottom: "3px solid var(--stone)",
-          backdropFilter: "blur(2px)",
         }}
       >
         <div
@@ -51,9 +49,7 @@ export default async function StoryPage({ params }: { params: Promise<{ id: stri
         </div>
       </header>
 
-      <div style={{ padding: "32px 28px 64px" }}>
-        <Reader storyId={story.id} nodes={story.nodes} rootId={story.rootNodeId} />
-      </div>
+      <StoryWorkspace storyId={story.id} nodes={story.nodes} rootId={story.rootNodeId} />
     </div>
   );
 }

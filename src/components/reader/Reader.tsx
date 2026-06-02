@@ -5,35 +5,38 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { PixelIcon } from "@/components/pixel/PixelIcon";
 import { PixSpinner } from "@/components/pixel/PixSpinner";
-import { Atlas } from "@/components/atlas/Atlas";
 import { childrenOf, pathFromRoot } from "@/lib/tree/path";
 import type { StoryNode } from "@/domains/stories/domain/types";
 
 export function Reader({
   storyId,
   nodes,
-  rootId,
+  selectedId,
+  onSelect,
 }: {
   storyId: string;
   nodes: StoryNode[];
-  rootId: string;
+  selectedId: string;
+  onSelect: (id: string) => void;
 }) {
   const t = useTranslations("reader");
   const router = useRouter();
-  const [selectedId, setSelectedId] = useState(rootId);
   const [steer, setSteer] = useState("");
   const [forking, setForking] = useState(false);
   const [err, setErr] = useState<string | null>(null);
 
-  const trail = pathFromRoot(nodes, selectedId);
-  const current = trail[trail.length - 1];
-  const children = childrenOf(nodes, selectedId);
-
-  function select(id: string) {
-    setSelectedId(id);
+  // Reset the steer box / error whenever the selection changes (from anywhere —
+  // breadcrumb, child, or Atlas). React's render-time reset pattern.
+  const [lastSelected, setLastSelected] = useState(selectedId);
+  if (selectedId !== lastSelected) {
+    setLastSelected(selectedId);
     setSteer("");
     setErr(null);
   }
+
+  const trail = pathFromRoot(nodes, selectedId);
+  const current = trail[trail.length - 1];
+  const children = childrenOf(nodes, selectedId);
 
   async function fork() {
     setForking(true);
@@ -58,10 +61,6 @@ export function Reader({
 
   return (
     <div style={{ maxWidth: 760, margin: "0 auto" }}>
-      <div style={{ marginBottom: 22 }}>
-        <Atlas nodes={nodes} selectedId={selectedId} />
-      </div>
-
       <nav className="row center wrap gap-2" aria-label={t("breadcrumb")} style={{ marginBottom: 22 }}>
         {trail.map((node, i) => {
           const isCurrent = node.id === selectedId;
@@ -75,7 +74,7 @@ export function Reader({
                 className="chip"
                 aria-current={isCurrent ? "page" : undefined}
                 disabled={isCurrent}
-                onClick={() => select(node.id)}
+                onClick={() => onSelect(node.id)}
                 style={{ cursor: isCurrent ? "default" : "pointer" }}
               >
                 {node.title}
@@ -134,7 +133,7 @@ export function Reader({
                 key={child.id}
                 type="button"
                 className="frame frame--basalt story-card"
-                onClick={() => select(child.id)}
+                onClick={() => onSelect(child.id)}
                 style={{ textAlign: "left", padding: "12px 14px", maxWidth: 320, cursor: "pointer" }}
               >
                 <span className="node-title" style={{ color: "var(--sand-light)", display: "block", marginBottom: 4 }}>
