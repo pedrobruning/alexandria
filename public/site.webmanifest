@@ -1,0 +1,11 @@
+{
+  "name": "Alexandria",
+  "short_name": "Alexandria",
+  "icons": [
+    { "src": "/icon-192.png", "type": "image/png", "sizes": "192x192", "purpose": "any maskable" },
+    { "src": "/icon-512.png", "type": "image/png", "sizes": "512x512", "purpose": "any maskable" }
+  ],
+  "theme_color": "#2A6F97",
+  "background_color": "#2B2118",
+  "display": "standalone"
+}
