@@ -25,3 +25,9 @@ export function checkQuota(input: {
 export function windowStart(now: Date, days = QUOTA_WINDOW_DAYS): Date {
   return new Date(now.getTime() - days * 24 * 60 * 60 * 1000);
 }
+
+// Server-key branches the user may still spend in the current window. Clamped at
+// zero so an over-count never reports a negative allowance.
+export function remainingQuota(used: number, limit = SERVER_KEY_BRANCH_LIMIT): number {
+  return Math.max(0, limit - used);
+}

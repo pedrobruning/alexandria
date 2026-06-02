@@ -51,6 +51,7 @@
     "forking": "unearthing the next passage…",
     "forkFailed": "The fork would not take. Try again.",
     "quotaExceeded": "You've reached your branch limit for now. Add your own OpenRouter key to keep going.",
+    "passagesLeft": "{count, plural, one {# free passage left} other {# free passages left}}",
     "generatingSub": "Writing the next passage",
     "generatingMessages": [
       "Consulting the night sky…",

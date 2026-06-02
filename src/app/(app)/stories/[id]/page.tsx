@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
 import { getStory } from "@/domains/stories/infrastructure/supabaseStoryReader";
+import { countServerKeyNodes } from "@/domains/quota/infrastructure/supabaseQuotaCounter";
+import { remainingQuota } from "@/domains/quota/domain/quota";
 import { SignOutButton } from "@/components/auth/SignOutButton";
 import { LocaleSwitcher } from "@/components/i18n/LocaleSwitcher";
 import { SettingsButton } from "@/components/settings/Byok";
@@ -20,6 +22,19 @@ export default async function StoryPage({ params }: { params: Promise<{ id: stri
 
   if (!story || !story.rootNodeId || story.nodes.length === 0) {
     notFound();
+  }
+
+  // Remaining shared-key branches, re-read on every navigation (the reader calls
+  // router.refresh() after a fork, so this stays current). Demo stories never
+  // spend the allowance, so skip the count there.
+  let quotaRemaining = 0;
+  if (!story.isDemo) {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (user) {
+      quotaRemaining = remainingQuota(await countServerKeyNodes(supabase, user.id));
+    }
   }
 
   return (
@@ -59,6 +74,7 @@ export default async function StoryPage({ params }: { params: Promise<{ id: stri
           rootId={story.rootNodeId}
           isDemo={story.isDemo}
           language={story.language}
+          quotaRemaining={quotaRemaining}
         />
         <OnboardingHost />
       </main>

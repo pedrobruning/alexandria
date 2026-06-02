@@ -19,6 +19,7 @@ export function Reader({
   onSelect,
   isDemo,
   language,
+  quotaRemaining,
 }: {
   storyId: string;
   nodes: StoryNode[];
@@ -26,6 +27,7 @@ export function Reader({
   onSelect: (id: string) => void;
   isDemo: boolean;
   language: string;
+  quotaRemaining: number;
 }) {
   const t = useTranslations("reader");
   const td = useTranslations("onboarding");
@@ -195,6 +197,11 @@ export function Reader({
             </button>
           )}
         </div>
+        {!isDemo && !apiKey && (
+          <p className="caption" style={{ marginTop: 12 }}>
+            {t("passagesLeft", { count: quotaRemaining })}
+          </p>
+        )}
         {isDemo && (
           <div className="row center wrap gap-2" style={{ marginTop: 16 }}>
             <span className="label" style={{ margin: 0 }}>

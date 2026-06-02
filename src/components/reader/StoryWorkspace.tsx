@@ -16,12 +16,14 @@ export function StoryWorkspace({
   rootId,
   isDemo,
   language,
+  quotaRemaining,
 }: {
   storyId: string;
   nodes: StoryNode[];
   rootId: string;
   isDemo: boolean;
   language: string;
+  quotaRemaining: number;
 }) {
   const t = useTranslations("atlas");
   const [selectedId, setSelectedId] = useState(rootId);
@@ -46,6 +48,7 @@ export function StoryWorkspace({
         onSelect={travel}
         isDemo={isDemo}
         language={language}
+        quotaRemaining={quotaRemaining}
       />
 
       <button

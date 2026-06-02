@@ -3,6 +3,7 @@ import {
   QUOTA_WINDOW_DAYS,
   SERVER_KEY_BRANCH_LIMIT,
   checkQuota,
+  remainingQuota,
   windowStart,
 } from "@/domains/quota/domain/quota";
 
@@ -34,6 +35,22 @@ describe("checkQuota", () => {
       reason: "quota_exceeded",
       limit: 5,
     });
+  });
+});
+
+describe("remainingQuota", () => {
+  it("returns the unspent allowance below the limit", () => {
+    expect(remainingQuota(0)).toBe(SERVER_KEY_BRANCH_LIMIT);
+    expect(remainingQuota(8)).toBe(SERVER_KEY_BRANCH_LIMIT - 8);
+  });
+
+  it("clamps at zero once the limit is reached or exceeded", () => {
+    expect(remainingQuota(SERVER_KEY_BRANCH_LIMIT)).toBe(0);
+    expect(remainingQuota(SERVER_KEY_BRANCH_LIMIT + 5)).toBe(0);
+  });
+
+  it("honors a custom limit", () => {
+    expect(remainingQuota(2, 5)).toBe(3);
   });
 });
 

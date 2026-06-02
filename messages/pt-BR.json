@@ -51,6 +51,7 @@
     "forking": "desenterrando a próxima passagem…",
     "forkFailed": "A bifurcação não pegou. Tente novamente.",
     "quotaExceeded": "Você atingiu seu limite de bifurcações por ora. Adicione sua própria chave OpenRouter para continuar.",
+    "passagesLeft": "{count, plural, one {# passagem grátis restante} other {# passagens grátis restantes}}",
     "generatingSub": "Escrevendo a próxima passagem",
     "generatingMessages": [
       "Consultando o céu noturno…",
