@@ -18,18 +18,21 @@ export type Database = {
           id: string;
           handle: string | null;
           default_model: string | null;
+          onboarded_at: string | null;
           created_at: string;
         };
         Insert: {
           id: string;
           handle?: string | null;
           default_model?: string | null;
+          onboarded_at?: string | null;
           created_at?: string;
         };
         Update: {
           id?: string;
           handle?: string | null;
           default_model?: string | null;
+          onboarded_at?: string | null;
           created_at?: string;
         };
         Relationships: [];
@@ -43,6 +46,7 @@ export type Database = {
           genre: string | null;
           tone: string | null;
           language: string;
+          is_demo: boolean;
           root_node_id: string | null;
           created_at: string;
         };
@@ -54,6 +58,7 @@ export type Database = {
           genre?: string | null;
           tone?: string | null;
           language?: string;
+          is_demo?: boolean;
           root_node_id?: string | null;
           created_at?: string;
         };
@@ -65,6 +70,7 @@ export type Database = {
           genre?: string | null;
           tone?: string | null;
           language?: string;
+          is_demo?: boolean;
           root_node_id?: string | null;
           created_at?: string;
         };
