@@ -44,7 +44,16 @@
     "fork": "Fork from here",
     "forking": "unearthing the next passage…",
     "forkFailed": "The fork would not take. Try again.",
-    "quotaExceeded": "You've reached your branch limit for now. Add your own OpenRouter key to keep going."
+    "quotaExceeded": "You've reached your branch limit for now. Add your own OpenRouter key to keep going.",
+    "generatingSub": "Writing the next passage",
+    "generatingMessages": [
+      "Consulting the night sky…",
+      "Nut unrolls the dark above…",
+      "The scribes dip their reeds…",
+      "Charting a new timeline…",
+      "The stars rearrange themselves…",
+      "A fresh passage takes shape…"
+    ]
   },
   "create": {
     "back": "Back to the archive",

@@ -323,17 +323,52 @@ textarea.field { resize: vertical; line-height: 1.6; }
 .dust { position: absolute; inset: 0; pointer-events: none; }
 .dust i { position: absolute; width: 6px; height: 6px; background: var(--sand-light); image-rendering: pixelated; animation: dustPuff .5s steps(4) forwards; }
 
-/* atlas stars */
-.atlas-star { position: absolute; width: 2px; height: 2px; background: var(--sand-light); animation: starTwinkle 4s ease-in-out infinite; }
+/* atlas stars — bright cool-white sky points */
+.atlas-star {
+  position: absolute; width: 2px; height: 2px; background: #eaf1ff; image-rendering: pixelated;
+  box-shadow: 0 0 4px 1px rgba(200,222,255,.7);
+  animation: starTwinkle 4s ease-in-out infinite;
+}
+
+/* ============================================================
+   ATLAS SKY — Egyptian celestial chart behind the tree
+   ============================================================ */
+.atlas-sky {
+  position: absolute; inset: 0; overflow: hidden;
+  background:
+    radial-gradient(120% 90% at 50% 14%, #1b2a52 0%, #182142 26%, #241a2e 58%, var(--basalt) 86%);
+}
+.atlas-sky::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  box-shadow: inset 0 0 180px 50px rgba(0,0,0,.6);
+}
+.atlas-sky__chart { position: absolute; inset: 0; width: 100%; height: 100%; }
+.nut-arc {
+  fill: none; stroke: var(--gold); stroke-width: 1.5;
+  vector-effect: non-scaling-stroke; stroke-dasharray: 2 6; opacity: .2;
+}
+.constellation-line {
+  stroke: var(--gold); stroke-width: 1.25;
+  vector-effect: non-scaling-stroke; opacity: .3;
+}
+.constellation-dot {
+  position: absolute; width: 3px; height: 3px;
+  background: var(--gold); image-rendering: pixelated;
+  transform: translate(-50%, -50%); opacity: .8;
+  box-shadow: 0 0 4px 1px rgba(224,168,46,.45);
+}
+.sopdet {
+  position: absolute; width: 5px; height: 5px;
+  background: var(--sand-light); image-rendering: pixelated;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 6px 2px rgba(224,168,46,.85), 0 0 13px 4px rgba(224,168,46,.4);
+  animation: starTwinkle 3s ease-in-out infinite;
+}
 
 /* ============================================================
    ATLAS MODAL + TIME-JUMP (scroll unfurl)
    ============================================================ */
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-@keyframes scrollUnfurl {
-  0%   { clip-path: inset(0 0 100% 0); opacity: .15; }
-  100% { clip-path: inset(0 0 0 0);    opacity: 1; }
-}
 
 /* floating button that opens the atlas */
 .atlas-fab {
@@ -378,8 +413,101 @@ textarea.field { resize: vertical; line-height: 1.6; }
 }
 .atlas-modal__body { flex: 1; min-height: 0; }
 
-/* scroll-unfurl: new passage unrolls top-down on each time jump */
-.unfurl { animation: scrollUnfurl .55s steps(8) both; }
+/* ============================================================
+   NUT'S VEIL — time jump between passages
+   The veil surges over the column as a starfield, constellation lines
+   ignite, then it parts as the new passage reveals from the center out.
+   ============================================================ */
+@keyframes veilIn {
+  0%   { opacity: 0; }
+  14%  { opacity: 1; }
+  58%  { opacity: 1; }
+  100% { opacity: 0; visibility: hidden; }
+}
+@keyframes veilStar {
+  0%   { transform: scale(0); opacity: 0; }
+  22%  { transform: scale(1.4); opacity: 1; }
+  55%  { transform: scale(1); opacity: .95; }
+  100% { transform: scale(.15) translate(var(--vx, 0), var(--vy, 0)); opacity: 0; }
+}
+@keyframes veilLine {
+  0%   { stroke-dashoffset: 1; opacity: 0; }
+  28%  { opacity: 0; }
+  56%  { stroke-dashoffset: 0; opacity: .95; }
+  80%  { opacity: .95; }
+  100% { stroke-dashoffset: 0; opacity: 0; }
+}
+@keyframes veilFlash {
+  0%, 38% { opacity: 0; transform: scale(.6); }
+  52%     { opacity: .55; transform: scale(1); }
+  100%    { opacity: 0; transform: scale(1.5); }
+}
+@keyframes passageReveal {
+  0%   { clip-path: circle(0% at 50% 38%); opacity: .12; filter: blur(4px); }
+  55%  { opacity: 1; }
+  100% { clip-path: circle(145% at 50% 38%); opacity: 1; filter: blur(0); }
+}
+
+.jump-reveal { animation: passageReveal 1.05s cubic-bezier(.22,.61,.36,1) both; animation-delay: .45s; }
+
+.veil {
+  position: fixed; inset: 0; z-index: 96; pointer-events: none; overflow: hidden;
+  background: radial-gradient(120% 100% at 50% 38%, rgba(20,32,68,.86) 0%, rgba(18,20,40,.94) 45%, rgba(8,7,12,.98) 100%);
+  animation: veilIn 1.7s ease-in-out both;
+}
+.veil__flash {
+  position: absolute; left: 50%; top: 38%; width: 60%; aspect-ratio: 1; transform: translate(-50%,-50%);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(224,168,46,.55) 0%, rgba(224,168,46,0) 60%);
+  animation: veilFlash 1.7s ease-out both;
+}
+.veil__lines { position: absolute; inset: 0; width: 100%; height: 100%; }
+/* sky stars: bright cool-white pixel points, not sandy circles */
+.veil-star {
+  position: absolute; background: #eaf1ff; image-rendering: pixelated;
+  transform-origin: center;
+  box-shadow: 0 0 5px 1px rgba(210,228,255,.85), 0 0 9px 2px rgba(150,185,255,.4);
+  animation: veilStar 1.7s ease-in-out both;
+}
+.veil-line {
+  stroke: var(--gold); stroke-width: 1.5; fill: none;
+  vector-effect: non-scaling-stroke;
+  filter: drop-shadow(0 0 3px rgba(224,168,46,.7));
+  animation: veilLine 1.7s ease-in-out both;
+}
+
+/* ============================================================
+   GENERATING OVERLAY — full-screen starfield while a passage is written
+   ============================================================ */
+@keyframes genTwinkle { 0%, 100% { opacity: .2; } 50% { opacity: 1; } }
+.gen-overlay {
+  position: fixed; inset: 0; z-index: 95; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  background: radial-gradient(120% 100% at 50% 30%, #1b2a52 0%, #161a36 46%, #0a0810 100%);
+  animation: fadeIn .35s ease-out both;
+}
+.gen-overlay::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  box-shadow: inset 0 0 220px 60px rgba(0,0,0,.6);
+}
+.gen-overlay__star {
+  position: absolute; background: #eaf1ff; image-rendering: pixelated;
+  box-shadow: 0 0 5px 1px rgba(200,222,255,.7);
+  animation: genTwinkle var(--gd, 3s) ease-in-out infinite;
+}
+.gen-card {
+  position: relative; z-index: 2;
+  display: flex; flex-direction: column; align-items: center; gap: 18px;
+  text-align: center; padding: 0 24px;
+}
+.gen-msg {
+  font-family: var(--font-body); font-size: 21px; color: var(--sand-light);
+  letter-spacing: .3px; min-height: 30px;
+}
+.gen-sub {
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: 1.6px;
+  text-transform: uppercase; color: var(--muted);
+}
 
 /* ============================================================
    PIXEL SPINNER
@@ -437,7 +565,9 @@ textarea.field { resize: vertical; line-height: 1.6; }
 /* reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .node--frozen, .node--ghost, .atlas-star, .pixspin, .dust i,
-  .node--snap, .toast, .atlas-overlay, .atlas-modal, .unfurl { animation: none !important; }
+  .node--snap, .toast, .atlas-overlay, .atlas-modal, .sopdet,
+  .jump-reveal, .veil-star, .veil-line, .veil__flash, .gen-overlay__star { animation: none !important; }
+  .veil { display: none !important; }
 }
 
 /* hide scrollbar utility for atlas */

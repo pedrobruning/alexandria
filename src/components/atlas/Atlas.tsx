@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
 import { layoutTree } from "@/lib/tree/layout";
+import { AtlasSky } from "@/components/atlas/AtlasSky";
 import type { StoryNode } from "@/domains/stories/domain/types";
 
 const NODE_W = 118;
@@ -69,12 +70,20 @@ export function Atlas({
   }, [targetX, targetY]);
 
   return (
-    <div
-      ref={scrollRef}
-      style={{ height: "100%", overflow: "auto", background: "var(--basalt)" }}
-    >
-      <svg role="img" aria-label={t("label")} width={width} height={height} style={{ display: "block" }}>
-        <g transform={`translate(${offsetX}, ${offsetY})`}>
+    <div className="atlas-canvas" style={{ position: "relative", height: "100%", overflow: "hidden" }}>
+      <AtlasSky />
+      <div ref={scrollRef} className="atlas-scroll" style={{ position: "relative", height: "100%", overflow: "auto" }}>
+        <div
+          style={{
+            minWidth: "100%",
+            minHeight: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <svg role="img" aria-label={t("label")} width={width} height={height} style={{ display: "block" }}>
+            <g transform={`translate(${offsetX}, ${offsetY})`}>
           {layout.edges.map((e) => {
             const p = pos.get(e.parentId)!;
             const c = pos.get(e.childId)!;
@@ -149,8 +158,10 @@ export function Atlas({
               </g>
             );
           })}
-        </g>
-      </svg>
+            </g>
+          </svg>
+        </div>
+      </div>
     </div>
   );
 }

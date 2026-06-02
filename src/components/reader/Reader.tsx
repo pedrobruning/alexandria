@@ -1,27 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { PixelIcon } from "@/components/pixel/PixelIcon";
 import { PixSpinner } from "@/components/pixel/PixSpinner";
+import { TimeVeil } from "@/components/reader/TimeVeil";
+import { GeneratingStars } from "@/components/reader/GeneratingStars";
 import { childrenOf, pathFromRoot } from "@/lib/tree/path";
 import type { StoryNode } from "@/domains/stories/domain/types";
-
-// Scattered sand grains for the time-jump puff — fixed positions so the layer
-// is deterministic across renders (it replays via the article's key remount).
-const DUST = [
-  { left: "12%", top: "20%", delay: "0ms" },
-  { left: "34%", top: "10%", delay: "40ms" },
-  { left: "58%", top: "26%", delay: "20ms" },
-  { left: "76%", top: "14%", delay: "60ms" },
-  { left: "88%", top: "34%", delay: "30ms" },
-  { left: "22%", top: "46%", delay: "70ms" },
-  { left: "46%", top: "58%", delay: "10ms" },
-  { left: "68%", top: "50%", delay: "50ms" },
-  { left: "8%", top: "70%", delay: "30ms" },
-  { left: "84%", top: "66%", delay: "20ms" },
-];
 
 export function Reader({
   storyId,
@@ -36,18 +23,40 @@ export function Reader({
 }) {
   const t = useTranslations("reader");
   const router = useRouter();
+  const rootRef = useRef<HTMLDivElement>(null);
   const [steer, setSteer] = useState("");
   const [forking, setForking] = useState(false);
   const [err, setErr] = useState<string | null>(null);
 
   // Reset the steer box / error whenever the selection changes (from anywhere —
-  // breadcrumb, child, or Atlas). React's render-time reset pattern.
+  // breadcrumb, child, or Atlas). React's render-time reset pattern. The bumped
+  // sequence re-keys the passage so the reveal replays, and arms the veil — but
+  // only on real jumps, never on the first mount (jumpSeq stays 0 then).
   const [lastSelected, setLastSelected] = useState(selectedId);
+  const [jumpSeq, setJumpSeq] = useState(0);
+  const [jumping, setJumping] = useState(false);
   if (selectedId !== lastSelected) {
     setLastSelected(selectedId);
     setSteer("");
     setErr(null);
+    setJumpSeq((s) => s + 1);
+    setJumping(true);
   }
+
+  useEffect(() => {
+    if (!jumping) return;
+    const id = setTimeout(() => setJumping(false), 1750);
+    return () => clearTimeout(id);
+  }, [jumping, jumpSeq]);
+
+  // A jump always begins the new passage from its opening line — scroll the
+  // reader's container back to the top (the previous selection may have left us
+  // deep down a long passage or its child list).
+  useEffect(() => {
+    if (jumpSeq === 0) return;
+    const scroller = rootRef.current?.closest<HTMLElement>(".scroll-y");
+    scroller?.scrollTo({ top: 0, behavior: "smooth" });
+  }, [jumpSeq]);
 
   const trail = pathFromRoot(nodes, selectedId);
   const current = trail[trail.length - 1];
@@ -75,7 +84,7 @@ export function Reader({
   }
 
   return (
-    <div style={{ maxWidth: 760, margin: "0 auto" }}>
+    <div ref={rootRef} style={{ maxWidth: 760, margin: "0 auto" }}>
       <nav className="row center wrap gap-2" aria-label={t("breadcrumb")} style={{ marginBottom: 22 }}>
         {trail.map((node, i) => {
           const isCurrent = node.id === selectedId;
@@ -99,27 +108,26 @@ export function Reader({
         })}
       </nav>
 
-      {/* Keyed on the node id so each time jump remounts the passage, replaying
-          the scroll-unfurl (new text rolls down) and the drifting-sand puff. */}
-      <article
-        key={current.id}
-        className="frame frame--basalt unfurl"
-        style={{ padding: "28px 30px 30px", position: "relative", overflow: "hidden" }}
-      >
-        <span className="dust" aria-hidden>
-          {DUST.map((d, i) => (
-            <i key={i} style={{ left: d.left, top: d.top, animationDelay: d.delay }} />
-          ))}
-        </span>
-        <h1 className="h2" style={{ color: "var(--sand-light)", marginBottom: 16 }}>
-          {current.title}
-        </h1>
-        <div className="prose" style={{ color: "var(--sand-light)", maxWidth: "none" }}>
-          {current.content.split(/\n{2,}/).map((para, i) => (
-            <p key={i}>{para}</p>
-          ))}
-        </div>
-      </article>
+      {/* The veil (a sibling overlay) covers the column while React swaps the
+          passage underneath; as it parts, the keyed article reveals center-out.
+          Both are re-keyed by jumpSeq so the time jump replays on every move. */}
+      <div style={{ position: "relative" }}>
+        {jumping && <TimeVeil key={`veil-${jumpSeq}`} />}
+        <article
+          key={`passage-${jumpSeq}`}
+          className={`frame frame--basalt${jumpSeq > 0 ? " jump-reveal" : ""}`}
+          style={{ padding: "28px 30px 30px", overflow: "hidden" }}
+        >
+          <h1 className="h2" style={{ color: "var(--sand-light)", marginBottom: 16 }}>
+            {current.title}
+          </h1>
+          <div className="prose" style={{ color: "var(--sand-light)", maxWidth: "none" }}>
+            {current.content.split(/\n{2,}/).map((para, i) => (
+              <p key={i}>{para}</p>
+            ))}
+          </div>
+        </article>
+      </div>
 
       <section className="frame frame--basalt" style={{ marginTop: 22, padding: "20px 22px" }}>
         <label className="label" htmlFor="steer">
@@ -173,6 +181,8 @@ export function Reader({
           </div>
         )}
       </section>
+
+      {forking && <GeneratingStars />}
     </div>
   );
 }
