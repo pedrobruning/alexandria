@@ -1,7 +1,7 @@
 # Implementation Plan: Alexandria — Branches (Phase 1 MVP)
 
 > Derived from `SPEC.md`.
-> **Status:** In progress — Phase 2 (Core Loop) code-complete. Foundation (T1–T4) + Auth (T5) done; Create (T6), Reader (T7), Branch+steer+quota (T8) all landed — pending end-to-end browser verify of the full core loop. Next: Phase 3 (T9 Atlas render). Added scope: pixel design system, per-story generation language, and UI i18n.
+> **Status:** In progress — Phase 2 (Core Loop) code-complete. Foundation (T1–T4) + Auth (T5) done; Create (T6), Reader (T7), Branch+steer+quota (T8) all landed — pending end-to-end browser verify of the full core loop. Phase 3 started: Atlas static render (T9) landed. Next: T10 (Atlas interaction + Zustand store). Added scope: pixel design system, per-story generation language, and UI i18n.
 > **Last updated:** 2026-06-02
 
 ## Progress Log
@@ -23,6 +23,8 @@
 | 2026-06-02 | `ee89f4c` | Quota domain logic + tests (T8) |
 | 2026-06-02 | `4fcc329` | createBranch use case + tests (T8) |
 | 2026-06-02 | `0989262` | Branch route + quota infra + steer UI (T8) |
+| 2026-06-02 | `4a88f44` | Atlas tidy-tree layout lib + tests (T9) |
+| 2026-06-02 | `da75b71` | Atlas SVG render wired into the reader (T9) |
 
 > **DDD note:** the generation layer lives under `src/domains/generation/{domain,application,infrastructure}` (and a new `src/domains/stories/…`), not the flat `src/lib/generation/*` the original task cards named. Domains-by-feature, ports/adapters.
 
@@ -244,17 +246,19 @@ request}.ts`, `messages/{en,pt-BR}.json`, `NextIntlClientProvider` in the root l
 
 ### Phase 3: Atlas, Cache Guarantee, BYOK
 
-## Task 9: Story Atlas — static render
+## Task 9: Story Atlas — static render ✅ (pending browser verify)
 **Description:** Compute tidy-tree layout (`d3-hierarchy`) and render SVG nodes/edges,
 highlight the current timeline path, and badge fork points with branch counts.
 **Acceptance criteria:**
-- [ ] Tree renders with correct parent→child edges and current-path highlight
-- [ ] Fork nodes show a badge with their child count
+- [x] Tree renders with correct parent→child edges and current-path highlight
+- [x] Fork nodes show a badge with their child count (childCount >= 2)
 **Verification:**
-- [ ] Unit: layout + path-highlight derivation
-- [ ] Manual: a multi-branch story renders a sensible tree
+- [x] Unit: layout + path-highlight derivation — `tests/tree/layout.test.ts` (8 tests)
+- [ ] Manual: a multi-branch story renders a sensible tree (needs a live multi-branch story)
 **Dependencies:** T8
-**Files:** `src/components/atlas/*`, `src/lib/tree/layout.ts`, `tests/tree/layout.test.ts`
+**Files:** `src/components/atlas/Atlas.tsx`, `src/lib/tree/layout.ts`, `tests/tree/layout.test.ts`
+**Note:** added `d3-hierarchy` dep. Atlas is presentational/static here; click-to-select,
+pan, and auto-center land in T10 (with the Zustand store).
 **Scope:** M
 
 ## Task 10: Story Atlas — interaction
