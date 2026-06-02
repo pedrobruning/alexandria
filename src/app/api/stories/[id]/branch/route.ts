@@ -89,7 +89,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     });
     return NextResponse.json(result, { status: 201 });
   } catch (err) {
-    const message = err instanceof Error ? err.message : "generation failed";
-    return NextResponse.json({ error: message }, { status: 502 });
+    console.error("createBranch route failed", err);
+    return NextResponse.json({ error: "generation failed" }, { status: 502 });
   }
 }
