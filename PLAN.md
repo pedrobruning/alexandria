@@ -1,7 +1,7 @@
 # Implementation Plan: Alexandria — Branches (Phase 1 MVP)
 
 > Derived from `SPEC.md`.
-> **Status:** In progress — Phase 2 (Core Loop) code-complete. Foundation (T1–T4) + Auth (T5) done; Create (T6), Reader (T7), Branch+steer+quota (T8) all landed — pending end-to-end browser verify of the full core loop. Phase 3 started: Atlas static render (T9) landed. Next: T10 (Atlas interaction + Zustand store). Added scope: pixel design system, per-story generation language, and UI i18n.
+> **Status:** In progress — Phase 2 (Core Loop) code-complete. Foundation (T1–T4) + Auth (T5) done; Create (T6), Reader (T7), Branch+steer+quota (T8) all landed — pending end-to-end browser verify of the full core loop. Phase 3 in progress: Atlas render + interaction (T9, T10) landed (side-panel, scrollable, clickable, auto-centering). Next: T11 (frozen-cache verify), T12 (BYOK + model picker). Added scope: pixel design system, per-story generation language, and UI i18n.
 > **Last updated:** 2026-06-02
 
 ## Progress Log
@@ -25,6 +25,7 @@
 | 2026-06-02 | `0989262` | Branch route + quota infra + steer UI (T8) |
 | 2026-06-02 | `4a88f44` | Atlas tidy-tree layout lib + tests (T9) |
 | 2026-06-02 | `da75b71` | Atlas SVG render wired into the reader (T9) |
+| 2026-06-02 | `9e7e419` | Atlas side panel: scrollable, clickable, auto-centering; cutoff fix (T9/T10) |
 
 > **DDD note:** the generation layer lives under `src/domains/generation/{domain,application,infrastructure}` (and a new `src/domains/stories/…`), not the flat `src/lib/generation/*` the original task cards named. Domains-by-feature, ports/adapters.
 
@@ -261,16 +262,21 @@ highlight the current timeline path, and badge fork points with branch counts.
 pan, and auto-center land in T10 (with the Zustand store).
 **Scope:** M
 
-## Task 10: Story Atlas — interaction
+## Task 10: Story Atlas — interaction ✅ (pending browser verify)
 **Description:** Pan/scroll, click a node to select + auto-center, sync selection with the
-reader via the Zustand store.
+reader. Pulled forward while fixing the Atlas cutoff/side-panel layout.
 **Acceptance criteria:**
-- [ ] Clicking an Atlas node selects it, recenters, and updates the reader
-- [ ] Pan/scroll works without losing selection
+- [x] Clicking an Atlas node selects it, recenters (auto-scroll), and updates the reader
+- [x] Pan/scroll works without losing selection (scroll is independent of selection state)
 **Verification:**
-- [ ] Manual: navigate a 10+ node tree by clicking around the Atlas
+- [ ] Manual: navigate a 10+ node tree by clicking around the Atlas (needs a live multi-node story)
 **Dependencies:** T9
-**Files:** `src/components/atlas/*`, `src/store/atlas.ts`
+**Files:** `src/components/reader/StoryWorkspace.tsx` (owns selection), `src/components/atlas/Atlas.tsx`,
+`src/components/reader/Reader.tsx` (now controlled)
+**Deviation:** selection lives in a shared `StoryWorkspace` client component (lifted `useState`),
+not the planned Zustand `src/store/atlas.ts`. Atlas + Reader are siblings under one parent, so props
+suffice (smallest-thing-that-works); revisit a store if a distant component needs selection or a
+view-transform needs sharing (e.g. BYOK settings, zoom).
 **Scope:** M
 
 ## Task 11: Frozen-cache verification
