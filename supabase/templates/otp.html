@@ -1,0 +1,169 @@
+<!doctype html>
+<!--
+  Alexandria — OTP (6-digit code) email
+  Paste into Supabase → Authentication → Email Templates → "Magic Link".
+
+  Supabase variable used:
+    {{ .Token }}  the one-time code (the OTP)
+
+  Code-only by design: a magic link shares the same token and gets consumed by
+  inbox link-prefetchers, which invalidates the typed code. So no link here.
+  The app must call signInWithOtp WITHOUT emailRedirectTo to send a code (it does).
+-->
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="x-apple-disable-message-reformatting">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="color-scheme" content="dark">
+  <meta name="supported-color-schemes" content="dark light">
+  <title>Your key to Alexandria</title>
+  <!--[if mso]>
+  <noscript><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml></noscript>
+  <![endif]-->
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Newsreader:ital,wght@0,400;0,500;1,400&family=DM+Mono:wght@400;500&display=swap');
+
+    /* clients that strip this fall back to the inline web-safe stacks below */
+    body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+    table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
+    img { -ms-interpolation-mode: bicubic; border: 0; line-height: 100%; outline: none; text-decoration: none; }
+    body { margin: 0 !important; padding: 0 !important; width: 100% !important; }
+    a { text-decoration: none; }
+
+    .px { font-family: 'Press Start 2P', 'Courier New', monospace; }
+    .serif { font-family: 'Newsreader', Georgia, 'Times New Roman', serif; }
+    .mono { font-family: 'DM Mono', 'Courier New', Courier, monospace; }
+
+    @media only screen and (max-width: 600px) {
+      .container { width: 100% !important; }
+      .px-wordmark { font-size: 16px !important; }
+      .h1 { font-size: 13px !important; line-height: 1.7 !important; }
+      .code { font-size: 30px !important; letter-spacing: 8px !important; }
+      .pad { padding-left: 22px !important; padding-right: 22px !important; }
+    }
+
+    @media (prefers-color-scheme: light) {
+      /* keep it dark on purpose — the library is candlelit */
+      body, .bg { background-color: #2B2118 !important; }
+    }
+  </style>
+</head>
+<body class="bg" style="margin:0; padding:0; background-color:#2B2118; color:#E8D5A8;">
+  <!-- preheader: shown in inbox preview, hidden in body -->
+  <div style="display:none; max-height:0; overflow:hidden; opacity:0; mso-hide:all;">
+    A door is open. Your one-time code for Alexandria is inside.&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;
+  </div>
+
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#2B2118" style="background-color:#2B2118;">
+    <tr>
+      <td align="center" style="padding:32px 16px;">
+
+        <!-- container -->
+        <table role="presentation" class="container" width="600" cellpadding="0" cellspacing="0" border="0" style="width:600px; max-width:600px;">
+
+          <!-- header / wordmark -->
+          <tr>
+            <td align="center" style="padding:8px 0 22px 0;">
+              <div class="px px-wordmark" style="font-family:'Press Start 2P','Courier New',monospace; font-size:20px; line-height:1.3; letter-spacing:1px;">
+                <span style="color:#E8D5A8;">Alex</span><span style="color:#E0A82E;">andria</span>
+              </div>
+              <div class="serif" style="font-family:'Newsreader',Georgia,serif; font-style:italic; font-size:13px; color:#8A7A5C; padding-top:8px;">
+                The pixel library
+              </div>
+            </td>
+          </tr>
+
+          <!-- gold fret divider -->
+          <tr>
+            <td style="padding:0 0 22px 0;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td height="4" style="height:4px; line-height:4px; font-size:0; background-color:#A8791C;">&nbsp;</td>
+                </tr>
+                <tr>
+                  <td height="2" style="height:2px; line-height:2px; font-size:0; background-color:#E0A82E;">&nbsp;</td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- card (carved frame: stone outer, basalt-2 inner) -->
+          <tr>
+            <td style="background-color:#4A3B2A; padding:2px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#3A2D20" style="background-color:#3A2D20;">
+                <tr>
+                  <td class="pad" style="padding:34px 36px 30px 36px;">
+
+                    <!-- heading -->
+                    <h1 class="px h1" style="margin:0; font-family:'Press Start 2P','Courier New',monospace; font-size:15px; line-height:1.8; color:#E8D5A8;">
+                      Your key to the&nbsp;library
+                    </h1>
+
+                    <p class="serif" style="margin:18px 0 0 0; font-family:'Newsreader',Georgia,serif; font-size:17px; line-height:1.6; color:#C9A876;">
+                      Enter this one-time code on the sign-in screen to open the door.
+                    </p>
+
+                    <!-- OTP code tile (inset) -->
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top:26px;">
+                      <tr>
+                        <td align="center" style="background-color:#2B2118; border:2px solid #4A3B2A; padding:22px 12px;">
+                          <div class="mono code" style="font-family:'DM Mono','Courier New',monospace; font-size:38px; font-weight:500; letter-spacing:12px; color:#E0A82E; padding-left:12px;">
+                            {{ .Token }}
+                          </div>
+                        </td>
+                      </tr>
+                    </table>
+
+                    <p class="serif" style="margin:12px 0 0 0; text-align:center; font-family:'Newsreader',Georgia,serif; font-style:italic; font-size:13px; color:#8A7A5C;">
+                      This code expires in 60 minutes.
+                    </p>
+
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- security note -->
+          <tr>
+            <td class="serif" style="padding:22px 8px 0 8px; font-family:'Newsreader',Georgia,serif; font-size:13px; line-height:1.6; color:#8A7A5C;">
+              If you didn't try to sign in to Alexandria, you can safely ignore this message — no door will open without this code.
+            </td>
+          </tr>
+
+          <!-- footer fret -->
+          <tr>
+            <td style="padding:28px 0 18px 0;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td height="2" style="height:2px; line-height:2px; font-size:0; background-color:#3A2D20;">&nbsp;</td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- footer -->
+          <tr>
+            <td align="center" style="padding:4px 8px 8px 8px;">
+              <div class="px" style="font-family:'Press Start 2P','Courier New',monospace; font-size:13px; letter-spacing:1px;">
+                <span style="color:#C9A876;">Alex</span><span style="color:#A8791C;">andria</span>
+              </div>
+              <p class="serif" style="margin:12px 0 0 0; font-family:'Newsreader',Georgia,serif; font-style:italic; font-size:14px; color:#C9A876;">
+                Every choice is a door. Open all of them.
+              </p>
+              <p class="px" style="margin:16px 0 0 0; font-family:'Press Start 2P','Courier New',monospace; font-size:8px; letter-spacing:2px; color:#6A5638;">
+                UNSEAL &nbsp;&middot;&nbsp; EXCAVATE &nbsp;&middot;&nbsp; FORK
+              </p>
+            </td>
+          </tr>
+
+        </table>
+        <!-- /container -->
+
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

@@ -6,11 +6,17 @@
   },
   "login": {
     "intro": "Assine o registro, arquivista. Um elo selado será enviado ao seu nome.",
-    "sentTitle": "Um link de acesso está a caminho de <em>{email}</em>. Siga-o para entrar no arquivo.",
+    "sentTitle": "Um código de 8 dígitos está a caminho de <em>{email}</em>. Digite-o abaixo para entrar no arquivo.",
     "emailLabel": "Seu e-mail",
     "emailPlaceholder": "arquivista@exemplo.com",
     "sending": "selando seu elo…",
     "submit": "Enviar o elo selado",
+    "codeLabel": "Seu código",
+    "codePlaceholder": "código de 8 dígitos",
+    "verify": "Abrir o arquivo",
+    "verifying": "abrindo…",
+    "codeError": "Esse código não abriu a porta. Confira e tente novamente.",
+    "resend": "Usar outro e-mail",
     "caption": "Sem senha. O deserto guarda seus segredos."
   },
   "archive": {

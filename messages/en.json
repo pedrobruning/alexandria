@@ -6,11 +6,17 @@
   },
   "login": {
     "intro": "Sign the register, archivist. A sealed link will be sent to your name.",
-    "sentTitle": "A sign-in link is on its way to <em>{email}</em>. Follow it to enter the archive.",
+    "sentTitle": "An 8-digit code is on its way to <em>{email}</em>. Enter it below to enter the archive.",
     "emailLabel": "Your email",
     "emailPlaceholder": "archivist@example.com",
     "sending": "sealing your link…",
     "submit": "Send the sealed link",
+    "codeLabel": "Your code",
+    "codePlaceholder": "8-digit code",
+    "verify": "Unseal the archive",
+    "verifying": "unsealing…",
+    "codeError": "That code didn't open the door. Check it and try again.",
+    "resend": "Use a different email",
     "caption": "No password. The desert keeps your secrets."
   },
   "archive": {
