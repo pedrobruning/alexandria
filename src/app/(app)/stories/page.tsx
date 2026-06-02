@@ -8,6 +8,8 @@ import { SettingsButton } from "@/components/settings/Byok";
 import { Wordmark } from "@/components/pixel/Wordmark";
 import { PixelIcon } from "@/components/pixel/PixelIcon";
 import { StoryCard } from "@/components/stories/StoryCard";
+import { HelpButton } from "@/components/onboarding/HelpButton";
+import { OnboardingAutostart } from "@/components/onboarding/OnboardingAutostart";
 
 export default async function StoriesPage() {
   const t = await getTranslations("archive");
@@ -18,7 +20,7 @@ export default async function StoriesPage() {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("handle")
+    .select("handle, onboarded_at")
     .eq("id", user!.id)
     .single();
 
@@ -27,6 +29,7 @@ export default async function StoriesPage() {
 
   return (
     <div className="screen scroll-y" style={{ background: "var(--basalt)" }}>
+      <OnboardingAutostart onboarded={!!profile?.onboarded_at} />
       <header
         style={{
           position: "sticky",
@@ -61,6 +64,7 @@ export default async function StoriesPage() {
               {t("archivist")} · <span style={{ color: "var(--lapis-bright)" }}>{handle}</span>
             </span>
             <LocaleSwitcher />
+            <HelpButton />
             <SettingsButton />
             <Link className="btn" href="/stories/new">
               <PixelIcon name="plus" size={16} color="#2B2118" /> {t("newStory")}

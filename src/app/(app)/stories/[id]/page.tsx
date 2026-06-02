@@ -9,6 +9,8 @@ import { SettingsButton } from "@/components/settings/Byok";
 import { Wordmark } from "@/components/pixel/Wordmark";
 import { PixelIcon } from "@/components/pixel/PixelIcon";
 import { StoryWorkspace } from "@/components/reader/StoryWorkspace";
+import { HelpButton } from "@/components/onboarding/HelpButton";
+import { OnboardingHost } from "@/components/onboarding/OnboardingHost";
 
 export default async function StoryPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -43,6 +45,7 @@ export default async function StoryPage({ params }: { params: Promise<{ id: stri
               {story.title}
             </span>
             <LocaleSwitcher />
+            <HelpButton />
             <SettingsButton />
             <SignOutButton />
           </div>
@@ -57,6 +60,7 @@ export default async function StoryPage({ params }: { params: Promise<{ id: stri
           isDemo={story.isDemo}
           language={story.language}
         />
+        <OnboardingHost />
       </main>
     </div>
   );
