@@ -421,9 +421,11 @@ textarea.field { resize: vertical; line-height: 1.6; }
 }
 .atlas-fab:hover { filter: brightness(1.12); }
 
-/* dark backdrop behind the modal */
+/* dark backdrop behind the modal. Sits above the tour overlay (z 200) so the
+   Atlas/Settings open fully lit when explored mid-tour, instead of under its
+   scrim. */
 .atlas-overlay {
-  position: fixed; inset: 0; z-index: 100;
+  position: fixed; inset: 0; z-index: 210;
   display: flex; align-items: center; justify-content: center;
   padding: 32px;
   background: rgba(20,15,10,.78);
@@ -475,10 +477,14 @@ textarea.field { resize: vertical; line-height: 1.6; }
    huge box-shadow dims everything but the anchored element; the card sits
    beside it. With no anchor, .tour-scrim dims the whole screen.
    ============================================================ */
-.tour-overlay { position: fixed; inset: 0; z-index: 200; }
+/* The overlay itself is click-through so the spotlighted control stays usable
+   (e.g. opening the Atlas mid-tour); only the card — and the full-screen scrim
+   on the anchorless step — capture clicks. */
+.tour-overlay { position: fixed; inset: 0; z-index: 200; pointer-events: none; }
 .tour-scrim {
   position: absolute; inset: 0;
   background: rgba(20,15,10,.82);
+  pointer-events: auto;
   animation: fadeIn .18s steps(3) both;
 }
 .tour-hole {
@@ -490,6 +496,7 @@ textarea.field { resize: vertical; line-height: 1.6; }
 }
 .tour-card {
   position: absolute;
+  pointer-events: auto;
   width: min(360px, calc(100vw - 32px));
   padding: 16px 18px 18px;
   background: var(--basalt);
@@ -580,6 +587,9 @@ textarea.field { resize: vertical; line-height: 1.6; }
   background: radial-gradient(120% 100% at 50% 30%, #1b2a52 0%, #161a36 46%, #0a0810 100%);
   animation: fadeIn .35s ease-out both;
 }
+/* Tour launch cover sits above the tour overlay so the spotlight never flashes
+   through before it has settled on its first anchor. */
+.gen-overlay--tour { z-index: 220; }
 .gen-overlay::after {
   content: ""; position: absolute; inset: 0; pointer-events: none;
   box-shadow: inset 0 0 220px 60px rgba(0,0,0,.6);

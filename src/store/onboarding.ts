@@ -7,8 +7,13 @@ import { nextStep, prevStep } from "@/domains/onboarding/domain/tour";
 // button. Module-scoped, so it survives client-side navigation (archive → the
 // demo reader) within the SPA.
 type OnboardingState = {
+  // `launching` covers the seed + cross-route navigation before the tour shows:
+  // the launch veil reads it so the user never sees the bare archive flash by.
+  launching: boolean;
   tourActive: boolean;
   stepIndex: number;
+  beginLaunch: () => void;
+  endLaunch: () => void;
   start: () => void;
   next: () => void;
   back: () => void;
@@ -16,8 +21,11 @@ type OnboardingState = {
 };
 
 export const useOnboarding = create<OnboardingState>((set) => ({
+  launching: false,
   tourActive: false,
   stepIndex: 0,
+  beginLaunch: () => set({ launching: true }),
+  endLaunch: () => set({ launching: false }),
   start: () => set({ tourActive: true, stepIndex: 0 }),
   next: () => set((s) => ({ stepIndex: nextStep(s.stepIndex) })),
   back: () => set((s) => ({ stepIndex: prevStep(s.stepIndex) })),

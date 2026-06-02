@@ -118,6 +118,12 @@
     "stepCount": "{current} / {total}",
     "help": "Tour",
     "helpAria": "Replay the guided tour",
+    "loadingMessages": [
+      "Unsealing the demo archive…",
+      "Lighting the lanterns…",
+      "Charting the first timelines…"
+    ],
+    "loadingSub": "Preparing your guided tour",
     "steps": {
       "branching": {
         "title": "A story is a tree",

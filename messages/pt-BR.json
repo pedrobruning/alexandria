@@ -118,6 +118,12 @@
     "stepCount": "{current} / {total}",
     "help": "Tour",
     "helpAria": "Repetir o tour guiado",
+    "loadingMessages": [
+      "Desselando o arquivo de demonstração…",
+      "Acendendo as lanternas…",
+      "Traçando as primeiras linhas do tempo…"
+    ],
+    "loadingSub": "Preparando o seu tour guiado",
     "steps": {
       "branching": {
         "title": "Uma história é uma árvore",

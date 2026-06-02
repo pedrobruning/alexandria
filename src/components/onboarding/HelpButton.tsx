@@ -14,11 +14,14 @@ export function useDemoTour() {
   const router = useRouter();
   const locale = useLocale();
   const start = useOnboarding((s) => s.start);
+  const beginLaunch = useOnboarding((s) => s.beginLaunch);
+  const endLaunch = useOnboarding((s) => s.endLaunch);
   const [pending, setPending] = useState(false);
 
   async function launch() {
     if (pending) return;
     setPending(true);
+    beginLaunch();
     try {
       const res = await fetch("/api/onboarding/demo", {
         method: "POST",
@@ -27,9 +30,15 @@ export function useDemoTour() {
       });
       const data = (await res.json().catch(() => ({}))) as { storyId?: string };
       if (data.storyId) {
-        router.push(`/stories/${data.storyId}`);
+        // The veil stays up across the nav; the reader's <OnboardingHost> drops
+        // it once the first spotlight is positioned, so no archive flash.
         start();
+        router.push(`/stories/${data.storyId}`);
+      } else {
+        endLaunch();
       }
+    } catch {
+      endLaunch();
     } finally {
       setPending(false);
     }
