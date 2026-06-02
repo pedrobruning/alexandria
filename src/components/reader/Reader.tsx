@@ -8,6 +8,21 @@ import { PixSpinner } from "@/components/pixel/PixSpinner";
 import { childrenOf, pathFromRoot } from "@/lib/tree/path";
 import type { StoryNode } from "@/domains/stories/domain/types";
 
+// Scattered sand grains for the time-jump puff — fixed positions so the layer
+// is deterministic across renders (it replays via the article's key remount).
+const DUST = [
+  { left: "12%", top: "20%", delay: "0ms" },
+  { left: "34%", top: "10%", delay: "40ms" },
+  { left: "58%", top: "26%", delay: "20ms" },
+  { left: "76%", top: "14%", delay: "60ms" },
+  { left: "88%", top: "34%", delay: "30ms" },
+  { left: "22%", top: "46%", delay: "70ms" },
+  { left: "46%", top: "58%", delay: "10ms" },
+  { left: "68%", top: "50%", delay: "50ms" },
+  { left: "8%", top: "70%", delay: "30ms" },
+  { left: "84%", top: "66%", delay: "20ms" },
+];
+
 export function Reader({
   storyId,
   nodes,
@@ -84,7 +99,18 @@ export function Reader({
         })}
       </nav>
 
-      <article className="frame frame--basalt" style={{ padding: "28px 30px 30px" }}>
+      {/* Keyed on the node id so each time jump remounts the passage, replaying
+          the scroll-unfurl (new text rolls down) and the drifting-sand puff. */}
+      <article
+        key={current.id}
+        className="frame frame--basalt unfurl"
+        style={{ padding: "28px 30px 30px", position: "relative", overflow: "hidden" }}
+      >
+        <span className="dust" aria-hidden>
+          {DUST.map((d, i) => (
+            <i key={i} style={{ left: d.left, top: d.top, animationDelay: d.delay }} />
+          ))}
+        </span>
         <h1 className="h2" style={{ color: "var(--sand-light)", marginBottom: 16 }}>
           {current.title}
         </h1>

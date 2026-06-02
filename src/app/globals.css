@@ -327,6 +327,61 @@ textarea.field { resize: vertical; line-height: 1.6; }
 .atlas-star { position: absolute; width: 2px; height: 2px; background: var(--sand-light); animation: starTwinkle 4s ease-in-out infinite; }
 
 /* ============================================================
+   ATLAS MODAL + TIME-JUMP (scroll unfurl)
+   ============================================================ */
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes scrollUnfurl {
+  0%   { clip-path: inset(0 0 100% 0); opacity: .15; }
+  100% { clip-path: inset(0 0 0 0);    opacity: 1; }
+}
+
+/* floating button that opens the atlas */
+.atlas-fab {
+  position: fixed; bottom: 26px; right: 26px; z-index: 90;
+  display: flex; align-items: center; gap: 8px;
+  padding: 12px 16px;
+  font-family: var(--font-pixel); font-size: 14px;
+  color: var(--ink); background: var(--gold);
+  border: 3px solid var(--gold-deep);
+  box-shadow: inset 2px 2px 0 0 #f4cf6e, 4px 4px 0 0 rgba(0,0,0,.5);
+  cursor: pointer;
+  image-rendering: pixelated;
+  transition: filter .08s steps(2);
+}
+.atlas-fab:hover { filter: brightness(1.12); }
+
+/* dark backdrop behind the modal */
+.atlas-overlay {
+  position: fixed; inset: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: center;
+  padding: 32px;
+  background: rgba(20,15,10,.78);
+  animation: fadeIn .18s steps(3) both;
+}
+
+/* the framed atlas window */
+.atlas-modal {
+  position: relative;
+  width: min(960px, 92vw); height: min(680px, 86vh);
+  display: flex; flex-direction: column;
+  background: var(--basalt);
+  border: 3px solid var(--stone);
+  box-shadow: inset 2px 2px 0 0 var(--stone-light), 6px 6px 0 0 rgba(0,0,0,.55);
+  animation: snapIn .3s steps(4) both;
+}
+.atlas-modal__bar {
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 3px solid var(--stone);
+  background: var(--basalt-2);
+}
+.atlas-modal__body { flex: 1; min-height: 0; }
+
+/* scroll-unfurl: new passage unrolls top-down on each time jump */
+.unfurl { animation: scrollUnfurl .55s steps(8) both; }
+
+/* ============================================================
    PIXEL SPINNER
    ============================================================ */
 @keyframes pixSpin { to { transform: rotate(360deg); } }
@@ -382,7 +437,7 @@ textarea.field { resize: vertical; line-height: 1.6; }
 /* reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .node--frozen, .node--ghost, .atlas-star, .pixspin, .dust i,
-  .node--snap, .toast { animation: none !important; }
+  .node--snap, .toast, .atlas-overlay, .atlas-modal, .unfurl { animation: none !important; }
 }
 
 /* hide scrollbar utility for atlas */

@@ -29,7 +29,10 @@
     "updated": "updated {when}"
   },
   "atlas": {
-    "label": "Story atlas — the tree of timelines"
+    "label": "Story atlas — the tree of timelines",
+    "open": "Atlas",
+    "title": "Story Atlas",
+    "close": "Close atlas"
   },
   "reader": {
     "backToArchive": "Archive",

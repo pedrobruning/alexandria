@@ -20,10 +20,11 @@ export default async function StoryPage({ params }: { params: Promise<{ id: stri
   }
 
   return (
-    <div className="screen" style={{ background: "var(--basalt)", display: "flex", flexDirection: "column" }}>
+    <div className="screen scroll-y" style={{ background: "var(--basalt)" }}>
       <header
         style={{
-          flexShrink: 0,
+          position: "sticky",
+          top: 0,
           zIndex: 10,
           background: "rgba(43,33,24,.96)",
           borderBottom: "3px solid var(--stone)",
@@ -49,7 +50,9 @@ export default async function StoryPage({ params }: { params: Promise<{ id: stri
         </div>
       </header>
 
-      <StoryWorkspace storyId={story.id} nodes={story.nodes} rootId={story.rootNodeId} />
+      <main style={{ padding: "32px 28px 80px" }}>
+        <StoryWorkspace storyId={story.id} nodes={story.nodes} rootId={story.rootNodeId} />
+      </main>
     </div>
   );
 }

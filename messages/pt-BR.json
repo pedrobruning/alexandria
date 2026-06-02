@@ -29,7 +29,10 @@
     "updated": "atualizado {when}"
   },
   "atlas": {
-    "label": "Atlas da história — a árvore de linhas do tempo"
+    "label": "Atlas da história — a árvore de linhas do tempo",
+    "open": "Atlas",
+    "title": "Atlas da História",
+    "close": "Fechar atlas"
   },
   "reader": {
     "backToArchive": "Arquivo",
