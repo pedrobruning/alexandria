@@ -86,6 +86,7 @@ The two new risks it introduces — **two-sided-platform cold start** and **read
 ## 6. Feature requirements (prioritized)
 
 ### MVP (single-player, ship first)
+- [ ] **Mobile-first experience:** the core loop (create → read → steer-fork → revisit → Atlas) is designed and built for a phone first and must be fully usable on a ~390px viewport; desktop is a progressive enhancement, not the primary target.
 - [ ] Story creation: premise + genre + tone → AI writes the root passage.
 - [ ] Tree view (Story Atlas): nodes, edges, highlighted current path, fork badges, pan/scroll, auto-center on selection.
 - [ ] Reader view: full passage text, breadcrumb path, list of existing branches from current node.

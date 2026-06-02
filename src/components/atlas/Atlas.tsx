@@ -70,19 +70,29 @@ export function Atlas({
   }, [targetX, targetY]);
 
   return (
-    <div className="atlas-canvas" style={{ position: "relative", height: "100%", overflow: "hidden" }}>
+    <div className="atlas-canvas relative h-full overflow-hidden">
       <AtlasSky />
-      <div ref={scrollRef} className="atlas-scroll" style={{ position: "relative", height: "100%", overflow: "auto" }}>
+      <div ref={scrollRef} className="atlas-scroll relative h-full overflow-auto">
         <div
+          className="flex min-h-full min-w-full"
           style={{
-            minWidth: "100%",
-            minHeight: "100%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
+            // `safe` keeps the tree centered when it fits, but falls back to
+            // start-alignment when it overflows so every node stays reachable by
+            // scrolling (plain `center` clips the start edge on small screens).
+            alignItems: "safe center",
+            justifyContent: "safe center",
           }}
         >
-          <svg role="img" aria-label={t("label")} width={width} height={height} style={{ display: "block" }}>
+          <svg
+            role="img"
+            aria-label={t("label")}
+            width={width}
+            height={height}
+            // Keep intrinsic size as a flex item: without this the SVG shrinks to
+            // the scroll container's width, clipping off-screen nodes and killing
+            // horizontal scroll on narrow (mobile) viewports.
+            style={{ display: "block", flexShrink: 0 }}
+          >
             <g transform={`translate(${offsetX}, ${offsetY})`}>
           {layout.edges.map((e) => {
             const p = pos.get(e.parentId)!;

@@ -120,9 +120,22 @@ in unit tests, unless there's pure derivation worth isolating.
 
 ## Styling & i18n
 
-- Pixel design system: CSS primitives in `src/app/globals.css` (`frame`, `btn`, `chip`, `tag`,
-  `prose`, `h1/h2`, `node-title`, `caption`, layout helpers) + components in `components/pixel/`.
-  Reuse these classes; don't introduce a parallel styling approach. Design source:
+- **Mobile-first.** Design and build for a phone viewport (~360–390px) first, then let
+  layouts widen for tablet/desktop. Every screen must work with no horizontal overflow on a
+  phone: prefer fluid widths (`width: 100%`, `min(…, 100%)`) over fixed/`vw` widths, let
+  header and toolbar clusters `wrap`, hide non-essential chrome on small screens (`.hide-sm`),
+  and keep tap targets comfortable. The mobile tuning lives in the `max-width: 640px` block of
+  `globals.css` plus the `.app-header__bar` / `.app-content` / `.app-main` shell classes —
+  extend those rather than scattering ad-hoc media queries. Verify new UI at ~390px width.
+- **Tailwind v4 + a pixel design system.** Tailwind is active via `@import "tailwindcss"` in
+  `globals.css`. Design tokens (palette + fonts) are registered in the `@theme` block, so they
+  exist both as utilities (`bg-basalt`, `text-sand-light`, `border-gold`, `font-body`) and as
+  `var(--color-*)` / short `var(--basalt)` aliases. **Prefer Tailwind utilities for layout,
+  spacing, sizing, and responsive (`sm:`/`md:`)** instead of inline `style={{…}}`.
+- The pixel "chrome" stays hand-authored CSS: component classes (`frame`, `btn`, `chip`, `tag`,
+  `prose`, `h1/h2`, `node-title`, `caption`, `field`, `label`) and all keyframe animations live
+  in `globals.css` — their multi-layer bevel shadows and animations don't belong in utility
+  soup. Reuse these classes; compose utilities around them. Design source:
   `design/project/src/screens.jsx`.
 - All user-facing copy goes through next-intl. Add keys to **both** `messages/en.json` and
   `messages/pt-BR.json`; read them with `useTranslations` (client) or `getTranslations` (server).

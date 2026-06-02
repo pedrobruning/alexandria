@@ -238,6 +238,14 @@ default with first-render Accept-Language detection. Locale config in `src/i18n/
 request}.ts`, `messages/{en,pt-BR}.json`, `NextIntlClientProvider` in the root layout, and a
 `LocaleSwitcher` chip group. Independent of generation language.
 
+**D. Mobile-first responsive pass.** The pixel chrome was originally desktop-sized and
+overflowed on a phone (headers cut off, Atlas modal clipped, a `100vw` scrollbar strip).
+Reworked the app shell to be mobile-first: `.screen` uses `width:100%`/`100dvh`; new
+`.app-header__bar` / `.app-content` / `.app-main` shell classes plus a `max-width:640px`
+block in `globals.css` tighten padding, scale buttons/chips/wordmark, wrap header clusters,
+hide non-essential chrome (`.hide-sm`), and let the Atlas modal fill the phone. Going forward,
+new UI is designed for ~390px first (see CLAUDE.md → Styling & i18n).
+
 ### Checkpoint: Core Loop (after T5–T8)
 - [ ] End-to-end: sign in → create story → read → steer-fork → branch appears, persists
 - [ ] All tests + typecheck + lint + build pass
@@ -292,18 +300,28 @@ calls — pure SELECT path. Add a regression test/guard around the read path.
 **Files:** `tests/cache/frozen.test.ts`, minor read-path guard
 **Scope:** S
 
-## Task 12: BYOK + model picker
+## Task 12: BYOK + model picker ✅ (pending live browser verify)
 **Description:** Settings to enter an OpenRouter key (stored in localStorage) and pick a
 model; branch/root requests pass the key through transiently; BYOK bypasses quota; never
 persisted/logged server-side.
 **Acceptance criteria:**
-- [ ] With a BYOK key set, generation uses it + the chosen model and bypasses quota
-- [ ] Key never appears in DB, server logs, or any response body
+- [x] With a BYOK key set, generation uses it + the chosen model and bypasses quota
+  (`resolveGenerationAuth` → routes skip the quota check when `usedServerKey` is false)
+- [x] Key never appears in DB, server logs, or any response body (verified by inspection:
+  no `console.*` in routes; writers persist only `model_used` + `used_server_key`; routes
+  return only ids/errors; the key reaches just the OpenRouter `Authorization` header)
 **Verification:**
-- [ ] Manual: set BYOK, generate past the would-be quota, confirm success
-- [ ] Grep server logs for the key → absent
+- [x] Unit: `resolveGenerationAuth` — `tests/generation/credentials.test.ts` (6 tests)
+- [ ] Manual: set BYOK, generate past the would-be quota, confirm success (needs live keys)
+- [ ] Grep server logs for the key → absent (needs a live run)
 **Dependencies:** T8 (and T4)
-**Files:** `src/components/settings/byok.tsx`, generation route updates, `src/store/atlas.ts` (or settings store)
+**Decision:** server key stays pinned to `OPENROUTER_DEFAULT_MODEL`; the model picker only
+takes effect when a BYOK key is set (so the shared key can't be spent on a pricier model).
+Key travels as a JSON body field; settings UI is a header modal.
+**Files:** `src/domains/generation/domain/credentials.ts`, `src/store/settings.ts`,
+`src/components/settings/Byok.tsx`, `src/app/api/stories/route.ts` +
+`src/app/api/stories/[id]/branch/route.ts`, `Reader.tsx` + `CreateStoryForm.tsx` (send key/model),
+header wiring in both `(app)/stories` pages, `messages/{en,pt-BR}.json` (`settings` namespace)
 **Scope:** M
 
 ### Checkpoint: Complete (after T9–T12)

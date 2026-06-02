@@ -27,7 +27,9 @@ state survives refresh, branching is genuinely engaging to use, and cost is boun
 
 - **Framework:** Next.js (App Router) + TypeScript. React Server Components where they help;
   generation and all secret-touching logic in **Route Handlers** (server-only).
-- **Styling:** Tailwind CSS.
+- **Styling:** Tailwind CSS over a custom pixel design system. **Mobile-first:** every screen
+  is designed for a phone viewport first (~360–390px) and progressively enhanced for larger
+  screens; no screen may overflow horizontally on a phone.
 - **Tree rendering:** SVG nodes/edges with a tidy-tree layout (`d3-hierarchy` for layout
   math; we render the SVG ourselves — no heavyweight graph lib).
 - **Data + Auth:** Supabase (Postgres + Auth). Client uses `@supabase/supabase-js`;
@@ -237,6 +239,9 @@ export function buildBranchMessages(
 6. Generation works in **both** key modes: server default key (quota-gated) and BYOK
    (user's OpenRouter key + chosen model, never persisted/logged).
 7. `npm run typecheck && npm run lint && npm test` all pass; core `lib/` logic ≥ 80% covered.
+8. **Mobile-first:** every screen (archive, create, reader, Atlas modal) is fully usable on a
+   ~390px phone viewport with no horizontal overflow — headers wrap, the Atlas window fills the
+   screen, and primary actions stay reachable.
 
 ## Resolved Decisions
 

@@ -2,11 +2,15 @@ import Link from "next/link";
 import { useFormatter, useTranslations } from "next-intl";
 import { PixelIcon } from "@/components/pixel/PixelIcon";
 import type { StorySummary } from "@/domains/stories/domain/types";
+import { genreKey, toneKey } from "@/domains/stories/domain/options";
 
 export function StoryCard({ story }: { story: StorySummary }) {
   const t = useTranslations("storyCard");
+  const tc = useTranslations("create");
   const format = useFormatter();
   const forks = Math.max(0, story.passageCount - 1);
+  const gk = story.genre ? genreKey(story.genre) : null;
+  const tk = story.tone ? toneKey(story.tone) : null;
   return (
     <Link
       href={`/stories/${story.id}`}
@@ -17,8 +21,10 @@ export function StoryCard({ story }: { story: StorySummary }) {
         {story.title}
       </h3>
       <div className="row gap-2 wrap" style={{ marginBottom: 12 }}>
-        {story.genre && <span className="tag tag--lapis">{story.genre}</span>}
-        {story.tone && <span className="tag tag--gold">{story.tone}</span>}
+        {story.genre && (
+          <span className="tag tag--lapis">{gk ? tc(`genres.${gk}`) : story.genre}</span>
+        )}
+        {story.tone && <span className="tag tag--gold">{tk ? tc(`tones.${tk}`) : story.tone}</span>}
       </div>
       <div className="row center between">
         <div className="row center gap-3">

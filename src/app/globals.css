@@ -6,27 +6,50 @@
    Fonts are provided by next/font (see layout.tsx) as CSS vars.
    ============================================================ */
 
-:root {
-  --basalt:      #2B2118;
-  --basalt-2:    #3A2D20;
-  --stone:       #4A3B2A;
-  --stone-light: #6A5638;
-  --sand:        #C9A876;
-  --sand-light:  #E8D5A8;
-  --papyrus:     #E5D2A6;
-  --lapis:       #2A6F97;
-  --lapis-bright:#3A8DBE;
-  --gold:        #E0A82E;
-  --gold-deep:   #A8791C;
-  --carnelian:   #B5532A;
-  --ink:         #2B2118;
-  --muted:       #8A7A5C;
+/* Design tokens registered with Tailwind so they generate utilities
+   (bg-basalt, text-sand-light, border-gold, font-body, …). @theme also emits
+   each token as a :root custom property, so existing var(--color-*) works too.
+   The pixel component classes + keyframes below stay hand-authored CSS. */
+@theme {
+  --color-basalt:       #2B2118;
+  --color-basalt-2:     #3A2D20;
+  --color-stone:        #4A3B2A;
+  --color-stone-light:  #6A5638;
+  --color-sand:         #C9A876;
+  --color-sand-light:   #E8D5A8;
+  --color-papyrus:      #E5D2A6;
+  --color-lapis:        #2A6F97;
+  --color-lapis-bright: #3A8DBE;
+  --color-gold:         #E0A82E;
+  --color-gold-deep:    #A8791C;
+  --color-carnelian:    #B5532A;
+  --color-ink:          #2B2118;
+  --color-muted:        #8A7A5C;
 
   /* type families (next/font vars with fallbacks) */
   --font-display: var(--font-press-start), 'Pixelify Sans', monospace;
   --font-pixel:   var(--font-pixelify), 'Silkscreen', monospace;
   --font-body:    var(--font-newsreader), Georgia, serif;
   --font-mono:    var(--font-dm-mono), 'Silkscreen', monospace;
+}
+
+:root {
+  /* back-compat aliases: the design system uses short names (var(--basalt)),
+     which now resolve to the Tailwind theme tokens above. */
+  --basalt:       var(--color-basalt);
+  --basalt-2:     var(--color-basalt-2);
+  --stone:        var(--color-stone);
+  --stone-light:  var(--color-stone-light);
+  --sand:         var(--color-sand);
+  --sand-light:   var(--color-sand-light);
+  --papyrus:      var(--color-papyrus);
+  --lapis:        var(--color-lapis);
+  --lapis-bright: var(--color-lapis-bright);
+  --gold:         var(--color-gold);
+  --gold-deep:    var(--color-gold-deep);
+  --carnelian:    var(--color-carnelian);
+  --ink:          var(--color-ink);
+  --muted:        var(--color-muted);
 
   /* grid unit */
   --u: 4px;
@@ -35,7 +58,12 @@
 }
 
 /* ---- Reset ---- */
-* { box-sizing: border-box; margin: 0; padding: 0; }
+/* In @layer base so it never overrides Tailwind's (layered) utilities — an
+   unlayered universal reset beats every layer regardless of specificity, which
+   silently kills the spacing utilities. */
+@layer base {
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+}
 html, body { height: 100%; }
 body {
   font-family: var(--font-pixel);
@@ -179,6 +207,13 @@ input, textarea { font-family: inherit; }
   transition: filter .08s steps(2);
 }
 .chip:hover { filter: brightness(1.2); }
+/* On light frames (frame--papyrus) the default sand-light text vanishes; this
+   variant darkens the unselected state while leaving --on fills untouched. */
+.chip--ink:not(.chip--on) {
+  color: var(--ink);
+  border-color: var(--stone-light);
+  box-shadow: inset 2px 2px 0 0 rgba(0,0,0,.08);
+}
 .chip--on {
   background: var(--lapis); color: var(--sand-light);
   border-color: #1c4d6b;
@@ -397,7 +432,7 @@ textarea.field { resize: vertical; line-height: 1.6; }
 /* the framed atlas window */
 .atlas-modal {
   position: relative;
-  width: min(960px, 92vw); height: min(680px, 86vh);
+  width: min(960px, 100%); height: min(680px, 100%);
   display: flex; flex-direction: column;
   background: var(--basalt);
   border: 3px solid var(--stone);
@@ -542,8 +577,14 @@ textarea.field { resize: vertical; line-height: 1.6; }
 /* ============================================================
    LAYOUT HELPERS
    ============================================================ */
-.screen { height: 100vh; width: 100vw; overflow: hidden; position: relative; }
-.scroll-y { overflow-y: auto; overflow-x: hidden; }
+.screen { height: 100vh; height: 100dvh; width: 100%; overflow: hidden; position: relative; }
+.scroll-y { overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; }
+
+/* App shell: sticky header bar + scrolling content/main. Padding tightens on
+   small screens so the desert frame never overflows a phone viewport. */
+.app-header__bar { max-width: 1120px; margin: 0 auto; padding: 16px 28px; }
+.app-content { max-width: 1120px; margin: 0 auto; padding: 28px; }
+.app-main { padding: 32px 28px 80px; }
 .center-col { display: flex; flex-direction: column; align-items: center; }
 .row { display: flex; }
 .col { display: flex; flex-direction: column; }
@@ -560,6 +601,30 @@ textarea.field { resize: vertical; line-height: 1.6; }
 .vignette::after {
   content:''; position: absolute; inset: 0; pointer-events: none;
   box-shadow: inset 0 0 160px 40px rgba(0,0,0,.55);
+}
+
+.hide-sm { display: inline; }
+
+/* ============================================================
+   MOBILE-FIRST RESPONSIVE TUNING
+   The pixel frames, headers and modals are sized for the desktop
+   star-chart; below 640px they tighten so nothing overflows a phone.
+   ============================================================ */
+@media (max-width: 640px) {
+  .hide-sm { display: none !important; }
+
+  .app-header__bar { padding: 11px 14px; gap: 10px; }
+  .app-content { padding: 18px 14px 48px; }
+  .app-main { padding: 18px 14px 96px; }
+
+  .btn { padding: 10px 14px; font-size: 14px; }
+  .btn--lg { font-size: 16px; padding: 14px 18px; }
+  .chip { font-size: 12px; padding: 7px 11px; }
+
+  /* the atlas window fills the phone, with a slim breathing margin */
+  .atlas-overlay { padding: 8px; }
+  .atlas-modal { width: 100%; height: 100%; }
+  .atlas-fab { bottom: 16px; right: 16px; padding: 11px 14px; }
 }
 
 /* reduced motion */
