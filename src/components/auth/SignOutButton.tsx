@@ -12,10 +12,7 @@ export function SignOutButton() {
   }
 
   return (
-    <button
-      onClick={onClick}
-      className="text-sm text-neutral-500 underline-offset-4 hover:underline"
-    >
+    <button className="btn btn--ghost" onClick={onClick}>
       Sign out
     </button>
   );
