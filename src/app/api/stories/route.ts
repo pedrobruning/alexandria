@@ -4,10 +4,18 @@ import { generatePassage } from "@/domains/generation/application/generatePassag
 import { createStory } from "@/domains/stories/application/createStory";
 import { supabaseStoryWriter } from "@/domains/stories/infrastructure/supabaseStoryWriter";
 import { DEFAULT_LANGUAGE, isLanguageCode } from "@/domains/generation/domain/language";
+import { resolveGenerationAuth } from "@/domains/generation/domain/credentials";
 
 export const runtime = "nodejs";
 
-type Body = { premise?: unknown; genre?: unknown; tone?: unknown; language?: unknown };
+type Body = {
+  premise?: unknown;
+  genre?: unknown;
+  tone?: unknown;
+  language?: unknown;
+  apiKey?: unknown;
+  model?: unknown;
+};
 
 function asTrimmed(value: unknown): string | null {
   return typeof value === "string" && value.trim() ? value.trim() : null;
@@ -31,11 +39,18 @@ export async function POST(request: Request) {
   const tone = asTrimmed(body.tone);
   const language = isLanguageCode(body.language) ? body.language : DEFAULT_LANGUAGE;
 
-  const apiKey = process.env.OPENROUTER_API_KEY;
-  const model = process.env.OPENROUTER_DEFAULT_MODEL;
-  if (!apiKey || !model) {
+  const serverKey = process.env.OPENROUTER_API_KEY;
+  const defaultModel = process.env.OPENROUTER_DEFAULT_MODEL;
+  if (!serverKey || !defaultModel) {
     return NextResponse.json({ error: "generation is not configured" }, { status: 503 });
   }
+
+  const { apiKey, model, usedServerKey } = resolveGenerationAuth({
+    byokKey: asTrimmed(body.apiKey),
+    byokModel: asTrimmed(body.model),
+    serverKey,
+    defaultModel,
+  });
 
   const story = { premise, genre, tone, language };
 
@@ -44,7 +59,7 @@ export async function POST(request: Request) {
       story,
       userId: user.id,
       model,
-      usedServerKey: true,
+      usedServerKey,
       generate: () => generatePassage({ story, apiKey, model }),
       writer: supabaseStoryWriter(supabase),
     });

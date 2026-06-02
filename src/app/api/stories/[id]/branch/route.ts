@@ -6,11 +6,12 @@ import { supabaseBranchWriter } from "@/domains/stories/infrastructure/supabaseS
 import { getBranchContext } from "@/domains/stories/infrastructure/supabaseStoryReader";
 import { countServerKeyNodes } from "@/domains/quota/infrastructure/supabaseQuotaCounter";
 import { checkQuota } from "@/domains/quota/domain/quota";
+import { resolveGenerationAuth } from "@/domains/generation/domain/credentials";
 import { pathFromRoot, type TreeNode } from "@/lib/tree/path";
 
 export const runtime = "nodejs";
 
-type Body = { parentId?: unknown; steer?: unknown };
+type Body = { parentId?: unknown; steer?: unknown; apiKey?: unknown; model?: unknown };
 
 function asTrimmed(value: unknown): string | null {
   return typeof value === "string" && value.trim() ? value.trim() : null;
@@ -33,21 +34,29 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
   }
   const steer = asTrimmed(body.steer);
 
-  const apiKey = process.env.OPENROUTER_API_KEY;
-  const model = process.env.OPENROUTER_DEFAULT_MODEL;
-  if (!apiKey || !model) {
+  const serverKey = process.env.OPENROUTER_API_KEY;
+  const defaultModel = process.env.OPENROUTER_DEFAULT_MODEL;
+  if (!serverKey || !defaultModel) {
     return NextResponse.json({ error: "generation is not configured" }, { status: 503 });
   }
 
-  // BYOK arrives in T12; for now every branch spends the shared server key.
-  const usedServerKey = true;
-  const used = await countServerKeyNodes(supabase, user.id);
-  const decision = checkQuota({ used, usedServerKey });
-  if (!decision.allowed) {
-    return NextResponse.json(
-      { error: "quota_exceeded", limit: decision.limit },
-      { status: 429 },
-    );
+  const { apiKey, model, usedServerKey } = resolveGenerationAuth({
+    byokKey: asTrimmed(body.apiKey),
+    byokModel: asTrimmed(body.model),
+    serverKey,
+    defaultModel,
+  });
+
+  // BYOK bypasses the quota; only shared-key generations are counted/gated.
+  if (usedServerKey) {
+    const used = await countServerKeyNodes(supabase, user.id);
+    const decision = checkQuota({ used, usedServerKey });
+    if (!decision.allowed) {
+      return NextResponse.json(
+        { error: "quota_exceeded", limit: decision.limit },
+        { status: 429 },
+      );
+    }
   }
 
   const context = await getBranchContext(supabase, storyId);
