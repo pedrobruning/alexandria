@@ -1,7 +1,7 @@
 # Implementation Plan: Alexandria — Branches (Phase 1 MVP)
 
 > Derived from `SPEC.md`.
-> **Status:** In progress — Phase 2 (Core Loop). Foundation (T1–T4) + Auth (T5) complete; Create (T6) landed, pending end-to-end browser verify; Reader (T7) landed. Next: T8 (branch + steer + quota). Added scope: pixel design system, per-story generation language, and UI i18n.
+> **Status:** In progress — Phase 2 (Core Loop) code-complete. Foundation (T1–T4) + Auth (T5) done; Create (T6), Reader (T7), Branch+steer+quota (T8) all landed — pending end-to-end browser verify of the full core loop. Next: Phase 3 (T9 Atlas render). Added scope: pixel design system, per-story generation language, and UI i18n.
 > **Last updated:** 2026-06-02
 
 ## Progress Log
@@ -19,6 +19,10 @@
 | 2026-06-02 | `b4299f0` | UI translations en + pt-BR via next-intl (Added scope C) |
 | 2026-06-02 | `177704e` | Tree path/children derivation + tests (T7) |
 | 2026-06-02 | `15d4ce7` | Reader view + `/stories/[id]` route (T7) |
+| 2026-06-02 | `bc07834` | CLAUDE.md — project context + conventions |
+| 2026-06-02 | `ee89f4c` | Quota domain logic + tests (T8) |
+| 2026-06-02 | `4fcc329` | createBranch use case + tests (T8) |
+| 2026-06-02 | `0989262` | Branch route + quota infra + steer UI (T8) |
 
 > **DDD note:** the generation layer lives under `src/domains/generation/{domain,application,infrastructure}` (and a new `src/domains/stories/…`), not the flat `src/lib/generation/*` the original task cards named. Domains-by-feature, ports/adapters.
 
@@ -194,17 +198,20 @@ from root, and the list of existing child branches.
 `src/app/(app)/stories/[id]/page.tsx`, `getStory` reader + `StoryNode`/`StoryDetail` types
 **Scope:** M
 
-## Task 8: Branch generation with steering + quota
+## Task 8: Branch generation with steering + quota ✅ (pending browser verify)
 **Description:** Steer free-text box + "Fork from here"; `POST /api/stories/[id]/branch`
 checks quota server-side, assembles ancestor chain, generates, inserts a child node.
 **Acceptance criteria:**
-- [ ] Forking (with or without steer) inserts a child; multiple branches coexist off one node
-- [ ] Server-key generation past quota is rejected with a clear message (BYOK exempt)
+- [x] Forking (with or without steer) inserts a child; multiple branches coexist off one node
+- [x] Server-key generation past quota is rejected with a clear message (429; BYOK exempt — exemption stubbed until T12)
 **Verification:**
-- [ ] Unit: quota check logic
-- [ ] Manual: create two steered branches off one node; both appear
+- [x] Unit: quota check logic — `tests/quota/quota.test.ts`; createBranch use case — `tests/stories/createBranch.test.ts`
+- [ ] Manual: create two steered branches off one node; both appear (needs live OpenRouter + DB)
 **Dependencies:** T7
-**Files:** `src/app/api/stories/[id]/branch/route.ts`, steer component, `src/lib/quota.ts`, `tests/quota.test.ts`
+**Files:** `src/app/api/stories/[id]/branch/route.ts`, `src/components/reader/Reader.tsx` (steer box),
+`src/domains/quota/{domain/quota.ts,infrastructure/supabaseQuotaCounter.ts}`, `tests/quota/quota.test.ts`,
+`src/domains/stories/application/createBranch.ts`, `supabaseBranchWriter` + `getBranchContext`
+**DDD note:** quota lives under `src/domains/quota/*` (not the flat `src/lib/quota.ts` named above).
 **Scope:** M
 
 ### Added Scope (not in the original task cards)
