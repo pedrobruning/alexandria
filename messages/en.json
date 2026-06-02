@@ -28,6 +28,12 @@
     "forks": "{count, plural, one {# fork} other {# forks}}",
     "updated": "updated {when}"
   },
+  "reader": {
+    "backToArchive": "Archive",
+    "breadcrumb": "Path from the opening passage",
+    "branchesTitle": "Branches from here",
+    "noBranches": "No forks yet. This passage is where the trail ends."
+  },
   "create": {
     "back": "Back to the archive",
     "title": "Seal a new scroll",

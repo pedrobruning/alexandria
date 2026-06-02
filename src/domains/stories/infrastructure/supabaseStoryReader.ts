@@ -1,6 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/lib/db.types";
-import type { StorySummary } from "../domain/types";
+import type { StoryDetail, StorySummary } from "../domain/types";
 
 // Lists the signed-in user's stories for the Archive, newest first. RLS scopes
 // both queries to the owner, so node counts only ever cover their own stories.
@@ -27,4 +27,39 @@ export async function listStories(supabase: SupabaseClient<Database>): Promise<S
     createdAt: s.created_at,
     passageCount: counts.get(s.id) ?? 0,
   }));
+}
+
+// Loads one story with its full node tree for the reader. Returns null when the
+// story doesn't exist or isn't the caller's (RLS scopes both queries to owner).
+export async function getStory(
+  supabase: SupabaseClient<Database>,
+  storyId: string,
+): Promise<StoryDetail | null> {
+  const { data: story, error } = await supabase
+    .from("stories")
+    .select("id, title, root_node_id")
+    .eq("id", storyId)
+    .maybeSingle();
+  if (error) throw new Error(`getStory: ${error.message}`);
+  if (!story) return null;
+
+  const { data: nodes, error: nodesError } = await supabase
+    .from("nodes")
+    .select("id, parent_id, title, content, summary")
+    .eq("story_id", storyId)
+    .order("created_at", { ascending: true });
+  if (nodesError) throw new Error(`getStory: ${nodesError.message}`);
+
+  return {
+    id: story.id,
+    title: story.title,
+    rootNodeId: story.root_node_id,
+    nodes: (nodes ?? []).map((n) => ({
+      id: n.id,
+      parentId: n.parent_id,
+      title: n.title,
+      content: n.content,
+      summary: n.summary,
+    })),
+  };
 }

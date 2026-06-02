@@ -28,6 +28,12 @@
     "forks": "{count, plural, one {# bifurcação} other {# bifurcações}}",
     "updated": "atualizado {when}"
   },
+  "reader": {
+    "backToArchive": "Arquivo",
+    "breadcrumb": "Caminho desde a passagem de abertura",
+    "branchesTitle": "Bifurcações a partir daqui",
+    "noBranches": "Nenhuma bifurcação ainda. Esta passagem é onde a trilha termina."
+  },
   "create": {
     "back": "Voltar ao arquivo",
     "title": "Sele um novo pergaminho",

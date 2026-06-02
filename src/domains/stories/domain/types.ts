@@ -7,3 +7,20 @@ export type StorySummary = {
   createdAt: string;
   passageCount: number;
 };
+
+// A single passage in the reader. parentId === null marks the root.
+export type StoryNode = {
+  id: string;
+  parentId: string | null;
+  title: string;
+  content: string;
+  summary: string;
+};
+
+// A story plus its full node tree, for the reader view.
+export type StoryDetail = {
+  id: string;
+  title: string;
+  rootNodeId: string | null;
+  nodes: StoryNode[];
+};
