@@ -55,16 +55,51 @@
       "Uma nova passagem toma forma…"
     ]
   },
+  "settings": {
+    "open": "Configurações",
+    "title": "Sua chave do OpenRouter",
+    "close": "Fechar configurações",
+    "intro": "Use sua própria chave do OpenRouter para gerar com sua conta e o modelo que escolher. Com uma chave definida, suas bifurcações ignoram o limite compartilhado.",
+    "keyLabel": "Chave de API do OpenRouter",
+    "keyPlaceholder": "sk-or-…",
+    "modelLabel": "Modelo",
+    "privacy": "Guardada apenas neste navegador. Enviada direto ao OpenRouter a cada passagem — nunca salva em nossos servidores nem registrada em log.",
+    "save": "Salvar",
+    "saved": "Salvo.",
+    "clear": "Limpar chave",
+    "models": {
+      "default": "Padrão do app"
+    }
+  },
   "create": {
     "back": "Voltar ao arquivo",
-    "title": "Sele um novo pergaminho",
-    "intro": "Dê à escavação sua primeira faísca. A Alexandria desenrola a passagem de abertura — cada página seguinte é uma bifurcação.",
+    "title": "Comece um novo pergaminho",
+    "intro": "Dê à sua história a primeira faísca. A Alexandria desenrola a passagem de abertura — cada página seguinte é uma bifurcação.",
     "sparkLabel": "A faísca",
     "sparkPlaceholder": "Um faroleiro encontra na névoa do mar uma porta que não estava ali ontem…",
-    "sparkError": "A escavação precisa de uma faísca. Escreva uma premissa para começar.",
+    "sparkError": "Sua história precisa de uma faísca. Escreva uma premissa para começar.",
     "genreLabel": "Gênero",
     "toneLabel": "Tom",
     "languageLabel": "Idioma",
+    "genres": {
+      "fantasy": "Fantasia",
+      "sciFi": "Ficção científica",
+      "mystery": "Mistério",
+      "horror": "Terror",
+      "adventure": "Aventura",
+      "fable": "Fábula"
+    },
+    "tones": {
+      "lyrical": "Lírico",
+      "dark": "Sombrio",
+      "whimsical": "Lúdico",
+      "tense": "Tenso",
+      "epic": "Épico"
+    },
+    "languages": {
+      "en": "Inglês",
+      "pt-BR": "Português (Brasil)"
+    },
     "generating": "abrindo o primeiro pergaminho…",
     "submit": "Abrir a primeira página",
     "failed": "O pergaminho não quis abrir. Tente novamente."

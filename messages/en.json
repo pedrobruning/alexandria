@@ -55,16 +55,51 @@
       "A fresh passage takes shape…"
     ]
   },
+  "settings": {
+    "open": "Settings",
+    "title": "Your OpenRouter key",
+    "close": "Close settings",
+    "intro": "Bring your own OpenRouter key to generate with your own account and chosen model. With a key set, your branches skip the shared limit.",
+    "keyLabel": "OpenRouter API key",
+    "keyPlaceholder": "sk-or-…",
+    "modelLabel": "Model",
+    "privacy": "Stored only in this browser. Sent straight to OpenRouter for each passage — never saved on our servers or written to a log.",
+    "save": "Save",
+    "saved": "Saved.",
+    "clear": "Clear key",
+    "models": {
+      "default": "App default"
+    }
+  },
   "create": {
     "back": "Back to the archive",
-    "title": "Seal a new scroll",
-    "intro": "Give the dig its first spark. Alexandria unrolls the opening passage — every page after is a fork.",
+    "title": "Begin a new scroll",
+    "intro": "Give your story its first spark. Alexandria unrolls the opening passage — every page after is a fork.",
     "sparkLabel": "The spark",
     "sparkPlaceholder": "A lighthouse keeper finds a door in the sea-fog that wasn't there yesterday…",
-    "sparkError": "The dig needs a spark. Write a premise to begin.",
+    "sparkError": "Your story needs a spark. Write a premise to begin.",
     "genreLabel": "Genre",
     "toneLabel": "Tone",
     "languageLabel": "Language",
+    "genres": {
+      "fantasy": "Fantasy",
+      "sciFi": "Sci-Fi",
+      "mystery": "Mystery",
+      "horror": "Horror",
+      "adventure": "Adventure",
+      "fable": "Fable"
+    },
+    "tones": {
+      "lyrical": "Lyrical",
+      "dark": "Dark",
+      "whimsical": "Whimsical",
+      "tense": "Tense",
+      "epic": "Epic"
+    },
+    "languages": {
+      "en": "English",
+      "pt-BR": "Portuguese (Brazil)"
+    },
     "generating": "unsealing the first scroll…",
     "submit": "Open the first page",
     "failed": "The scroll would not open. Try again."

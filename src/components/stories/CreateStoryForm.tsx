@@ -7,13 +7,14 @@ import Link from "next/link";
 import { PixelIcon } from "@/components/pixel/PixelIcon";
 import { PixSpinner } from "@/components/pixel/PixSpinner";
 import { LANGUAGES, DEFAULT_LANGUAGE } from "@/domains/generation/domain/language";
-
-const GENRES = ["Fantasy", "Sci-Fi", "Mystery", "Horror", "Adventure", "Fable"];
-const TONES = ["Lyrical", "Dark", "Whimsical", "Tense", "Epic"];
+import { GENRE_OPTIONS, TONE_OPTIONS } from "@/domains/stories/domain/options";
+import { useSettings } from "@/store/settings";
 
 export function CreateStoryForm() {
   const t = useTranslations("create");
   const router = useRouter();
+  const apiKey = useSettings((s) => s.apiKey);
+  const model = useSettings((s) => s.model);
   const [premise, setPremise] = useState("");
   const [genre, setGenre] = useState("Fantasy");
   const [tone, setTone] = useState("Lyrical");
@@ -32,7 +33,14 @@ export function CreateStoryForm() {
       const res = await fetch("/api/stories", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ premise: premise.trim(), genre, tone, language }),
+        body: JSON.stringify({
+          premise: premise.trim(),
+          genre,
+          tone,
+          language,
+          apiKey: apiKey || null,
+          model: model || null,
+        }),
       });
       const data = (await res.json().catch(() => ({}))) as { storyId?: string; error?: string };
       if (!res.ok || !data.storyId) {
@@ -47,18 +55,14 @@ export function CreateStoryForm() {
 
   return (
     <div className="screen bg-dune scroll-y vignette">
-      <div style={{ position: "absolute", inset: 0, background: "rgba(28,21,14,.6)" }} />
-      <div style={{ position: "relative", maxWidth: 660, margin: "0 auto", padding: "28px 20px 60px" }}>
-        <Link className="btn btn--ghost" href="/stories" style={{ marginBottom: 16 }}>
+      <div className="fixed inset-0 bg-[rgba(28,21,14,.6)]" />
+      <div className="relative mx-auto max-w-[660px] px-4 pt-7 pb-14 sm:px-5">
+        <Link className="btn btn--ghost mb-4" href="/stories">
           <PixelIcon name="back" size={16} color="var(--sand-light)" /> {t("back")}
         </Link>
-        <div className="frame frame--papyrus" style={{ padding: "30px 30px 34px" }}>
-          <h1 className="h1" style={{ color: "var(--ink)", fontSize: 30, marginBottom: 6 }}>
-            {t("title")}
-          </h1>
-          <p style={{ fontFamily: "var(--font-body)", fontSize: 16, color: "var(--muted)", marginBottom: 24 }}>
-            {t("intro")}
-          </p>
+        <div className="frame frame--papyrus px-6 pt-8 pb-7 sm:p-[30px_30px_34px]">
+          <h1 className="h1 mb-1.5 text-[28px] text-ink sm:text-[30px]">{t("title")}</h1>
+          <p className="mb-6 font-body text-base text-muted">{t("intro")}</p>
 
           <label className="label label--ink">{t("sparkLabel")}</label>
           <textarea
@@ -74,52 +78,52 @@ export function CreateStoryForm() {
           />
           {err && <p className="hint hint--err">{err}</p>}
 
-          <div className="fret" style={{ margin: "24px 0", opacity: 0.4 }} />
+          <div className="fret my-6 opacity-40" />
 
           <label className="label label--ink">{t("genreLabel")}</label>
-          <div className="row gap-2 wrap" style={{ marginBottom: 22 }}>
-            {GENRES.map((g) => (
+          <div className="row gap-2 wrap mb-[22px]">
+            {GENRE_OPTIONS.map((g) => (
               <button
-                key={g}
+                key={g.value}
                 type="button"
-                className={"chip chip--gold" + (genre === g ? " chip--on" : "")}
-                onClick={() => setGenre(g)}
+                className={"chip chip--gold chip--ink" + (genre === g.value ? " chip--on" : "")}
+                onClick={() => setGenre(g.value)}
               >
-                {g}
+                {t(`genres.${g.key}`)}
               </button>
             ))}
           </div>
 
           <label className="label label--ink">{t("toneLabel")}</label>
-          <div className="row gap-2 wrap" style={{ marginBottom: 22 }}>
-            {TONES.map((t) => (
+          <div className="row gap-2 wrap mb-[22px]">
+            {TONE_OPTIONS.map((tn) => (
               <button
-                key={t}
+                key={tn.value}
                 type="button"
-                className={"chip" + (tone === t ? " chip--on" : "")}
-                onClick={() => setTone(t)}
+                className={"chip chip--ink" + (tone === tn.value ? " chip--on" : "")}
+                onClick={() => setTone(tn.value)}
               >
-                {t}
+                {t(`tones.${tn.key}`)}
               </button>
             ))}
           </div>
 
           <label className="label label--ink">{t("languageLabel")}</label>
-          <div className="row gap-2 wrap" style={{ marginBottom: 28 }}>
+          <div className="row gap-2 wrap mb-7">
             {LANGUAGES.map((l) => (
               <button
                 key={l.code}
                 type="button"
-                className={"chip" + (language === l.code ? " chip--on" : "")}
+                className={"chip chip--ink" + (language === l.code ? " chip--on" : "")}
                 onClick={() => setLanguage(l.code)}
               >
-                {l.label}
+                {t(`languages.${l.code}`)}
               </button>
             ))}
           </div>
 
           {generating ? (
-            <div className="frame frame--basalt" style={{ padding: "18px", display: "grid", placeItems: "center" }}>
+            <div className="frame frame--basalt grid place-items-center p-[18px]">
               <PixSpinner label={t("generating")} />
             </div>
           ) : (

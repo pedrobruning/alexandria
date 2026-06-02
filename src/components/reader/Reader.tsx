@@ -8,6 +8,7 @@ import { PixSpinner } from "@/components/pixel/PixSpinner";
 import { TimeVeil } from "@/components/reader/TimeVeil";
 import { GeneratingStars } from "@/components/reader/GeneratingStars";
 import { childrenOf, pathFromRoot } from "@/lib/tree/path";
+import { useSettings } from "@/store/settings";
 import type { StoryNode } from "@/domains/stories/domain/types";
 
 export function Reader({
@@ -23,6 +24,8 @@ export function Reader({
 }) {
   const t = useTranslations("reader");
   const router = useRouter();
+  const apiKey = useSettings((s) => s.apiKey);
+  const model = useSettings((s) => s.model);
   const rootRef = useRef<HTMLDivElement>(null);
   const [steer, setSteer] = useState("");
   const [forking, setForking] = useState(false);
@@ -69,7 +72,12 @@ export function Reader({
       const res = await fetch(`/api/stories/${storyId}/branch`, {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ parentId: selectedId, steer: steer.trim() || null }),
+        body: JSON.stringify({
+          parentId: selectedId,
+          steer: steer.trim() || null,
+          apiKey: apiKey || null,
+          model: model || null,
+        }),
       });
       const data = (await res.json().catch(() => ({}))) as { nodeId?: string; error?: string };
       if (res.status === 429) throw new Error(t("quotaExceeded"));

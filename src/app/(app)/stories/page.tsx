@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { listStories } from "@/domains/stories/infrastructure/supabaseStoryReader";
 import { SignOutButton } from "@/components/auth/SignOutButton";
 import { LocaleSwitcher } from "@/components/i18n/LocaleSwitcher";
+import { SettingsButton } from "@/components/settings/Byok";
 import { Wordmark } from "@/components/pixel/Wordmark";
 import { PixelIcon } from "@/components/pixel/PixelIcon";
 import { StoryCard } from "@/components/stories/StoryCard";
@@ -36,11 +37,8 @@ export default async function StoriesPage() {
           backdropFilter: "blur(2px)",
         }}
       >
-        <div
-          className="row center between wrap gap-3"
-          style={{ maxWidth: 1120, margin: "0 auto", padding: "16px 28px" }}
-        >
-          <div className="row center gap-4">
+        <div className="app-header__bar row center between wrap gap-3">
+          <div className="row center wrap gap-3">
             <Wordmark size={26} light />
             <div
               className="frame frame--basalt"
@@ -58,11 +56,12 @@ export default async function StoriesPage() {
               </span>
             </div>
           </div>
-          <div className="row center gap-3">
-            <span className="caption">
+          <div className="row center wrap gap-3">
+            <span className="caption hide-sm">
               {t("archivist")} · <span style={{ color: "var(--lapis-bright)" }}>{handle}</span>
             </span>
             <LocaleSwitcher />
+            <SettingsButton />
             <Link className="btn" href="/stories/new">
               <PixelIcon name="plus" size={16} color="#2B2118" /> {t("newStory")}
             </Link>
@@ -71,7 +70,7 @@ export default async function StoriesPage() {
         </div>
       </header>
 
-      <div style={{ maxWidth: 1120, margin: "0 auto", padding: "28px" }}>
+      <div className="app-content">
         {stories.length === 0 ? (
           <div className="center-col" style={{ textAlign: "center", padding: "8vh 20px" }}>
             <h2 className="h2" style={{ color: "var(--sand-light)", marginBottom: 12 }}>
@@ -104,7 +103,7 @@ export default async function StoriesPage() {
             <div
               style={{
                 display: "grid",
-                gridTemplateColumns: "repeat(auto-fill,minmax(300px,1fr))",
+                gridTemplateColumns: "repeat(auto-fill,minmax(min(100%,280px),1fr))",
                 gap: 22,
               }}
             >
