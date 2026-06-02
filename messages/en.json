@@ -28,6 +28,9 @@
     "forks": "{count, plural, one {# fork} other {# forks}}",
     "updated": "updated {when}"
   },
+  "atlas": {
+    "label": "Story atlas — the tree of timelines"
+  },
   "reader": {
     "backToArchive": "Archive",
     "breadcrumb": "Path from the opening passage",

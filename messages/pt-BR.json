@@ -28,6 +28,9 @@
     "forks": "{count, plural, one {# bifurcação} other {# bifurcações}}",
     "updated": "atualizado {when}"
   },
+  "atlas": {
+    "label": "Atlas da história — a árvore de linhas do tempo"
+  },
   "reader": {
     "backToArchive": "Arquivo",
     "breadcrumb": "Caminho desde a passagem de abertura",

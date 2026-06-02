@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { PixelIcon } from "@/components/pixel/PixelIcon";
 import { PixSpinner } from "@/components/pixel/PixSpinner";
+import { Atlas } from "@/components/atlas/Atlas";
 import { childrenOf, pathFromRoot } from "@/lib/tree/path";
 import type { StoryNode } from "@/domains/stories/domain/types";
 
@@ -57,6 +58,10 @@ export function Reader({
 
   return (
     <div style={{ maxWidth: 760, margin: "0 auto" }}>
+      <div style={{ marginBottom: 22 }}>
+        <Atlas nodes={nodes} selectedId={selectedId} />
+      </div>
+
       <nav className="row center wrap gap-2" aria-label={t("breadcrumb")} style={{ marginBottom: 22 }}>
         {trail.map((node, i) => {
           const isCurrent = node.id === selectedId;
