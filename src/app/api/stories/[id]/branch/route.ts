@@ -63,6 +63,9 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
   if (!context) {
     return NextResponse.json({ error: "story not found" }, { status: 404 });
   }
+  if (context.isDemo) {
+    return NextResponse.json({ error: "demo_readonly" }, { status: 403 });
+  }
 
   const byId = new Map(context.nodes.map((n) => [n.id, n]));
   if (!byId.has(parentId)) {

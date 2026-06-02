@@ -4,8 +4,10 @@ import type { StoryContext } from "@/domains/generation/domain/types";
 import type { StoryDetail, StorySummary } from "../domain/types";
 
 // Story context plus the minimal node tree needed to branch from a parent.
+// `isDemo` lets the branch route reject writes to the read-only demo story.
 export type BranchContext = {
   story: StoryContext;
+  isDemo: boolean;
   nodes: { id: string; parentId: string | null; summary: string; content: string }[];
 };
 
@@ -80,7 +82,7 @@ export async function getBranchContext(
 ): Promise<BranchContext | null> {
   const { data: story, error } = await supabase
     .from("stories")
-    .select("premise, genre, tone, language")
+    .select("premise, genre, tone, language, is_demo")
     .eq("id", storyId)
     .maybeSingle();
   if (error) throw new Error(`getBranchContext: ${error.message}`);
@@ -99,6 +101,7 @@ export async function getBranchContext(
       tone: story.tone,
       language: story.language,
     },
+    isDemo: story.is_demo,
     nodes: (nodes ?? []).map((n) => ({
       id: n.id,
       parentId: n.parent_id,

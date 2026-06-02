@@ -206,10 +206,14 @@ surface; the overlay's pixel positioning is verified in the browser at ~390px, n
 
 - [ ] **O3 · Seed + mark + guard (TDD)** — use cases and the demo write-block.
   - Acceptance: `seedDemoStory(writer, { userId, locale, replace? })` persists a story
-    (`is_demo=true`) + all demo nodes + sets `root_node_id`, makes **no** generation call, and
-    rolls back nothing-persisted on a write throw; `{ replace: true }` re-seeds (delete demo
-    nodes, reinsert) for the language switch; `markOnboarded` sets `onboarded_at` idempotently;
-    `POST /api/stories/[id]/branch` returns a clear error if the target story `is_demo`.
+    (`is_demo=true`) + all demo nodes (parent→child ids mapped from the canned tree) + sets
+    `root_node_id`, and makes **no** generation call (no `generate` dependency exists on the use
+    case at all); `{ replace: true }` first deletes the user's existing demo **story** (cascade
+    drops its nodes — `nodes` has no DELETE policy by design, so re-seed happens at the story
+    level) then reinserts, which is how the language switch works. Seeding is not transactional;
+    the ensure/re-seed path self-heals a rare partial write. `markOnboarded` records the *first*
+    completion timestamp and won't overwrite it on a re-call. `POST /api/stories/[id]/branch`
+    returns 403 `demo_readonly` if the target story `is_demo`.
   - Verify: `tests/onboarding/{seedDemoStory,markOnboarded}.test.ts` green (injected fakes);
     extend `tests/cache/frozen.test.tsx` so the seed path can't import generation at runtime.
   - Files: `src/domains/stories/application/seedDemoStory.ts`,

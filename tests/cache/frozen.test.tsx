@@ -27,6 +27,8 @@ describe("frozen cache — static read-path guard", () => {
     "src/domains/stories/infrastructure/supabaseStoryReader.ts",
     "src/app/(app)/stories/[id]/page.tsx",
     "src/components/reader/StoryWorkspace.tsx",
+    // The demo story is seeded from canned content — never the model.
+    "src/domains/stories/application/seedDemoStory.ts",
   ];
 
   it.each(readPathFiles)("%s never invokes the generation runtime", (file) => {
