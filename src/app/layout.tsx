@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Press_Start_2P, Pixelify_Sans, Newsreader, DM_Mono } from "next/font/google";
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale } from "next-intl/server";
 import "./globals.css";
 
 const pressStart = Press_Start_2P({
@@ -31,17 +33,20 @@ export const metadata: Metadata = {
   description: "Every story is a map of the stories it could have been.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = await getLocale();
   return (
     <html
-      lang="en"
+      lang={locale}
       className={`${pressStart.variable} ${pixelify.variable} ${newsreader.variable} ${dmMono.variable} h-full`}
     >
-      <body>{children}</body>
+      <body>
+        <NextIntlClientProvider>{children}</NextIntlClientProvider>
+      </body>
     </html>
   );
 }

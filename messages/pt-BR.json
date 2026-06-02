@@ -1,0 +1,45 @@
+{
+  "common": {
+    "tagline": "Toda história é um mapa das histórias que ela poderia ter sido.",
+    "signOut": "Sair",
+    "languageName": "Português"
+  },
+  "login": {
+    "intro": "Assine o registro, arquivista. Um elo selado será enviado ao seu nome.",
+    "sentTitle": "Um link de acesso está a caminho de <em>{email}</em>. Siga-o para entrar no arquivo.",
+    "emailLabel": "Seu e-mail",
+    "emailPlaceholder": "arquivista@exemplo.com",
+    "sending": "selando seu elo…",
+    "submit": "Enviar o elo selado",
+    "caption": "Sem senha. O deserto guarda seus segredos."
+  },
+  "archive": {
+    "title": "O Arquivo",
+    "archivist": "arquivista",
+    "newStory": "Nova história",
+    "count": "{count, plural, one {# escavação} other {# escavações}}",
+    "sorted": "ordenado · mais recentes",
+    "emptyTitle": "O arquivo está vazio.",
+    "emptyBody": "Toda escavação começa com um único pergaminho selado. Desenterre sua primeira história e veja suas linhas do tempo se ramificarem.",
+    "emptyCta": "Desenterre sua primeira história"
+  },
+  "storyCard": {
+    "passages": "{count, plural, one {# passagem} other {# passagens}}",
+    "forks": "{count, plural, one {# bifurcação} other {# bifurcações}}",
+    "updated": "atualizado {when}"
+  },
+  "create": {
+    "back": "Voltar ao arquivo",
+    "title": "Sele um novo pergaminho",
+    "intro": "Dê à escavação sua primeira faísca. A Alexandria desenrola a passagem de abertura — cada página seguinte é uma bifurcação.",
+    "sparkLabel": "A faísca",
+    "sparkPlaceholder": "Um faroleiro encontra na névoa do mar uma porta que não estava ali ontem…",
+    "sparkError": "A escavação precisa de uma faísca. Escreva uma premissa para começar.",
+    "genreLabel": "Gênero",
+    "toneLabel": "Tom",
+    "languageLabel": "Idioma",
+    "generating": "abrindo o primeiro pergaminho…",
+    "submit": "Abrir a primeira página",
+    "failed": "O pergaminho não quis abrir. Tente novamente."
+  }
+}

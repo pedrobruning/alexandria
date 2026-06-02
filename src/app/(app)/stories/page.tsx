@@ -1,12 +1,15 @@
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
 import { listStories } from "@/domains/stories/infrastructure/supabaseStoryReader";
 import { SignOutButton } from "@/components/auth/SignOutButton";
+import { LocaleSwitcher } from "@/components/i18n/LocaleSwitcher";
 import { Wordmark } from "@/components/pixel/Wordmark";
 import { PixelIcon } from "@/components/pixel/PixelIcon";
 import { StoryCard } from "@/components/stories/StoryCard";
 
 export default async function StoriesPage() {
+  const t = await getTranslations("archive");
   const supabase = await createClient();
   const {
     data: { user },
@@ -18,7 +21,7 @@ export default async function StoriesPage() {
     .eq("id", user!.id)
     .single();
 
-  const handle = profile?.handle ?? user!.email?.split("@")[0] ?? "archivist";
+  const handle = profile?.handle ?? user!.email?.split("@")[0] ?? t("archivist");
   const stories = await listStories(supabase);
 
   return (
@@ -51,16 +54,17 @@ export default async function StoriesPage() {
                   color: "var(--sand-light)",
                 }}
               >
-                The Archive
+                {t("title")}
               </span>
             </div>
           </div>
           <div className="row center gap-3">
             <span className="caption">
-              archivist · <span style={{ color: "var(--lapis-bright)" }}>{handle}</span>
+              {t("archivist")} · <span style={{ color: "var(--lapis-bright)" }}>{handle}</span>
             </span>
+            <LocaleSwitcher />
             <Link className="btn" href="/stories/new">
-              <PixelIcon name="plus" size={16} color="#2B2118" /> New story
+              <PixelIcon name="plus" size={16} color="#2B2118" /> {t("newStory")}
             </Link>
             <SignOutButton />
           </div>
@@ -71,7 +75,7 @@ export default async function StoriesPage() {
         {stories.length === 0 ? (
           <div className="center-col" style={{ textAlign: "center", padding: "8vh 20px" }}>
             <h2 className="h2" style={{ color: "var(--sand-light)", marginBottom: 12 }}>
-              The archive is empty.
+              {t("emptyTitle")}
             </h2>
             <p
               style={{
@@ -83,20 +87,19 @@ export default async function StoriesPage() {
                 lineHeight: 1.6,
               }}
             >
-              Every dig begins with a single sealed scroll. Unearth your first tale and watch its
-              timelines branch.
+              {t("emptyBody")}
             </p>
             <Link className="btn btn--lg" href="/stories/new">
-              <PixelIcon name="plus" size={18} color="#2B2118" /> Unearth your first tale
+              <PixelIcon name="plus" size={18} color="#2B2118" /> {t("emptyCta")}
             </Link>
           </div>
         ) : (
           <>
             <div className="row center between" style={{ marginBottom: 18 }}>
               <span style={{ fontFamily: "var(--font-pixel)", fontSize: 18, color: "var(--sand-light)" }}>
-                {stories.length} {stories.length === 1 ? "excavation" : "excavations"}
+                {t("count", { count: stories.length })}
               </span>
-              <span className="caption">sorted · most recent</span>
+              <span className="caption">{t("sorted")}</span>
             </div>
             <div
               style={{

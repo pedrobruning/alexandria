@@ -1,0 +1,45 @@
+{
+  "common": {
+    "tagline": "Every story is a map of the stories it could have been.",
+    "signOut": "Sign out",
+    "languageName": "English"
+  },
+  "login": {
+    "intro": "Sign the register, archivist. A sealed link will be sent to your name.",
+    "sentTitle": "A sign-in link is on its way to <em>{email}</em>. Follow it to enter the archive.",
+    "emailLabel": "Your email",
+    "emailPlaceholder": "archivist@example.com",
+    "sending": "sealing your link…",
+    "submit": "Send the sealed link",
+    "caption": "No password. The desert keeps your secrets."
+  },
+  "archive": {
+    "title": "The Archive",
+    "archivist": "archivist",
+    "newStory": "New story",
+    "count": "{count, plural, one {# excavation} other {# excavations}}",
+    "sorted": "sorted · most recent",
+    "emptyTitle": "The archive is empty.",
+    "emptyBody": "Every dig begins with a single sealed scroll. Unearth your first tale and watch its timelines branch.",
+    "emptyCta": "Unearth your first tale"
+  },
+  "storyCard": {
+    "passages": "{count, plural, one {# passage} other {# passages}}",
+    "forks": "{count, plural, one {# fork} other {# forks}}",
+    "updated": "updated {when}"
+  },
+  "create": {
+    "back": "Back to the archive",
+    "title": "Seal a new scroll",
+    "intro": "Give the dig its first spark. Alexandria unrolls the opening passage — every page after is a fork.",
+    "sparkLabel": "The spark",
+    "sparkPlaceholder": "A lighthouse keeper finds a door in the sea-fog that wasn't there yesterday…",
+    "sparkError": "The dig needs a spark. Write a premise to begin.",
+    "genreLabel": "Genre",
+    "toneLabel": "Tone",
+    "languageLabel": "Language",
+    "generating": "unsealing the first scroll…",
+    "submit": "Open the first page",
+    "failed": "The scroll would not open. Try again."
+  }
+}

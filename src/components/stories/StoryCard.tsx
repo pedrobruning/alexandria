@@ -1,9 +1,11 @@
 import Link from "next/link";
+import { useFormatter, useTranslations } from "next-intl";
 import { PixelIcon } from "@/components/pixel/PixelIcon";
-import { relativeTime } from "@/lib/time";
 import type { StorySummary } from "@/domains/stories/domain/types";
 
 export function StoryCard({ story }: { story: StorySummary }) {
+  const t = useTranslations("storyCard");
+  const format = useFormatter();
   const forks = Math.max(0, story.passageCount - 1);
   return (
     <Link
@@ -27,7 +29,7 @@ export function StoryCard({ story }: { story: StorySummary }) {
               color="var(--muted)"
               style={{ display: "inline-block", verticalAlign: "-2px", marginRight: 4 }}
             />
-            {story.passageCount} passages
+            {t("passages", { count: story.passageCount })}
           </span>
           <span className="caption">
             <PixelIcon
@@ -36,10 +38,12 @@ export function StoryCard({ story }: { story: StorySummary }) {
               color="var(--muted)"
               style={{ display: "inline-block", verticalAlign: "-2px", marginRight: 4 }}
             />
-            {forks} forks
+            {t("forks", { count: forks })}
           </span>
         </div>
-        <span className="caption">updated {relativeTime(story.createdAt)}</span>
+        <span className="caption">
+          {t("updated", { when: format.relativeTime(new Date(story.createdAt)) })}
+        </span>
       </div>
     </Link>
   );

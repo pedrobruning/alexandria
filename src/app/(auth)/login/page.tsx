@@ -1,13 +1,16 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { createClient } from "@/lib/supabase/client";
 import { Wordmark } from "@/components/pixel/Wordmark";
 import { PixSpinner } from "@/components/pixel/PixSpinner";
+import { LocaleSwitcher } from "@/components/i18n/LocaleSwitcher";
 
 type Status = "idle" | "sending" | "sent" | "error";
 
 export default function LoginPage() {
+  const t = useTranslations("login");
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState<string | null>(null);
@@ -40,41 +43,47 @@ export default function LoginPage() {
         </div>
         <div className="fret" style={{ margin: "14px 0 22px" }} />
         <p style={{ fontFamily: "var(--font-body)", fontSize: 16, color: "var(--sand-light)", textAlign: "center", marginBottom: 24, lineHeight: 1.6 }}>
-          Sign the register, archivist. A sealed link will be sent to your name.
+          {t("intro")}
         </p>
 
         {status === "sent" ? (
           <div className="frame frame--flat" style={{ padding: "16px", background: "var(--basalt)" }}>
             <p style={{ fontFamily: "var(--font-body)", fontSize: 15, color: "var(--sand-light)", textAlign: "center", lineHeight: 1.6 }}>
-              A sign-in link is on its way to <strong style={{ color: "var(--gold)" }}>{email}</strong>. Follow it to enter the archive.
+              {t.rich("sentTitle", {
+                email,
+                em: (chunks) => <strong style={{ color: "var(--gold)" }}>{chunks}</strong>,
+              })}
             </p>
           </div>
         ) : (
           <form onSubmit={onSubmit} className="col gap-3">
-            <label className="label" htmlFor="email">Your email</label>
+            <label className="label" htmlFor="email">{t("emailLabel")}</label>
             <input
               id="email"
               type="email"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="archivist@example.com"
+              placeholder={t("emailPlaceholder")}
               className="field field--dark"
               autoFocus
             />
             {status === "sending" ? (
               <div className="frame frame--flat" style={{ padding: "14px", display: "grid", placeItems: "center", background: "var(--basalt)", marginTop: 8 }}>
-                <PixSpinner label="sealing your link…" />
+                <PixSpinner label={t("sending")} />
               </div>
             ) : (
               <button type="submit" className="btn btn--block btn--lg" style={{ marginTop: 8 }} disabled={!email.trim()}>
-                Send the sealed link
+                {t("submit")}
               </button>
             )}
             {error && <p className="hint hint--err">{error}</p>}
           </form>
         )}
-        <p className="caption" style={{ textAlign: "center", marginTop: 16 }}>No password. The desert keeps your secrets.</p>
+        <p className="caption" style={{ textAlign: "center", marginTop: 16 }}>{t("caption")}</p>
+        <div className="center-col" style={{ marginTop: 18 }}>
+          <LocaleSwitcher />
+        </div>
       </div>
     </div>
   );
