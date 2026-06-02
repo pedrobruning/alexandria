@@ -72,10 +72,12 @@ export type Database = {
           id: string;
           story_id: string;
           parent_id: string | null;
+          title: string;
           content: string;
           summary: string;
           steer: string | null;
           model_used: string;
+          used_server_key: boolean;
           created_by: string;
           created_at: string;
         };
@@ -83,10 +85,12 @@ export type Database = {
           id?: string;
           story_id: string;
           parent_id?: string | null;
+          title?: string;
           content: string;
           summary: string;
           steer?: string | null;
           model_used: string;
+          used_server_key?: boolean;
           created_by: string;
           created_at?: string;
         };
@@ -94,10 +98,12 @@ export type Database = {
           id?: string;
           story_id?: string;
           parent_id?: string | null;
+          title?: string;
           content?: string;
           summary?: string;
           steer?: string | null;
           model_used?: string;
+          used_server_key?: boolean;
           created_by?: string;
           created_at?: string;
         };

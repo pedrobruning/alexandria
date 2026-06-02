@@ -7,7 +7,8 @@ export const SYSTEM_PROMPT = [
   `Write vivid, self-contained prose passages of about ${TARGET_WORDS} words.`,
   "Stay consistent with the premise, genre, tone, and the story so far.",
   "Respond ONLY with a JSON object of the form:",
-  '{"content": "<the passage>", "summary": "<one sentence summarizing it>"}',
+  '{"title": "<a 2-4 word chapter title>", "content": "<the passage>", "summary": "<one sentence summarizing it>"}',
+  "The title should be short and evocative, like a pixel-game chapter heading.",
   "No markdown, no commentary outside the JSON.",
 ].join("\n");
 

@@ -7,6 +7,14 @@ function deriveSummary(content: string): string {
   return base.length > 140 ? `${base.slice(0, 137).trimEnd()}...` : base.trim();
 }
 
+// Derive a short chapter title from a summary when the model didn't supply one:
+// the first few words, title-cased lightly by leaving the model's casing intact.
+function deriveTitle(summary: string): string {
+  const words = summary.replace(/["']/g, "").trim().split(/\s+/).slice(0, 4).join(" ");
+  const trimmed = words.replace(/[.,;:!?]+$/, "");
+  return trimmed || "Untitled Passage";
+}
+
 function tryParseJsonObject(text: string): Record<string, unknown> | null {
   const start = text.indexOf("{");
   const end = text.lastIndexOf("}");
@@ -35,8 +43,13 @@ export function parseGeneration(raw: string): GeneratedPassage {
       typeof obj.summary === "string" && obj.summary.trim()
         ? obj.summary.trim()
         : deriveSummary(content);
-    return { content, summary };
+    const title =
+      typeof obj.title === "string" && obj.title.trim()
+        ? obj.title.trim().replace(/^["']|["']$/g, "")
+        : deriveTitle(summary);
+    return { title, content, summary };
   }
 
-  return { content: text, summary: deriveSummary(text) };
+  const summary = deriveSummary(text);
+  return { title: deriveTitle(summary), content: text, summary };
 }

@@ -16,9 +16,10 @@ export type AncestorContext = {
   lastPassage: string;
 };
 
-// One produced passage and its one-line summary (used as cheap ancestor context
-// for deeper descendants).
+// One produced passage with a short chapter-style title and a one-line summary
+// (the summary is reused as cheap ancestor context for deeper descendants).
 export type GeneratedPassage = {
+  title: string;
   content: string;
   summary: string;
 };

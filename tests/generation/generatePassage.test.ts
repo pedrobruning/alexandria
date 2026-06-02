@@ -14,7 +14,7 @@ describe("generatePassage", () => {
     const call = fakeCaller('{"content":"Opening.","summary":"It opens."}');
     const out = await generatePassage({ story, apiKey: "k", model: "m", call });
 
-    expect(out).toEqual({ content: "Opening.", summary: "It opens." });
+    expect(out).toEqual({ title: "It opens", content: "Opening.", summary: "It opens." });
     const messages = (call as ReturnType<typeof vi.fn>).mock.calls[0][0].messages;
     expect(messages[1].content).toContain("opening passage");
   });
