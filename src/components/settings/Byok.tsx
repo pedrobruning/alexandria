@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { useTranslations } from "next-intl";
 import { PixelIcon } from "@/components/pixel/PixelIcon";
 import { useSettings } from "@/store/settings";
@@ -51,7 +52,10 @@ function SettingsModal({ onClose }: { onClose: () => void }) {
     setSaved(false);
   }
 
-  return (
+  // Portal to the body: the app header sets backdrop-filter, which would
+  // otherwise become the containing block for this fixed overlay and trap it
+  // inside the header instead of covering the viewport.
+  return createPortal(
     <div
       className="atlas-overlay"
       role="dialog"
@@ -59,10 +63,10 @@ function SettingsModal({ onClose }: { onClose: () => void }) {
       aria-label={t("title")}
       onClick={onClose}
     >
-      <div className="atlas-modal" onClick={(e) => e.stopPropagation()}>
-        <div className="atlas-modal__bar">
-          <span className="node-title" style={{ color: "var(--sand-light)" }}>
-            {t("title")}
+      <div className="settings-panel" onClick={(e) => e.stopPropagation()}>
+        <div className="settings-panel__bar">
+          <span className="node-title row center gap-2" style={{ color: "var(--sand-light)" }}>
+            <PixelIcon name="key" size={14} color="var(--gold)" /> {t("title")}
           </span>
           <button
             type="button"
@@ -74,7 +78,7 @@ function SettingsModal({ onClose }: { onClose: () => void }) {
             <PixelIcon name="x" size={14} color="var(--sand-light)" />
           </button>
         </div>
-        <div className="atlas-modal__body" style={{ padding: "22px 22px 26px", overflowY: "auto" }}>
+        <div className="settings-panel__body">
           <p className="caption" style={{ marginBottom: 18 }}>
             {t("intro")}
           </p>
@@ -134,7 +138,8 @@ function SettingsModal({ onClose }: { onClose: () => void }) {
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
 
@@ -145,13 +150,13 @@ export function SettingsButton() {
     <>
       <button
         type="button"
-        className="btn btn--ghost"
+        className="btn btn--ghost row center gap-2"
         onClick={() => setOpen(true)}
         aria-haspopup="dialog"
         aria-expanded={open}
-        aria-label={t("open")}
       >
-        <PixelIcon name="gear" size={16} color="var(--sand-light)" />
+        <PixelIcon name="key" size={15} color="var(--gold)" />
+        <span className="hide-sm">{t("open")}</span>
       </button>
       {open && <SettingsModal onClose={() => setOpen(false)} />}
     </>

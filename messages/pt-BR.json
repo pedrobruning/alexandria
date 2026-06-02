@@ -56,8 +56,8 @@
     ]
   },
   "settings": {
-    "open": "Configurações",
-    "title": "Sua chave do OpenRouter",
+    "open": "Usar sua chave",
+    "title": "Use sua própria chave",
     "close": "Fechar configurações",
     "intro": "Use sua própria chave do OpenRouter para gerar com sua conta e o modelo que escolher. Com uma chave definida, suas bifurcações ignoram o limite compartilhado.",
     "keyLabel": "Chave de API do OpenRouter",

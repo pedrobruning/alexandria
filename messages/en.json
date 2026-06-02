@@ -56,8 +56,8 @@
     ]
   },
   "settings": {
-    "open": "Settings",
-    "title": "Your OpenRouter key",
+    "open": "Use your key",
+    "title": "Bring your own key",
     "close": "Close settings",
     "intro": "Bring your own OpenRouter key to generate with your own account and chosen model. With a key set, your branches skip the shared limit.",
     "keyLabel": "OpenRouter API key",
