@@ -7,6 +7,7 @@ import { LocaleSwitcher } from "@/components/i18n/LocaleSwitcher";
 import { SettingsButton } from "@/components/settings/Byok";
 import { Wordmark } from "@/components/pixel/Wordmark";
 import { PixelIcon } from "@/components/pixel/PixelIcon";
+import { HeaderMenu } from "@/components/pixel/HeaderMenu";
 import { StoryCard } from "@/components/stories/StoryCard";
 import { HelpButton } from "@/components/onboarding/HelpButton";
 import { OnboardingAutostart } from "@/components/onboarding/OnboardingAutostart";
@@ -44,7 +45,7 @@ export default async function StoriesPage() {
           <div className="row center wrap gap-3">
             <Wordmark size={26} light />
             <div
-              className="frame frame--basalt"
+              className="frame frame--basalt collapse-sm"
               style={{ padding: "6px 14px" }}
             >
               <span
@@ -63,13 +64,15 @@ export default async function StoriesPage() {
             <span className="caption hide-sm">
               {t("archivist")} · <span style={{ color: "var(--lapis-bright)" }}>{handle}</span>
             </span>
-            <LocaleSwitcher />
-            <HelpButton />
-            <SettingsButton />
-            <Link className="btn" href="/stories/new">
-              <PixelIcon name="plus" size={16} color="#2B2118" /> {t("newStory")}
-            </Link>
-            <SignOutButton />
+            <HeaderMenu>
+              <LocaleSwitcher />
+              <HelpButton />
+              <SettingsButton />
+              <Link className="btn" href="/stories/new">
+                <PixelIcon name="plus" size={16} color="#2B2118" /> {t("newStory")}
+              </Link>
+              <SignOutButton />
+            </HeaderMenu>
           </div>
         </div>
       </header>

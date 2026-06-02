@@ -674,6 +674,29 @@ textarea.field { resize: vertical; line-height: 1.6; }
 
 .hide-sm { display: inline; }
 
+/* Header action cluster: inline on desktop, collapsed behind a hamburger on
+   phones (see the mobile block below). The toggle is hidden until then. */
+.header-actions { display: flex; align-items: center; }
+.header-actions__toggle { display: none; }
+
+/* The open menu, portalled to <body> and fixed under the toggle. The pixel
+   panel stacks the actions full-width; hidden labels return inside it. */
+.header-menu-pop { position: fixed; inset: 0; z-index: 60; }
+.header-menu-pop__panel {
+  position: fixed;
+  right: 14px;
+  align-items: stretch;
+  gap: 12px;
+  width: max-content;
+  min-width: 200px;
+  max-width: calc(100vw - 28px);
+  padding: 16px;
+  background: var(--basalt);
+  border: 3px solid var(--stone);
+  box-shadow: inset 2px 2px 0 0 var(--stone-light), 6px 6px 0 0 rgba(0,0,0,.5);
+}
+.header-menu-pop__panel .hide-sm { display: inline !important; }
+
 /* ============================================================
    MOBILE-FIRST RESPONSIVE TUNING
    The pixel frames, headers and modals are sized for the desktop
@@ -681,14 +704,24 @@ textarea.field { resize: vertical; line-height: 1.6; }
    ============================================================ */
 @media (max-width: 640px) {
   .hide-sm { display: none !important; }
+  /* Hides a block/flex child on phones without forcing inline like .hide-sm. */
+  .collapse-sm { display: none !important; }
 
-  .app-header__bar { padding: 11px 14px; gap: 10px; }
+  /* Keep the header to a single row so the hamburger stays pinned top-right
+     (a wrapped lone row would left-align it). Secondary chrome is collapsed
+     above, so only the wordmark + toggle remain — they fit comfortably. */
+  .app-header__bar { padding: 11px 14px; gap: 10px; flex-wrap: nowrap; }
   .app-content { padding: 18px 14px 48px; }
   .app-main { padding: 18px 14px 96px; }
 
   .btn { padding: 10px 14px; font-size: 14px; }
   .btn--lg { font-size: 16px; padding: 14px 18px; }
   .chip { font-size: 12px; padding: 7px 11px; }
+
+  /* Collapse the header actions: the hamburger appears and the inline cluster
+     is hidden — the open menu renders as a portalled panel (.header-menu-pop). */
+  .header-actions__toggle { display: inline-flex; }
+  .header-actions > .header-actions__items { display: none; }
 
   /* the atlas window fills the phone, with a slim breathing margin */
   .atlas-overlay { padding: 8px; }

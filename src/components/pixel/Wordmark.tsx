@@ -1,6 +1,7 @@
-import { PixelIcon } from "./PixelIcon";
+import { Lighthouse } from "./Lighthouse";
 
-// "Alexandria" lockup — "Alex" in the base tone, "andria" in gold, with a fork glyph.
+// "Alexandria" lockup — "Alex" in the base tone, "andria" in gold, capped by the
+// lighthouse mark (the same art as the system favicon).
 export function Wordmark({ size = 44, light }: { size?: number; light?: boolean }) {
   return (
     <div className="row center gap-3">
@@ -13,7 +14,7 @@ export function Wordmark({ size = 44, light }: { size?: number; light?: boolean 
       >
         Alex<span style={{ color: "var(--gold)" }}>andria</span>
       </span>
-      <PixelIcon name="fork" size={Math.round(size * 0.7)} color="var(--lapis-bright)" style={{ marginTop: 4 }} />
+      <Lighthouse size={Math.round(size * 0.92)} />
     </div>
   );
 }

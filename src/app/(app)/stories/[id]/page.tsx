@@ -10,6 +10,7 @@ import { LocaleSwitcher } from "@/components/i18n/LocaleSwitcher";
 import { SettingsButton } from "@/components/settings/Byok";
 import { Wordmark } from "@/components/pixel/Wordmark";
 import { PixelIcon } from "@/components/pixel/PixelIcon";
+import { HeaderMenu } from "@/components/pixel/HeaderMenu";
 import { StoryWorkspace } from "@/components/reader/StoryWorkspace";
 import { HelpButton } from "@/components/onboarding/HelpButton";
 import { OnboardingHost } from "@/components/onboarding/OnboardingHost";
@@ -52,17 +53,20 @@ export default async function StoryPage({ params }: { params: Promise<{ id: stri
           <div className="row center wrap gap-3">
             <Wordmark size={26} light />
             <Link className="chip" href="/stories">
-              <PixelIcon name="back" size={14} color="var(--sand-light)" /> {t("backToArchive")}
+              <PixelIcon name="back" size={14} color="var(--sand-light)" />{" "}
+              <span className="collapse-sm">{t("backToArchive")}</span>
             </Link>
           </div>
           <div className="row center wrap gap-3">
             <span className="node-title hide-sm" style={{ color: "var(--sand-light)" }}>
               {story.title}
             </span>
-            <LocaleSwitcher />
-            <HelpButton />
-            <SettingsButton />
-            <SignOutButton />
+            <HeaderMenu>
+              <LocaleSwitcher />
+              <HelpButton />
+              <SettingsButton />
+              <SignOutButton />
+            </HeaderMenu>
           </div>
         </div>
       </header>
