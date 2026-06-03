@@ -11,6 +11,7 @@ const { send, OpenRouterCtor } = vi.hoisted(() => {
 vi.mock("@openrouter/sdk", () => ({ OpenRouter: OpenRouterCtor }));
 
 import { callOpenRouter } from "@/domains/generation/infrastructure/openrouter";
+import { PASSAGE_SCHEMA_NAME } from "@/domains/generation/domain/passageSchema";
 
 const params = {
   apiKey: "super-secret-key",
@@ -40,6 +41,17 @@ describe("callOpenRouter", () => {
     expect(chatRequest.messages).toEqual(params.messages);
     expect(chatRequest.stream).toBe(false);
     expect(send.mock.calls[0][1]).toEqual({ signal });
+  });
+
+  it("enforces the passage schema via structured outputs", async () => {
+    send.mockResolvedValue({ choices: [{ message: { content: "hello" } }] });
+    await callOpenRouter(params);
+
+    const { responseFormat } = send.mock.calls[0][0].chatRequest;
+    expect(responseFormat.type).toBe("json_schema");
+    expect(responseFormat.jsonSchema.name).toBe(PASSAGE_SCHEMA_NAME);
+    expect(responseFormat.jsonSchema.strict).toBe(true);
+    expect(responseFormat.jsonSchema.schema.required).toEqual(["title", "content", "summary"]);
   });
 
   it("propagates provider errors without leaking the key", async () => {
