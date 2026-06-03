@@ -421,6 +421,16 @@ textarea.field { resize: vertical; line-height: 1.6; }
 }
 .atlas-fab:hover { filter: brightness(1.12); }
 
+/* Reading mode: the document carries data-reading while a passage is read
+   distraction-free, so chrome living outside the reader (header, atlas FAB)
+   collapses out of the way. The exit button floats top-right in its place. */
+html[data-reading] .app-header,
+html[data-reading] .atlas-fab { display: none; }
+.reading-exit {
+  position: fixed; top: 18px; right: 18px; z-index: 90;
+  padding: 10px 12px;
+}
+
 /* dark backdrop behind the modal. Sits above the tour overlay (z 200) so the
    Atlas/Settings open fully lit when explored mid-tour, instead of under its
    scrim. */

@@ -41,6 +41,31 @@ export function Reader({
   const [forking, setForking] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   const [switching, setSwitching] = useState(false);
+  const [reading, setReading] = useState(false);
+
+  // Tapping the passage enters reading mode — unless the tap was the end of a
+  // text selection, where collapsing into reading mode would be hostile.
+  function enterReading() {
+    if (window.getSelection()?.toString()) return;
+    setReading(true);
+  }
+
+  // Esc leaves reading mode. Toggling `data-reading` on the document lets global
+  // CSS hide the app header and Atlas FAB, which live outside this component;
+  // always clear it on exit/unmount so the chrome can never get stuck hidden.
+  useEffect(() => {
+    if (!reading) return;
+    const root = document.documentElement;
+    root.dataset.reading = "true";
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setReading(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => {
+      delete root.dataset.reading;
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [reading]);
 
   // Reset the steer box / error whenever the selection changes (from anywhere —
   // breadcrumb, child, or Atlas). React's render-time reset pattern. The bumped
@@ -128,6 +153,18 @@ export function Reader({
 
   return (
     <div ref={rootRef} style={{ maxWidth: 760, margin: "0 auto" }}>
+      {reading && (
+        <button
+          type="button"
+          className="btn reading-exit"
+          onClick={() => setReading(false)}
+          aria-label={t("exitReading")}
+        >
+          <PixelIcon name="back" size={16} color="#2B2118" />
+        </button>
+      )}
+
+      {!reading && (
       <nav className="row center wrap gap-2" aria-label={t("breadcrumb")} style={{ marginBottom: 22 }}>
         {cappedTrail(trail).map((item, i) => {
           const sep = i > 0 && (
@@ -161,6 +198,7 @@ export function Reader({
           );
         })}
       </nav>
+      )}
 
       {/* The veil (a sibling overlay) covers the column while React swaps the
           passage underneath; as it parts, the keyed article reveals center-out.
@@ -170,7 +208,8 @@ export function Reader({
         <article
           key={`passage-${jumpSeq}`}
           className={`frame frame--basalt${jumpSeq > 0 ? " jump-reveal" : ""}`}
-          style={{ padding: "28px 30px 30px", overflow: "hidden" }}
+          onClick={reading ? undefined : enterReading}
+          style={{ padding: "28px 30px 30px", overflow: "hidden", cursor: reading ? "default" : "zoom-in" }}
         >
           <h1 className="h2" style={{ color: "var(--sand-light)", marginBottom: 16 }}>
             {current.title}
@@ -183,6 +222,7 @@ export function Reader({
         </article>
       </div>
 
+      {!reading && (
       <section
         className="frame frame--basalt"
         data-tour="steer"
@@ -240,6 +280,7 @@ export function Reader({
           </div>
         )}
       </section>
+      )}
 
       <section data-tour="branches" style={{ marginTop: 26 }}>
         <h2 className="node-title" style={{ color: "var(--muted)", marginBottom: 12 }}>

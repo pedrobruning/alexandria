@@ -49,6 +49,7 @@
     "steerLabel": "Guie a próxima passagem (opcional)",
     "steerPlaceholder": "…mas ela recusa a oferta e caminha para dentro da tempestade.",
     "fork": "Bifurcar daqui",
+    "exitReading": "Sair do modo leitura",
     "forking": "desenterrando a próxima passagem…",
     "forkFailed": "A bifurcação não pegou. Tente novamente.",
     "quotaExceeded": "Você atingiu seu limite de bifurcações por ora. Adicione sua própria chave OpenRouter para continuar.",

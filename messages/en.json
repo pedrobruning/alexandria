@@ -49,6 +49,7 @@
     "steerLabel": "Steer the next passage (optional)",
     "steerPlaceholder": "…but she refuses the offer and walks into the storm.",
     "fork": "Fork from here",
+    "exitReading": "Exit reading mode",
     "forking": "unearthing the next passage…",
     "forkFailed": "The fork would not take. Try again.",
     "quotaExceeded": "You've reached your branch limit for now. Add your own OpenRouter key to keep going.",

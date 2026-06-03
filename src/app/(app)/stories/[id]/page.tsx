@@ -41,6 +41,7 @@ export default async function StoryPage({ params }: { params: Promise<{ id: stri
   return (
     <div className="screen scroll-y" style={{ background: "var(--basalt)" }}>
       <header
+        className="app-header"
         style={{
           position: "sticky",
           top: 0,
