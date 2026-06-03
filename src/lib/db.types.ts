@@ -47,6 +47,8 @@ export type Database = {
           tone: string | null;
           language: string;
           is_demo: boolean;
+          visibility: string;
+          forked_from_story_id: string | null;
           root_node_id: string | null;
           created_at: string;
         };
@@ -59,6 +61,8 @@ export type Database = {
           tone?: string | null;
           language?: string;
           is_demo?: boolean;
+          visibility?: string;
+          forked_from_story_id?: string | null;
           root_node_id?: string | null;
           created_at?: string;
         };
@@ -71,6 +75,8 @@ export type Database = {
           tone?: string | null;
           language?: string;
           is_demo?: boolean;
+          visibility?: string;
+          forked_from_story_id?: string | null;
           root_node_id?: string | null;
           created_at?: string;
         };
@@ -87,6 +93,7 @@ export type Database = {
           steer: string | null;
           model_used: string;
           created_by: string;
+          imported: boolean;
           created_at: string;
         };
         Insert: {
@@ -99,6 +106,7 @@ export type Database = {
           steer?: string | null;
           model_used: string;
           created_by: string;
+          imported?: boolean;
           created_at?: string;
         };
         Update: {
@@ -111,12 +119,39 @@ export type Database = {
           steer?: string | null;
           model_used?: string;
           created_by?: string;
+          imported?: boolean;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      stars: {
+        Row: {
+          user_id: string;
+          story_id: string;
+          created_at: string;
+        };
+        Insert: {
+          user_id: string;
+          story_id: string;
+          created_at?: string;
+        };
+        Update: {
+          user_id?: string;
+          story_id?: string;
           created_at?: string;
         };
         Relationships: [];
       };
     };
-    Views: Record<string, never>;
+    Views: {
+      public_profiles: {
+        Row: {
+          id: string | null;
+          handle: string | null;
+        };
+        Relationships: [];
+      };
+    };
     Functions: Record<string, never>;
     Enums: Record<string, never>;
     CompositeTypes: Record<string, never>;
@@ -127,3 +162,4 @@ export type Database = {
 export type ProfileRow = Database["public"]["Tables"]["profiles"]["Row"];
 export type StoryRow = Database["public"]["Tables"]["stories"]["Row"];
 export type NodeRow = Database["public"]["Tables"]["nodes"]["Row"];
+export type StarRow = Database["public"]["Tables"]["stars"]["Row"];
