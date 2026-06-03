@@ -6,6 +6,7 @@ import { AtlasModal } from "@/components/atlas/AtlasModal";
 import { Reader } from "@/components/reader/Reader";
 import { PixelIcon } from "@/components/pixel/PixelIcon";
 import { VisibilityControl } from "@/components/stories/VisibilityControl";
+import { StarButton } from "@/components/stories/StarButton";
 import type { StoryNode, Visibility } from "@/domains/stories/domain/types";
 
 // Owns the selected-node state shared between the Atlas (opened as a modal) and
@@ -18,6 +19,8 @@ export function StoryWorkspace({
   isDemo,
   isOwner,
   visibility,
+  starCount,
+  viewerStarred,
   language,
   quotaRemaining,
 }: {
@@ -27,6 +30,8 @@ export function StoryWorkspace({
   isDemo: boolean;
   isOwner: boolean;
   visibility: Visibility;
+  starCount: number;
+  viewerStarred: boolean;
   language: string;
   quotaRemaining: number;
 }) {
@@ -59,6 +64,19 @@ export function StoryWorkspace({
       {isOwner && !isDemo && (
         <div style={{ maxWidth: 760, margin: "0 auto 22px" }}>
           <VisibilityControl storyId={storyId} visibility={visibility} />
+        </div>
+      )}
+
+      {!isOwner && (
+        <div
+          className="row center wrap gap-2"
+          style={{ maxWidth: 760, margin: "0 auto 22px" }}
+        >
+          <StarButton
+            storyId={storyId}
+            initialStarred={viewerStarred}
+            initialCount={starCount}
+          />
         </div>
       )}
 

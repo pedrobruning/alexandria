@@ -33,6 +33,7 @@
   "storyCard": {
     "passages": "{count, plural, one {# passage} other {# passages}}",
     "forks": "{count, plural, one {# fork} other {# forks}}",
+    "stars": "{count, plural, one {# star} other {# stars}}",
     "updated": "updated {when}"
   },
   "atlas": {

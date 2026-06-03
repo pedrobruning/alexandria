@@ -79,6 +79,8 @@ export default async function StoryPage({ params }: { params: Promise<{ id: stri
           isDemo={story.isDemo}
           isOwner={story.isOwner}
           visibility={story.visibility}
+          starCount={story.starCount}
+          viewerStarred={story.viewerStarred}
           language={story.language}
           quotaRemaining={quotaRemaining}
         />

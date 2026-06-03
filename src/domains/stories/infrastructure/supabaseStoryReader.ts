@@ -73,6 +73,20 @@ export async function getStory(
     .order("created_at", { ascending: true });
   if (nodesError) throw new Error(`getStory: ${nodesError.message}`);
 
+  const { count: starCount, error: starError } = await supabase
+    .from("stars")
+    .select("user_id", { count: "exact", head: true })
+    .eq("story_id", storyId);
+  if (starError) throw new Error(`getStory: ${starError.message}`);
+
+  const { data: viewerStar, error: viewerError } = await supabase
+    .from("stars")
+    .select("user_id")
+    .eq("story_id", storyId)
+    .eq("user_id", userId)
+    .maybeSingle();
+  if (viewerError) throw new Error(`getStory: ${viewerError.message}`);
+
   return {
     id: story.id,
     title: story.title,
@@ -81,6 +95,8 @@ export async function getStory(
     isOwner: story.user_id === userId,
     visibility: story.visibility as Visibility,
     forkedFromStoryId: story.forked_from_story_id,
+    starCount: starCount ?? 0,
+    viewerStarred: !!viewerStar,
     language: story.language,
     nodes: (nodes ?? []).map((n) => ({
       id: n.id,
