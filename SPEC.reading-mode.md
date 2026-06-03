@@ -87,8 +87,9 @@ All copy via next-intl (`useTranslations("reader")`), keys added to **both** loc
   the app header.
 - **Shown when reading:** the passage frame (title + prose), the **branches list**
   (`<section data-tour="branches">`) and the **Atlas FAB** — both kept as in-mode
-  navigation surfaces so reading mode genuinely persists across node-to-node jumps — and
-  the close button.
+  navigation surfaces so reading mode genuinely persists across node-to-node jumps — a
+  minimal **fork button** (no steer textarea; forks with an empty steer, hidden for the
+  demo) with its spinner/error inline, and the close button.
 - **Persistence:** in-memory state that **survives node-to-node navigation** within the
   session (do not reset `reading` on `selectedId` change), resets on reload. Auto-navigate
   after a fork keeps reading mode on too.
