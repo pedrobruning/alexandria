@@ -83,11 +83,12 @@ All copy via next-intl (`useTranslations("reader")`), keys added to **both** loc
 - **Enter:** tap/click anywhere on the passage `<article>` (title or prose). Guard so a
   text-selection drag does not trigger it (only fire on a click with no selection range).
 - **Exit:** a floating close button (fixed, top-right, pixel `btn`) **and** the `Esc` key.
-- **Hidden when reading:** breadcrumb `<nav>`, steer `<section data-tour="steer">`, the
-  Atlas FAB, and the app header.
+- **Hidden when reading:** breadcrumb `<nav>`, steer `<section data-tour="steer">`, and
+  the app header.
 - **Shown when reading:** the passage frame (title + prose), the **branches list**
-  (`<section data-tour="branches">` — kept as the in-mode navigation surface so reading
-  mode genuinely persists across node-to-node jumps), and the close button.
+  (`<section data-tour="branches">`) and the **Atlas FAB** — both kept as in-mode
+  navigation surfaces so reading mode genuinely persists across node-to-node jumps — and
+  the close button.
 - **Persistence:** in-memory state that **survives node-to-node navigation** within the
   session (do not reset `reading` on `selectedId` change), resets on reload. Auto-navigate
   after a fork keeps reading mode on too.

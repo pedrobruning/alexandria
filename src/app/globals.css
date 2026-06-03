@@ -422,10 +422,10 @@ textarea.field { resize: vertical; line-height: 1.6; }
 .atlas-fab:hover { filter: brightness(1.12); }
 
 /* Reading mode: the document carries data-reading while a passage is read
-   distraction-free, so chrome living outside the reader (header, atlas FAB)
-   collapses out of the way. The exit button floats top-right in its place. */
-html[data-reading] .app-header,
-html[data-reading] .atlas-fab { display: none; }
+   distraction-free, so the header collapses out of the way. The Atlas FAB
+   stays so the reader can keep jumping around the tree; the exit button floats
+   top-right opposite it. */
+html[data-reading] .app-header { display: none; }
 .reading-exit {
   position: fixed; top: 18px; right: 18px; z-index: 90;
   padding: 10px 12px;
