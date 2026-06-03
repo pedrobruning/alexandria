@@ -5,7 +5,8 @@ import { createStory } from "@/domains/stories/application/createStory";
 import { supabaseStoryWriter } from "@/domains/stories/infrastructure/supabaseStoryWriter";
 import { DEFAULT_LANGUAGE, isLanguageCode } from "@/domains/generation/domain/language";
 import { countQuotaNodes } from "@/domains/quota/infrastructure/supabaseQuotaCounter";
-import { checkQuota } from "@/domains/quota/domain/quota";
+import { readBonusCredits, consumeCredit } from "@/domains/quota/infrastructure/credits";
+import { decideGeneration, SERVER_KEY_BRANCH_LIMIT } from "@/domains/quota/domain/quota";
 
 export const runtime = "nodejs";
 
@@ -45,9 +46,13 @@ export async function POST(request: Request) {
   }
 
   const used = await countQuotaNodes(supabase, user.id);
-  const decision = checkQuota({ used });
+  const bonusCredits = await readBonusCredits(supabase, user.id);
+  const decision = decideGeneration({ used, bonusCredits });
   if (!decision.allowed) {
-    return NextResponse.json({ error: "quota_exceeded", limit: decision.limit }, { status: 429 });
+    return NextResponse.json(
+      { error: "quota_exceeded", limit: SERVER_KEY_BRANCH_LIMIT },
+      { status: 429 },
+    );
   }
 
   const story = { premise, genre, tone, language };
@@ -60,6 +65,7 @@ export async function POST(request: Request) {
       generate: () => generatePassage({ story, apiKey: serverKey, model: defaultModel }),
       writer: supabaseStoryWriter(supabase),
     });
+    if (decision.spendCredit) await consumeCredit(supabase);
     return NextResponse.json(result, { status: 201 });
   } catch (err) {
     console.error("createStory route failed", err);

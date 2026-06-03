@@ -259,6 +259,7 @@ export type Database = {
     }
     Functions: {
       claim_referral: { Args: { p_code: string }; Returns: undefined }
+      spend_bonus_credit: { Args: never; Returns: boolean }
     }
     Enums: {
       [_ in never]: never
