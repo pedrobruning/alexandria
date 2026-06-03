@@ -18,12 +18,18 @@ export type StoryNode = {
   summary: string;
 };
 
+// One of the three sharing states a story can be in.
+export type Visibility = "private" | "unlisted" | "public";
+
 // A story plus its full node tree, for the reader view.
 export type StoryDetail = {
   id: string;
   title: string;
   rootNodeId: string | null;
   isDemo: boolean;
+  isOwner: boolean;
+  visibility: Visibility;
+  forkedFromStoryId: string | null;
   language: string;
   nodes: StoryNode[];
 };

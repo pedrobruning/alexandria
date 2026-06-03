@@ -5,7 +5,8 @@ import { useTranslations } from "next-intl";
 import { AtlasModal } from "@/components/atlas/AtlasModal";
 import { Reader } from "@/components/reader/Reader";
 import { PixelIcon } from "@/components/pixel/PixelIcon";
-import type { StoryNode } from "@/domains/stories/domain/types";
+import { VisibilityControl } from "@/components/stories/VisibilityControl";
+import type { StoryNode, Visibility } from "@/domains/stories/domain/types";
 
 // Owns the selected-node state shared between the Atlas (opened as a modal) and
 // the Reader. Navigating anywhere — a breadcrumb, a child branch, or an Atlas
@@ -15,6 +16,8 @@ export function StoryWorkspace({
   nodes,
   rootId,
   isDemo,
+  isOwner,
+  visibility,
   language,
   quotaRemaining,
 }: {
@@ -22,6 +25,8 @@ export function StoryWorkspace({
   nodes: StoryNode[];
   rootId: string;
   isDemo: boolean;
+  isOwner: boolean;
+  visibility: Visibility;
   language: string;
   quotaRemaining: number;
 }) {
@@ -51,6 +56,12 @@ export function StoryWorkspace({
 
   return (
     <>
+      {isOwner && !isDemo && (
+        <div style={{ maxWidth: 760, margin: "0 auto 22px" }}>
+          <VisibilityControl storyId={storyId} visibility={visibility} />
+        </div>
+      )}
+
       <Reader
         storyId={storyId}
         nodes={nodes}
@@ -58,6 +69,7 @@ export function StoryWorkspace({
         onSelect={travel}
         onForked={setPendingId}
         isDemo={isDemo}
+        isOwner={isOwner}
         language={language}
         quotaRemaining={quotaRemaining}
       />

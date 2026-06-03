@@ -18,6 +18,7 @@ export function Reader({
   onSelect,
   onForked,
   isDemo,
+  isOwner,
   language,
   quotaRemaining,
 }: {
@@ -27,6 +28,7 @@ export function Reader({
   onSelect: (id: string) => void;
   onForked: (id: string) => void;
   isDemo: boolean;
+  isOwner: boolean;
   language: string;
   quotaRemaining: number;
 }) {
@@ -217,6 +219,7 @@ export function Reader({
         </article>
       </div>
 
+      {isOwner && (
       <section
         className="frame frame--basalt"
         data-tour="steer"
@@ -272,6 +275,13 @@ export function Reader({
           </div>
         )}
       </section>
+      )}
+
+      {!isOwner && (
+        <p className="caption" style={{ marginTop: 22 }}>
+          {t("readOnly")}
+        </p>
+      )}
 
       <section data-tour="branches" style={{ marginTop: 26 }}>
         <h2 className="node-title" style={{ color: "var(--muted)", marginBottom: 12 }}>

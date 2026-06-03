@@ -18,7 +18,12 @@ export default async function StoryPage({ params }: { params: Promise<{ id: stri
   const { id } = await params;
   const t = await getTranslations("reader");
   const supabase = await createClient();
-  const story = await getStory(supabase, id);
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) notFound();
+
+  const story = await getStory(supabase, id, user.id);
 
   if (!story || !story.rootNodeId || story.nodes.length === 0) {
     notFound();
@@ -27,14 +32,11 @@ export default async function StoryPage({ params }: { params: Promise<{ id: stri
   // Remaining branch allowance, re-read on every navigation (the reader calls
   // router.refresh() after a fork, so this stays current). The counter excludes
   // demo nodes, so this reflects the real allowance even on the demo story —
-  // which is what the onboarding tour spotlights.
-  let quotaRemaining = 0;
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (user) {
-    quotaRemaining = remainingQuota(await countQuotaNodes(supabase, user.id));
-  }
+  // which is what the onboarding tour spotlights. Only the owner can branch, so
+  // visitors don't need it.
+  const quotaRemaining = story.isOwner
+    ? remainingQuota(await countQuotaNodes(supabase, user.id))
+    : 0;
 
   return (
     <div className="screen scroll-y" style={{ background: "var(--basalt)" }}>
@@ -75,6 +77,8 @@ export default async function StoryPage({ params }: { params: Promise<{ id: stri
           nodes={story.nodes}
           rootId={story.rootNodeId}
           isDemo={story.isDemo}
+          isOwner={story.isOwner}
+          visibility={story.visibility}
           language={story.language}
           quotaRemaining={quotaRemaining}
         />

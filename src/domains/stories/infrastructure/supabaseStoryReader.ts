@@ -1,7 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/lib/db.types";
 import type { StoryContext } from "@/domains/generation/domain/types";
-import type { StoryDetail, StorySummary } from "../domain/types";
+import type { StoryDetail, StorySummary, Visibility } from "../domain/types";
 
 // Story context plus the minimal node tree needed to branch from a parent.
 // `isDemo` lets the branch route reject writes to the read-only demo story.
@@ -51,14 +51,16 @@ export async function listStories(
 }
 
 // Loads one story with its full node tree for the reader. Returns null when the
-// story doesn't exist or isn't the caller's (RLS scopes both queries to owner).
+// story doesn't exist or isn't visible to the caller (RLS allows owner +
+// public/unlisted). `isOwner` lets the reader render read-only for visitors.
 export async function getStory(
   supabase: SupabaseClient<Database>,
   storyId: string,
+  userId: string,
 ): Promise<StoryDetail | null> {
   const { data: story, error } = await supabase
     .from("stories")
-    .select("id, title, root_node_id, is_demo, language")
+    .select("id, user_id, title, root_node_id, is_demo, visibility, forked_from_story_id, language")
     .eq("id", storyId)
     .maybeSingle();
   if (error) throw new Error(`getStory: ${error.message}`);
@@ -76,6 +78,9 @@ export async function getStory(
     title: story.title,
     rootNodeId: story.root_node_id,
     isDemo: story.is_demo,
+    isOwner: story.user_id === userId,
+    visibility: story.visibility as Visibility,
+    forkedFromStoryId: story.forked_from_story_id,
     language: story.language,
     nodes: (nodes ?? []).map((n) => ({
       id: n.id,
