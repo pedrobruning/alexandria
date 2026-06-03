@@ -21,6 +21,7 @@ export function Reader({
   isOwner,
   language,
   quotaRemaining,
+  bonusCredits,
 }: {
   storyId: string;
   nodes: StoryNode[];
@@ -31,6 +32,7 @@ export function Reader({
   isOwner: boolean;
   language: string;
   quotaRemaining: number;
+  bonusCredits: number;
 }) {
   const t = useTranslations("reader");
   const td = useTranslations("onboarding");
@@ -250,6 +252,14 @@ export function Reader({
         </div>
         <p className="caption" data-tour="quota" style={{ marginTop: 12 }}>
           {t("passagesLeft", { count: quotaRemaining })}
+          {bonusCredits > 0 && (
+            <>
+              {" · "}
+              <span style={{ color: "var(--gold)" }}>
+                {t("bonusCredits", { count: bonusCredits })}
+              </span>
+            </>
+          )}
         </p>
         {isDemo && (
           <div className="row center wrap gap-2" style={{ marginTop: 16 }}>

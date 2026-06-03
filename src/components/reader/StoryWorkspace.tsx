@@ -23,6 +23,7 @@ export function StoryWorkspace({
   viewerStarred,
   language,
   quotaRemaining,
+  bonusCredits,
 }: {
   storyId: string;
   nodes: StoryNode[];
@@ -34,6 +35,7 @@ export function StoryWorkspace({
   viewerStarred: boolean;
   language: string;
   quotaRemaining: number;
+  bonusCredits: number;
 }) {
   const t = useTranslations("atlas");
   const [selectedId, setSelectedId] = useState(rootId);
@@ -90,6 +92,7 @@ export function StoryWorkspace({
         isOwner={isOwner}
         language={language}
         quotaRemaining={quotaRemaining}
+        bonusCredits={bonusCredits}
       />
 
       <button
