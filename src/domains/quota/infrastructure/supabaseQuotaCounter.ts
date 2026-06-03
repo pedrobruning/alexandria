@@ -2,9 +2,10 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/lib/db.types";
 import { windowStart } from "../domain/quota";
 
-// Counts the caller's quota-bearing generations inside the rolling window. RLS
-// scopes rows to the owner. Demo nodes (the onboarding story) are excluded so the
-// guided tour never spends a user's allowance.
+// Counts the caller's quota-bearing generations inside the rolling window. The
+// `created_by` filter scopes to the caller. Demo nodes (the onboarding story)
+// and imported nodes (fork copies, not generations) are excluded so neither
+// spends a user's allowance.
 export async function countQuotaNodes(
   supabase: SupabaseClient<Database>,
   userId: string,
@@ -23,6 +24,7 @@ export async function countQuotaNodes(
     .from("nodes")
     .select("id", { count: "exact", head: true })
     .eq("created_by", userId)
+    .eq("imported", false)
     .gte("created_at", since);
 
   const demoIds = (demoStories ?? []).map((s) => s.id);

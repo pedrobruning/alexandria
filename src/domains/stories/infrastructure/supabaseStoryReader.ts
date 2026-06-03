@@ -11,21 +11,31 @@ export type BranchContext = {
   nodes: { id: string; parentId: string | null; summary: string; content: string }[];
 };
 
-// Lists the signed-in user's stories for the Archive, newest first. RLS scopes
-// both queries to the owner, so node counts only ever cover their own stories.
-export async function listStories(supabase: SupabaseClient<Database>): Promise<StorySummary[]> {
+// Lists the signed-in user's stories for the Archive, newest first. SELECT RLS
+// now also exposes others' public/unlisted stories, so both queries filter to
+// the owner explicitly — the Archive shows only the caller's own stories.
+export async function listStories(
+  supabase: SupabaseClient<Database>,
+  userId: string,
+): Promise<StorySummary[]> {
   const { data: stories, error } = await supabase
     .from("stories")
     .select("id, title, genre, tone, created_at, is_demo")
+    .eq("user_id", userId)
     .order("created_at", { ascending: false });
   if (error) throw new Error(`listStories: ${error.message}`);
 
-  const { data: nodes, error: nodesError } = await supabase.from("nodes").select("story_id");
-  if (nodesError) throw new Error(`listStories: ${nodesError.message}`);
-
+  const storyIds = (stories ?? []).map((s) => s.id);
   const counts = new Map<string, number>();
-  for (const node of nodes ?? []) {
-    counts.set(node.story_id, (counts.get(node.story_id) ?? 0) + 1);
+  if (storyIds.length > 0) {
+    const { data: nodes, error: nodesError } = await supabase
+      .from("nodes")
+      .select("story_id")
+      .in("story_id", storyIds);
+    if (nodesError) throw new Error(`listStories: ${nodesError.message}`);
+    for (const node of nodes ?? []) {
+      counts.set(node.story_id, (counts.get(node.story_id) ?? 0) + 1);
+    }
   }
 
   return (stories ?? []).map((s) => ({
@@ -76,15 +86,18 @@ export async function getStory(
   };
 }
 
-// The user's demo story, if one exists. RLS scopes the query to the owner, so
-// `is_demo` already implies "this caller's demo". Used to avoid reseeding on
-// repeat sign-ins and to resolve the redirect target after a language switch.
+// The user's demo story, if one exists. Demos stay private, but the SELECT
+// policy now exposes others' public/unlisted stories, so filter to the owner
+// explicitly. Used to avoid reseeding on repeat sign-ins and to resolve the
+// redirect target after a language switch.
 export async function findDemoStory(
   supabase: SupabaseClient<Database>,
+  userId: string,
 ): Promise<{ storyId: string; rootNodeId: string | null; language: string } | null> {
   const { data, error } = await supabase
     .from("stories")
     .select("id, root_node_id, language")
+    .eq("user_id", userId)
     .eq("is_demo", true)
     .order("created_at", { ascending: false })
     .limit(1)

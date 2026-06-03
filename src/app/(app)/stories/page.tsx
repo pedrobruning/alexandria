@@ -28,7 +28,7 @@ export default async function StoriesPage() {
     .single();
 
   const handle = profile?.handle ?? user.email?.split("@")[0] ?? t("archivist");
-  const stories = await listStories(supabase);
+  const stories = await listStories(supabase, user.id);
 
   return (
     <div className="screen scroll-y" style={{ background: "var(--basalt)" }}>

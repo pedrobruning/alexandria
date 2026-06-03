@@ -27,7 +27,7 @@ export async function POST(request: Request) {
   const replace = body.replace === true;
 
   if (!replace) {
-    const existing = await findDemoStory(supabase);
+    const existing = await findDemoStory(supabase, user.id);
     if (existing) {
       return NextResponse.json(
         { storyId: existing.storyId, rootNodeId: existing.rootNodeId },
