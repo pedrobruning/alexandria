@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { childrenOf, pathFromRoot, type TreeNode } from "@/lib/tree/path";
+import { cappedTrail, childrenOf, pathFromRoot, type TreeNode } from "@/lib/tree/path";
 
 // Adjacency list for a small tree:
 //   root
@@ -37,6 +37,41 @@ describe("pathFromRoot", () => {
       { id: "y", parentId: "x" },
     ];
     expect(() => pathFromRoot(cyclic, "x")).toThrow(/cycle/);
+  });
+});
+
+describe("cappedTrail", () => {
+  const trail = (...ids: string[]): TreeNode[] =>
+    ids.map((id, i) => ({ id, parentId: i === 0 ? null : ids[i - 1] }));
+
+  it("returns a single node untouched", () => {
+    expect(cappedTrail(trail("root"))).toEqual([{ type: "node", node: { id: "root", parentId: null } }]);
+  });
+
+  it("leaves trails of length 2 and 3 unchanged", () => {
+    expect(cappedTrail(trail("root", "a")).map((i) => (i.type === "node" ? i.node.id : "gap"))).toEqual([
+      "root",
+      "a",
+    ]);
+    expect(
+      cappedTrail(trail("root", "a", "b")).map((i) => (i.type === "node" ? i.node.id : "gap")),
+    ).toEqual(["root", "a", "b"]);
+  });
+
+  it("collapses the middle of a length-4 trail to root … parent → current", () => {
+    expect(
+      cappedTrail(trail("root", "a", "parent", "cur")).map((i) =>
+        i.type === "node" ? i.node.id : "gap",
+      ),
+    ).toEqual(["root", "gap", "parent", "cur"]);
+  });
+
+  it("collapses any deeper trail to the same shape, preserving root and current", () => {
+    expect(
+      cappedTrail(trail("root", "a", "b", "c", "parent", "cur")).map((i) =>
+        i.type === "node" ? i.node.id : "gap",
+      ),
+    ).toEqual(["root", "gap", "parent", "cur"]);
   });
 });
 

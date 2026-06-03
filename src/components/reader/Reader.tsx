@@ -7,7 +7,7 @@ import { PixelIcon } from "@/components/pixel/PixelIcon";
 import { PixSpinner } from "@/components/pixel/PixSpinner";
 import { TimeVeil } from "@/components/reader/TimeVeil";
 import { GeneratingStars } from "@/components/reader/GeneratingStars";
-import { childrenOf, pathFromRoot } from "@/lib/tree/path";
+import { cappedTrail, childrenOf, pathFromRoot } from "@/lib/tree/path";
 import { useSettings } from "@/store/settings";
 import { LANGUAGES } from "@/domains/generation/domain/language";
 import type { StoryNode } from "@/domains/stories/domain/types";
@@ -126,22 +126,33 @@ export function Reader({
   return (
     <div ref={rootRef} style={{ maxWidth: 760, margin: "0 auto" }}>
       <nav className="row center wrap gap-2" aria-label={t("breadcrumb")} style={{ marginBottom: 22 }}>
-        {trail.map((node, i) => {
-          const isCurrent = node.id === selectedId;
+        {cappedTrail(trail).map((item, i) => {
+          const sep = i > 0 && (
+            <PixelIcon name="fork" size={11} color="var(--muted)" style={{ transform: "rotate(90deg)" }} />
+          );
+          if (item.type === "gap") {
+            return (
+              <span key="gap" className="row center gap-2">
+                {sep}
+                <span className="chip" aria-hidden style={{ cursor: "default", opacity: 0.6 }}>
+                  …
+                </span>
+              </span>
+            );
+          }
+          const isCurrent = item.node.id === selectedId;
           return (
-            <span key={node.id} className="row center gap-2">
-              {i > 0 && (
-                <PixelIcon name="fork" size={11} color="var(--muted)" style={{ transform: "rotate(90deg)" }} />
-              )}
+            <span key={item.node.id} className="row center gap-2">
+              {sep}
               <button
                 type="button"
                 className="chip"
                 aria-current={isCurrent ? "page" : undefined}
                 disabled={isCurrent}
-                onClick={() => onSelect(node.id)}
+                onClick={() => onSelect(item.node.id)}
                 style={{ cursor: isCurrent ? "default" : "pointer" }}
               >
-                {node.title}
+                {item.node.title}
               </button>
             </span>
           );

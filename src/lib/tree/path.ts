@@ -34,3 +34,20 @@ export function pathFromRoot<T extends TreeNode>(nodes: T[], nodeId: string): T[
 export function childrenOf<T extends TreeNode>(nodes: T[], parentId: string | null): T[] {
   return nodes.filter((n) => n.parentId === parentId);
 }
+
+// A breadcrumb entry: either a real node or a collapsed-middle gap (rendered as
+// an ellipsis). Used to cap deep trails so the breadcrumb can't overflow.
+export type CappedTrailItem<T> = { type: "node"; node: T } | { type: "gap" };
+
+// Cap a root→node trail at three visible nodes. Trails of ≤3 pass through; a
+// longer trail collapses to `root … parent → current` (root, second-to-last,
+// last) with a single gap marking the hidden middle.
+export function cappedTrail<T extends TreeNode>(trail: T[]): CappedTrailItem<T>[] {
+  if (trail.length <= 3) return trail.map((node) => ({ type: "node", node }));
+  return [
+    { type: "node", node: trail[0] },
+    { type: "gap" },
+    { type: "node", node: trail[trail.length - 2] },
+    { type: "node", node: trail[trail.length - 1] },
+  ];
+}
