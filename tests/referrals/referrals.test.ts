@@ -5,6 +5,7 @@ import {
   REFERRAL_QUALIFY_NODES,
   REFERRAL_REWARD_CREDITS,
   generateReferralCode,
+  isReferralCode,
 } from "@/domains/referrals/domain/referrals";
 
 describe("referral constants", () => {
@@ -37,5 +38,22 @@ describe("generateReferralCode", () => {
     const draws = new Set<string>();
     for (let i = 0; i < 1000; i++) draws.add(generateReferralCode());
     expect(draws.size).toBe(1000);
+  });
+});
+
+describe("isReferralCode", () => {
+  it("accepts a freshly generated code", () => {
+    expect(isReferralCode(generateReferralCode())).toBe(true);
+  });
+
+  it("rejects the wrong length", () => {
+    expect(isReferralCode("ABC")).toBe(false);
+    expect(isReferralCode("ABCDEFGHJ")).toBe(false);
+  });
+
+  it("rejects ambiguous or out-of-charset characters", () => {
+    expect(isReferralCode("ILOUABCD")).toBe(false); // I, L, O, U excluded
+    expect(isReferralCode("abcdefgh")).toBe(false); // lowercase
+    expect(isReferralCode("ABCD-EFG")).toBe(false);
   });
 });

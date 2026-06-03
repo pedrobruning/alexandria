@@ -16,3 +16,15 @@ export function generateReferralCode(length = REFERRAL_CODE_LENGTH): string {
   for (const byte of bytes) code += ALPHABET[byte % ALPHABET.length];
   return code;
 }
+
+// Name of the short-lived cookie that carries a referral code across the
+// magic-link round trip, from /r/[code] to the auth callback.
+export const REFERRAL_COOKIE = "referral_code";
+
+const CODE_PATTERN = /^[0-9A-HJKMNP-TV-Z]+$/;
+
+// Whether a raw path segment is a well-formed referral code. Validates before
+// it ever reaches a cookie or the DB so a junk link can't poison the round trip.
+export function isReferralCode(value: string): boolean {
+  return value.length === REFERRAL_CODE_LENGTH && CODE_PATTERN.test(value);
+}
