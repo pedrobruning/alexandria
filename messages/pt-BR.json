@@ -28,7 +28,8 @@
     "sorted": "ordenado · mais recentes",
     "emptyTitle": "O arquivo está vazio.",
     "emptyBody": "Toda escavação começa com um único pergaminho selado. Desenterre sua primeira história e veja suas linhas do tempo se ramificarem.",
-    "emptyCta": "Desenterre sua primeira história"
+    "emptyCta": "Desenterre sua primeira história",
+    "forksTitle": "Bifurcações"
   },
   "storyCard": {
     "passages": "{count, plural, one {# passagem} other {# passagens}}",

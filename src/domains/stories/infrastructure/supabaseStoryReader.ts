@@ -22,7 +22,7 @@ export async function listStories(
 ): Promise<StorySummary[]> {
   const { data: stories, error } = await supabase
     .from("stories")
-    .select("id, title, genre, tone, created_at, is_demo")
+    .select("id, title, genre, tone, created_at, is_demo, forked_from_story_id")
     .eq("user_id", userId)
     .order("created_at", { ascending: false });
   if (error) throw new Error(`listStories: ${error.message}`);
@@ -48,6 +48,7 @@ export async function listStories(
     createdAt: s.created_at,
     passageCount: counts.get(s.id) ?? 0,
     isDemo: s.is_demo,
+    forkedFromStoryId: s.forked_from_story_id,
   }));
 }
 

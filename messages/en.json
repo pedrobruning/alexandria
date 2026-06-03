@@ -28,7 +28,8 @@
     "sorted": "sorted · most recent",
     "emptyTitle": "The archive is empty.",
     "emptyBody": "Every dig begins with a single sealed scroll. Unearth your first tale and watch its timelines branch.",
-    "emptyCta": "Unearth your first tale"
+    "emptyCta": "Unearth your first tale",
+    "forksTitle": "Forks"
   },
   "storyCard": {
     "passages": "{count, plural, one {# passage} other {# passages}}",

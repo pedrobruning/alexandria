@@ -1,4 +1,6 @@
 // A story as shown in the Archive grid. Counts are derived from its node tree.
+// forkedFromStoryId is set when this story is a fork of another, so the Archive
+// can list forks in their own section.
 export type StorySummary = {
   id: string;
   title: string;
@@ -7,6 +9,7 @@ export type StorySummary = {
   createdAt: string;
   passageCount: number;
   isDemo: boolean;
+  forkedFromStoryId: string | null;
 };
 
 // A public story as shown in the Explore grid. authorHandle is null when the

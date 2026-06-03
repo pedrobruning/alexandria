@@ -30,6 +30,8 @@ export default async function StoriesPage() {
 
   const handle = profile?.handle ?? user.email?.split("@")[0] ?? t("archivist");
   const stories = await listStories(supabase, user.id);
+  const own = stories.filter((s) => !s.forkedFromStoryId);
+  const forks = stories.filter((s) => s.forkedFromStoryId);
 
   return (
     <div className="screen scroll-y" style={{ background: "var(--basalt)" }}>
@@ -106,23 +108,54 @@ export default async function StoriesPage() {
           </div>
         ) : (
           <>
-            <div className="row center between" style={{ marginBottom: 18 }}>
-              <span style={{ fontFamily: "var(--font-pixel)", fontSize: 18, color: "var(--sand-light)" }}>
-                {t("count", { count: stories.length })}
-              </span>
-              <span className="caption">{t("sorted")}</span>
-            </div>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fill,minmax(min(100%,280px),1fr))",
-                gap: 22,
-              }}
-            >
-              {stories.map((s) => (
-                <StoryCard key={s.id} story={s} />
-              ))}
-            </div>
+            {own.length > 0 && (
+              <>
+                <div className="row center between" style={{ marginBottom: 18 }}>
+                  <span style={{ fontFamily: "var(--font-pixel)", fontSize: 18, color: "var(--sand-light)" }}>
+                    {t("count", { count: own.length })}
+                  </span>
+                  <span className="caption">{t("sorted")}</span>
+                </div>
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(auto-fill,minmax(min(100%,280px),1fr))",
+                    gap: 22,
+                  }}
+                >
+                  {own.map((s) => (
+                    <StoryCard key={s.id} story={s} />
+                  ))}
+                </div>
+              </>
+            )}
+
+            {forks.length > 0 && (
+              <>
+                <div
+                  className="row center"
+                  style={{
+                    fontFamily: "var(--font-pixel)",
+                    fontSize: 18,
+                    color: "var(--sand-light)",
+                    margin: own.length > 0 ? "40px 0 18px" : "0 0 18px",
+                  }}
+                >
+                  {t("forksTitle")}
+                </div>
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(auto-fill,minmax(min(100%,280px),1fr))",
+                    gap: 22,
+                  }}
+                >
+                  {forks.map((s) => (
+                    <StoryCard key={s.id} story={s} />
+                  ))}
+                </div>
+              </>
+            )}
           </>
         )}
       </div>
