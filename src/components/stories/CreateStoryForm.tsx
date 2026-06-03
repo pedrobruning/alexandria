@@ -8,13 +8,10 @@ import { PixelIcon } from "@/components/pixel/PixelIcon";
 import { PixSpinner } from "@/components/pixel/PixSpinner";
 import { LANGUAGES, DEFAULT_LANGUAGE } from "@/domains/generation/domain/language";
 import { GENRE_OPTIONS, TONE_OPTIONS } from "@/domains/stories/domain/options";
-import { useSettings } from "@/store/settings";
 
 export function CreateStoryForm() {
   const t = useTranslations("create");
   const router = useRouter();
-  const apiKey = useSettings((s) => s.apiKey);
-  const model = useSettings((s) => s.model);
   const [premise, setPremise] = useState("");
   const [genre, setGenre] = useState("Fantasy");
   const [tone, setTone] = useState("Lyrical");
@@ -38,8 +35,6 @@ export function CreateStoryForm() {
           genre,
           tone,
           language,
-          apiKey: apiKey || null,
-          model: model || null,
         }),
       });
       const data = (await res.json().catch(() => ({}))) as { storyId?: string; error?: string };

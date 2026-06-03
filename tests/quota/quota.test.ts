@@ -8,29 +8,21 @@ import {
 } from "@/domains/quota/domain/quota";
 
 describe("checkQuota", () => {
-  it("allows a server-key branch below the limit", () => {
-    expect(checkQuota({ used: 0, usedServerKey: true })).toEqual({ allowed: true });
-    expect(checkQuota({ used: SERVER_KEY_BRANCH_LIMIT - 1, usedServerKey: true })).toEqual({
-      allowed: true,
-    });
+  it("allows a generation below the limit", () => {
+    expect(checkQuota({ used: 0 })).toEqual({ allowed: true });
+    expect(checkQuota({ used: SERVER_KEY_BRANCH_LIMIT - 1 })).toEqual({ allowed: true });
   });
 
-  it("denies a server-key branch at or past the limit, reporting the limit", () => {
-    expect(checkQuota({ used: SERVER_KEY_BRANCH_LIMIT, usedServerKey: true })).toEqual({
+  it("denies a generation at or past the limit, reporting the limit", () => {
+    expect(checkQuota({ used: SERVER_KEY_BRANCH_LIMIT })).toEqual({
       allowed: false,
       reason: "quota_exceeded",
       limit: SERVER_KEY_BRANCH_LIMIT,
     });
   });
 
-  it("always allows BYOK generations regardless of usage", () => {
-    expect(checkQuota({ used: SERVER_KEY_BRANCH_LIMIT + 999, usedServerKey: false })).toEqual({
-      allowed: true,
-    });
-  });
-
   it("honors a custom limit", () => {
-    expect(checkQuota({ used: 5, usedServerKey: true, limit: 5 })).toEqual({
+    expect(checkQuota({ used: 5, limit: 5 })).toEqual({
       allowed: false,
       reason: "quota_exceeded",
       limit: 5,

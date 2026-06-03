@@ -4,7 +4,7 @@
 // anchor; the final step is a centered card sending the user off to create
 // their own story.
 
-export type TourStepId = "branching" | "steer" | "atlas" | "quota" | "byok" | "create";
+export type TourStepId = "branching" | "steer" | "atlas" | "quota" | "create";
 
 export type Placement = "top" | "bottom" | "left" | "right" | "center";
 
@@ -18,8 +18,7 @@ export const TOUR_STEPS: readonly TourStep[] = [
   { id: "branching", anchor: '[data-tour="branches"]', placement: "top" },
   { id: "steer", anchor: '[data-tour="steer"]', placement: "top" },
   { id: "atlas", anchor: '[data-tour="atlas"]', placement: "bottom" },
-  { id: "quota", anchor: '[data-tour="settings"]', placement: "bottom" },
-  { id: "byok", anchor: '[data-tour="settings"]', placement: "bottom" },
+  { id: "quota", anchor: '[data-tour="quota"]', placement: "top" },
   { id: "create", anchor: null, placement: "center" },
 ] as const;
 

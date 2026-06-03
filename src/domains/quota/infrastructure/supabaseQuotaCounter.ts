@@ -2,20 +2,35 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/lib/db.types";
 import { windowStart } from "../domain/quota";
 
-// Counts the caller's server-key generations inside the rolling quota window.
-// RLS scopes rows to the owner, so this only ever counts the user's own nodes.
-export async function countServerKeyNodes(
+// Counts the caller's quota-bearing generations inside the rolling window. RLS
+// scopes rows to the owner. Demo nodes (the onboarding story) are excluded so the
+// guided tour never spends a user's allowance.
+export async function countQuotaNodes(
   supabase: SupabaseClient<Database>,
   userId: string,
   now: Date = new Date(),
 ): Promise<number> {
   const since = windowStart(now).toISOString();
-  const { count, error } = await supabase
+
+  const { data: demoStories, error: demoError } = await supabase
+    .from("stories")
+    .select("id")
+    .eq("user_id", userId)
+    .eq("is_demo", true);
+  if (demoError) throw new Error(`countQuotaNodes: ${demoError.message}`);
+
+  let query = supabase
     .from("nodes")
     .select("id", { count: "exact", head: true })
     .eq("created_by", userId)
-    .eq("used_server_key", true)
     .gte("created_at", since);
-  if (error) throw new Error(`countServerKeyNodes: ${error.message}`);
+
+  const demoIds = (demoStories ?? []).map((s) => s.id);
+  if (demoIds.length > 0) {
+    query = query.not("story_id", "in", `(${demoIds.join(",")})`);
+  }
+
+  const { count, error } = await query;
+  if (error) throw new Error(`countQuotaNodes: ${error.message}`);
   return count ?? 0;
 }

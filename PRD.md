@@ -99,7 +99,7 @@ The two new risks it introduces — **two-sided-platform cold start** and **read
 ### v1 (lightweight sharing + retention)
 - [ ] Shareable read-only/forkable link to a story tree.
 - [ ] "Fork from here" for visitors (creates their own copy/branch).
-- [ ] Cost controls: per-user branch quota and/or **BYOK** (bring your own API key).
+- [ ] Cost controls: per-user branch quota (free allowance) + a planned **buy-credits** model (see §7). (BYOK was trialled and removed.)
 - [ ] Story metadata: title, cover/genre, author handle.
 - [ ] Basic export (Markdown of a chosen path).
 
@@ -121,15 +121,28 @@ The two new risks it introduces — **two-sided-platform cold start** and **read
 - Reading any existing branch = **zero** cost (served from DB).
 - Therefore cost scales with *branch creation*, not *engagement*. A popular tree's cost-per-read trends to zero — the opposite of AI Dungeon's "every play is fresh generation" curse.
 
-**Cost-control levers (must ship at v1):**
-1. **BYOK** — users supply their own API key. Kills the cost risk entirely, fits a technical/creative early-adopter audience, and is a proven model (Novelcrafter). Strong default for the part-time stage.
-2. **Branch credits / quotas** — free tier gets N branches; paid tiers get more.
-3. Cap or rate-limit forking so power users can't run up dead-end branches nobody reads.
+**Cost-control levers:**
+1. **Branch credits / quotas** — free tier gets a rolling-window allowance; paid users **buy
+   credits** (non-expiring) for more. This is the chosen direction.
+2. Cap or rate-limit forking so power users can't run up dead-end branches nobody reads.
+
+> **Decision (2026-06-03):** BYOK was trialled (T12) then removed. The client key store + model
+> picker added security surface and ergonomic cost for a single-player MVP; we're going
+> **credits-first** instead.
+
+**Buy-credits model (the chosen direction; not yet built):**
+- **Hybrid quota.** The monthly rolling window stays as the **free tier**; users can additionally
+  buy credits that **do not expire**. Spend draws from purchased credits, falling back to the free
+  window.
+- **Unit.** 1 credit = 1 generation — a root passage and each branch cost the same.
+- **Onboarding.** New users get a **free starter balance** to try without paying.
+- **Deferred to a dedicated spec:** the payment processor, the credit balance/ledger tables, the
+  spend-then-window fallback logic, and the purchase UI.
 
 **Candidate monetization:**
-- Free: read + limited branching of own/shared stories.
+- Free: read + a rolling-window allowance of new branches.
+- Credits: buy non-expiring branch credits on top of the free allowance.
 - Pro subscription (~$8–15/mo): higher/unlimited branch quota, private stories, export, premium models.
-- BYOK tier: low/flat fee, user pays generation directly.
 
 **Realism:** target the ~18% outcome band ($1–5k MRR). Distribution, not the build, is the gating factor.
 
@@ -175,7 +188,7 @@ The two new risks it introduces — **two-sided-platform cold start** and **read
 - **Backend/data:** Supabase (founder's existing strength). Schema sketch: `stories`, `nodes` (id, story_id, parent_id, title, summary, content, steer, created_by), `users`. Tree = adjacency list via `parent_id`.
 - **Generation:** Claude API. Each branch call receives the **ancestor chain** (summaries + last passage) for coherence. Store `summary` per node to keep context cheap.
 - **Caching = persistence:** because passages are immutable once written, the DB *is* the cache. No regeneration on read.
-- **BYOK:** store/use user key client-side or via secure edge function; never log keys.
+- **Server key only:** all generation runs on the server's OpenRouter key inside Route Handlers, gated by the per-user quota; the key never reaches a client bundle or a log. (BYOK removed.)
 - **Coherence upgrade path (later):** a "story bible"/Codex (characters, world facts) maintained per tree and injected into generation — a natural fit for the founder's **RAG/MCP** experience and a real differentiator vs. naive prompt-chaining. This is the credible deepening of the moat over time.
 - **Cost guardrails:** quota checks server-side before any generation call.
 
@@ -188,7 +201,7 @@ The two new risks it introduces — **two-sided-platform cold start** and **read
 | **Two-sided cold start** (empty platform feels dead) | High | Ship single-player first; defer social; seed with founder-made trees; lightweight share links before full network |
 | **Reader-triggered generation cost** | High | BYOK + branch quotas + fork rate-limits from v1 |
 | **Commoditization / clonability** | Med | Compete on library + graph + coherence engine, not generation |
-| **Model/platform dependency** | Med | Model-agnostic generation layer; BYOK reduces exposure |
+| **Model/platform dependency** | Med | Model-agnostic generation layer via OpenRouter; default model is env-configurable |
 | **Quality/coherence drift down long paths** | Med | Ancestor-chain context now; story-bible/RAG later |
 | **Moderation** (shared UGC + AI output) | Med | Content policy + filtering before any public discovery launches (note: this nearly sank AI Dungeon) |
 | **Distribution as the real bottleneck** | High | Community-led GTM + shareable-link loop; treat marketing as the main job, not the code |
@@ -210,7 +223,7 @@ The two new risks it introduces — **two-sided-platform cold start** and **read
 
 - **Phase 0 — Validate (now):** use the prototype; answer the author-vs-explorer decision (§4).
 - **Phase 1 — Single-player MVP:** persistence, auth, tree + branching + steering + frozen cache. Goal: prove the loop is fun and retentive for *you and a handful of testers*.
-- **Phase 2 — Lightweight sharing + monetization:** share links, fork-from-share, BYOK/quotas, Pro tier. Goal: first paying users via community GTM.
+- **Phase 2 — Lightweight sharing + monetization:** share links, fork-from-share, buy-credits + quotas, Pro tier. Goal: first paying users via community GTM.
 - **Phase 3 — Social + coherence engine:** discovery, graph features, story-bible/RAG. Goal: network effects + deepened moat → durable MRR and acquirability.
 
 ---
@@ -218,7 +231,7 @@ The two new risks it introduces — **two-sided-platform cold start** and **read
 ## 15. Open questions / decisions to make
 
 1. **Author vs. explorer** (§4) — the scope-defining decision.
-2. BYOK-first vs. credits-first for the initial cost model?
+2. ~~BYOK-first vs. credits-first for the initial cost model?~~ **Resolved (2026-06-03): credits-first.** BYOK was trialled then removed; the buy-credits direction lives in §7.
 3. Passage length: fixed-short, or user-adjustable?
 4. How "social" before it's a distraction — links only, or minimal profiles, in v1?
 5. Which moment is the *shareable* artifact — a single path, or the whole tree?

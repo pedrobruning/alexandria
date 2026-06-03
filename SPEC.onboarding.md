@@ -7,21 +7,21 @@
 ## Objective
 
 A first-time, signed-in user lands in Alexandria with no idea that a story is a *tree*. The
-core concepts (branching, steering a fork, the Atlas map, the quota, BYOK) only become visible
+core concepts (branching, steering a fork, the Atlas map, the quota) only become visible
 *inside a story that already has passages* — which a brand-new user does not have. Onboarding
 exists to close that gap on the very first sign-in.
 
 **What we build:** a hand-built, pixel-styled **spotlight tour** that runs against a **seeded
 read-only demo story**. On first sign-in we auto-create a small pre-branched demo story owned
 by the user; the tour spotlights its *real* Atlas, steer box, and fork button with tooltips,
-explains quota + BYOK, then ends by sending the user to create their own story. It is
+explains the quota, then ends by sending the user to create their own story. It is
 **skippable** at every step and **replayable** from a help (`?`) entry in the header.
 
 **Who:** signed-in testers/founder (Phase 1). Single-player; no conversion funnel.
 
 **Success looks like:** a new user finishes (or skips) the tour understanding that passages
-fork into coexisting timelines, that the steer box nudges a fork, and where the Atlas / quota /
-BYOK live — without us having spent a single OpenRouter call to teach them.
+fork into coexisting timelines, that the steer box nudges a fork, and where the Atlas / quota
+live — without us having spent a single OpenRouter call to teach them.
 
 ### Reframed success criteria (testable)
 
@@ -79,9 +79,8 @@ src/components/onboarding/
   HelpButton.tsx                               header "?" entry to replay
 
 # anchors added to existing components (data-tour attributes; no behavior change):
-src/components/reader/Reader.tsx               data-tour="steer" | "fork", read-only + lang-switch when is_demo
+src/components/reader/Reader.tsx               data-tour="steer" | "fork" | "quota", read-only + lang-switch when is_demo
 src/components/atlas/AtlasModal.tsx (+ button) data-tour="atlas"
-src/components/settings/Byok.tsx (button)      data-tour="settings"
 
 src/app/(app)/stories/page.tsx                 first-sign-in: ensure demo + mount tour; HelpButton
 src/app/(app)/stories/[id]/page.tsx            pass is_demo through; HelpButton in header
@@ -102,7 +101,7 @@ Pure step machine, fully unit-testable, no framework imports:
 
 ```ts
 // src/domains/onboarding/domain/tour.ts
-export type TourStepId = "branching" | "steer" | "atlas" | "quota" | "byok" | "create";
+export type TourStepId = "branching" | "steer" | "atlas" | "quota" | "create";
 
 export interface TourStep {
   id: TourStepId;
@@ -114,8 +113,7 @@ export const TOUR_STEPS: readonly TourStep[] = [
   { id: "branching", anchor: '[data-tour="atlas"]', placement: "bottom" },
   { id: "steer", anchor: '[data-tour="steer"]', placement: "top" },
   { id: "atlas", anchor: '[data-tour="atlas"]', placement: "bottom" },
-  { id: "quota", anchor: '[data-tour="settings"]', placement: "bottom" },
-  { id: "byok", anchor: '[data-tour="settings"]', placement: "bottom" },
+  { id: "quota", anchor: '[data-tour="quota"]', placement: "top" },
   { id: "create", anchor: null, placement: "center" },
 ] as const;
 
@@ -150,7 +148,7 @@ surface; the overlay's pixel positioning is verified in the browser at ~390px, n
   full gate before commit.
 - **Ask first:** any new dependency (we decided **none**); changing the demo's read-only
   semantics; deleting/garbage-collecting demo stories; making the tour a hard gate.
-- **Never:** call OpenRouter or touch quota to build the demo; persist/log a BYOK key; add an
+- **Never:** call OpenRouter or touch quota to build the demo; add an
   UPDATE path to `nodes.content`; query demo data with a service-role client; let the tour
   block a user who wants to skip straight to creating a story.
 
@@ -242,7 +240,7 @@ surface; the overlay's pixel positioning is verified in the browser at ~390px, n
   - Verify: browser — demo reader is non-writable, language switch swaps the canned content;
     real stories are unaffected; `npm test && npm run build` green.
   - Files: `src/components/reader/Reader.tsx`, `src/components/atlas/AtlasModal.tsx`,
-    `src/components/settings/Byok.tsx`, `src/components/stories/StoryCard.tsx`.
+    `src/components/stories/StoryCard.tsx`.
   - Deps: O3, O4. Scope: M.
 
 - [ ] **O6 · First-sign-in trigger + replay + verify** — assemble and prove it.

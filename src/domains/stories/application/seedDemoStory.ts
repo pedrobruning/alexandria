@@ -1,8 +1,8 @@
 import { getDemoStory } from "@/domains/onboarding/domain/demoStory";
 
 // Persistence needed to seed the onboarding demo. The Supabase adapter
-// (`supabaseDemoWriter`) hardcodes the demo's `model_used`/`used_server_key`
-// so demo nodes never count against quota; the use case stays unaware of that.
+// (`supabaseDemoWriter`) hardcodes the demo's `model_used`; demo stories are
+// excluded from the quota count, so the use case stays unaware of that.
 export type DemoStoryWriter = {
   deleteDemoStories(userId: string): Promise<void>;
   insertDemoStory(input: {

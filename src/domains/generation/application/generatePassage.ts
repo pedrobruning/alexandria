@@ -17,7 +17,7 @@ export type GeneratePassageInput = {
 };
 
 // Orchestrates one generation: build messages → call provider → parse result.
-// Provider-agnostic; the caller supplies key + model (server default or BYOK).
+// Provider-agnostic; the caller supplies the server key + default model.
 export async function generatePassage(input: GeneratePassageInput): Promise<GeneratedPassage> {
   const messages = input.ancestors
     ? buildBranchMessages(input.story, input.ancestors, input.steer ?? null)

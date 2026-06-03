@@ -17,7 +17,6 @@ export type StoryWriter = {
     content: string;
     summary: string;
     modelUsed: string;
-    usedServerKey: boolean;
     createdBy: string;
   }): Promise<{ id: string }>;
   setRootNode(storyId: string, nodeId: string): Promise<void>;
@@ -27,7 +26,6 @@ export type CreateStoryInput = {
   story: StoryContext;
   userId: string;
   model: string;
-  usedServerKey: boolean;
   generate: () => Promise<GeneratedPassage>;
   writer: StoryWriter;
 };
@@ -54,7 +52,6 @@ export async function createStory(input: CreateStoryInput): Promise<CreateStoryR
     content: passage.content,
     summary: passage.summary,
     modelUsed: input.model,
-    usedServerKey: input.usedServerKey,
     createdBy: input.userId,
   });
 

@@ -4,14 +4,13 @@ import { generatePassage } from "@/domains/generation/application/generatePassag
 import { createBranch } from "@/domains/stories/application/createBranch";
 import { supabaseBranchWriter } from "@/domains/stories/infrastructure/supabaseStoryWriter";
 import { getBranchContext } from "@/domains/stories/infrastructure/supabaseStoryReader";
-import { countServerKeyNodes } from "@/domains/quota/infrastructure/supabaseQuotaCounter";
+import { countQuotaNodes } from "@/domains/quota/infrastructure/supabaseQuotaCounter";
 import { checkQuota } from "@/domains/quota/domain/quota";
-import { resolveGenerationAuth } from "@/domains/generation/domain/credentials";
 import { pathFromRoot, type TreeNode } from "@/lib/tree/path";
 
 export const runtime = "nodejs";
 
-type Body = { parentId?: unknown; steer?: unknown; apiKey?: unknown; model?: unknown };
+type Body = { parentId?: unknown; steer?: unknown };
 
 function asTrimmed(value: unknown): string | null {
   return typeof value === "string" && value.trim() ? value.trim() : null;
@@ -40,23 +39,10 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     return NextResponse.json({ error: "generation is not configured" }, { status: 503 });
   }
 
-  const { apiKey, model, usedServerKey } = resolveGenerationAuth({
-    byokKey: asTrimmed(body.apiKey),
-    byokModel: asTrimmed(body.model),
-    serverKey,
-    defaultModel,
-  });
-
-  // BYOK bypasses the quota; only shared-key generations are counted/gated.
-  if (usedServerKey) {
-    const used = await countServerKeyNodes(supabase, user.id);
-    const decision = checkQuota({ used, usedServerKey });
-    if (!decision.allowed) {
-      return NextResponse.json(
-        { error: "quota_exceeded", limit: decision.limit },
-        { status: 429 },
-      );
-    }
+  const used = await countQuotaNodes(supabase, user.id);
+  const decision = checkQuota({ used });
+  if (!decision.allowed) {
+    return NextResponse.json({ error: "quota_exceeded", limit: decision.limit }, { status: 429 });
   }
 
   const context = await getBranchContext(supabase, storyId);
@@ -83,11 +69,16 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
       parentId,
       parentPath,
       userId: user.id,
-      model,
-      usedServerKey,
+      model: defaultModel,
       steer,
       generate: (ancestors, s) =>
-        generatePassage({ story: context.story, apiKey, model, ancestors, steer: s }),
+        generatePassage({
+          story: context.story,
+          apiKey: serverKey,
+          model: defaultModel,
+          ancestors,
+          steer: s,
+        }),
       writer: supabaseBranchWriter(supabase),
     });
     return NextResponse.json(result, { status: 201 });

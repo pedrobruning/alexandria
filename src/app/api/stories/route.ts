@@ -4,7 +4,8 @@ import { generatePassage } from "@/domains/generation/application/generatePassag
 import { createStory } from "@/domains/stories/application/createStory";
 import { supabaseStoryWriter } from "@/domains/stories/infrastructure/supabaseStoryWriter";
 import { DEFAULT_LANGUAGE, isLanguageCode } from "@/domains/generation/domain/language";
-import { resolveGenerationAuth } from "@/domains/generation/domain/credentials";
+import { countQuotaNodes } from "@/domains/quota/infrastructure/supabaseQuotaCounter";
+import { checkQuota } from "@/domains/quota/domain/quota";
 
 export const runtime = "nodejs";
 
@@ -13,8 +14,6 @@ type Body = {
   genre?: unknown;
   tone?: unknown;
   language?: unknown;
-  apiKey?: unknown;
-  model?: unknown;
 };
 
 function asTrimmed(value: unknown): string | null {
@@ -45,12 +44,11 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "generation is not configured" }, { status: 503 });
   }
 
-  const { apiKey, model, usedServerKey } = resolveGenerationAuth({
-    byokKey: asTrimmed(body.apiKey),
-    byokModel: asTrimmed(body.model),
-    serverKey,
-    defaultModel,
-  });
+  const used = await countQuotaNodes(supabase, user.id);
+  const decision = checkQuota({ used });
+  if (!decision.allowed) {
+    return NextResponse.json({ error: "quota_exceeded", limit: decision.limit }, { status: 429 });
+  }
 
   const story = { premise, genre, tone, language };
 
@@ -58,9 +56,8 @@ export async function POST(request: Request) {
     const result = await createStory({
       story,
       userId: user.id,
-      model,
-      usedServerKey,
-      generate: () => generatePassage({ story, apiKey, model }),
+      model: defaultModel,
+      generate: () => generatePassage({ story, apiKey: serverKey, model: defaultModel }),
       writer: supabaseStoryWriter(supabase),
     });
     return NextResponse.json(result, { status: 201 });

@@ -2,12 +2,13 @@
 
 > Derived from `SPEC.md`.
 > **Status:** ✅ MVP complete — all task cards T1–T12 landed and verified end-to-end in the
-> browser (sign in → create → read → steer-fork → Atlas navigation → frozen revisit → BYOK
-> past quota). Foundation (T1–T4), Auth (T5), Create (T6), Reader (T7), Branch+steer+quota
-> (T8), Atlas render + interaction (T9, T10), frozen-cache guard (T11), and BYOK + model
-> picker (T12) all done. Added scope: pixel design system, per-story generation language, UI
-> i18n, mobile-first pass. 58 unit tests green; typecheck/lint/build pass.
-> **Last updated:** 2026-06-02
+> browser (sign in → create → read → steer-fork → Atlas navigation → frozen revisit). Foundation
+> (T1–T4), Auth (T5), Create (T6), Reader (T7), Branch+steer+quota (T8), Atlas render +
+> interaction (T9, T10), frozen-cache guard (T11) all done. **BYOK (T12) was later removed** in
+> favor of a planned "buy credits" model (see Task 12 below); all generation now runs on
+> the quota-gated server key. Added scope: pixel design system, per-story generation language, UI
+> i18n, mobile-first pass. Tests green; typecheck/lint/build pass.
+> **Last updated:** 2026-06-03
 
 ## Progress Log
 
@@ -45,7 +46,7 @@ frozen passages with zero generation cost. Next.js App Router + Supabase + OpenR
 1. **Auth:** magic link (no passwords).
 2. **Summary:** model returns passage + one-line summary in a single structured response. (Also returns a 2–4 word chapter **title** — used by the story title and node labels.)
 3. **Default model:** configurable via `OPENROUTER_DEFAULT_MODEL` env. Locked: `openai/gpt-5.4-nano`.
-4. **Quota:** 20 server-key branches per user per rolling 30-day window; BYOK bypasses it.
+4. **Quota:** 20 generations per user per rolling 30-day window (free allowance; demo excluded). BYOK was removed; a "buy credits" model is planned to extend it (see Task 12 below).
 5. **Steer:** free-text box in the reader panel.
 6. **Generation language:** per-story, chosen at creation (English / Brazilian Portuguese). Persisted on `stories.language`; branches inherit it.
 7. **UI locale:** independent of generation language. next-intl, cookie-based (no URL routing), English default with first-render Accept-Language detection. en + pt-BR.
@@ -53,15 +54,15 @@ frozen passages with zero generation cost. Next.js App Router + Supabase + OpenR
 
 ## Architecture Decisions
 
-- **Server-only secrets.** All OpenRouter calls + quota checks live in Route Handlers. No
-  key (server or BYOK) ever reaches a client bundle or a log line.
+- **Server-only secrets.** All OpenRouter calls + quota checks live in Route Handlers. The
+  server key never reaches a client bundle or a log line.
 - **DB is the cache.** `nodes.content` is immutable — no UPDATE/regenerate path. Revisiting
   a node is a pure SELECT. This is the core economic guarantee, so it gets its own
   verification task (Task 11).
 - **Adjacency-list tree.** `nodes.parent_id`; tree layout computed client-side with
   `d3-hierarchy`, rendered as our own SVG (no graph lib).
-- **Generation layer is provider-abstracted** behind one module, so BYOK/model-choice and a
-  future provider swap are config, not a rewrite.
+- **Generation layer is provider-abstracted** behind one module, so a model change or a
+  future provider swap is config, not a rewrite.
 - **Vertical slices.** After a thin shared foundation, each task delivers a working,
   testable path rather than a horizontal layer.
 
@@ -74,15 +75,14 @@ Scaffold (T1) ── Supabase wiring (T2) ── Schema + RLS (T3)
                                               │
                             Auth / magic link (T5)
                                               │
-                 ┌────────────────────────────┼───────────────┐
-        Create story + root (T6)      Reader view (T7)         │
-                 │                            │                │
-        Branch + steer + quota (T8) ──────────┘                │
-                 │                                             │
-        Atlas render (T9) ── Atlas interaction (T10)           │
-                 │                                             │
-        Frozen-cache verify (T11)                              │
-        BYOK + model picker (T12) ─────────────────────────────┘
+                 ┌────────────────────────────┐
+        Create story + root (T6)      Reader view (T7)
+                 │                            │
+        Branch + steer + quota (T8) ──────────┘
+                 │
+        Atlas render (T9) ── Atlas interaction (T10)
+                 │
+        Frozen-cache verify (T11)
 ```
 
 ---
@@ -142,7 +142,7 @@ response. Mockable for tests. (Decide `OPENROUTER_DEFAULT_MODEL` here.)
 **Acceptance criteria:**
 - [x] `generate({ story, ancestors, steer, apiKey?, model? }) → { content, summary, title }`
 - [x] Ancestor chain assembly (unit tested)
-- [x] Accepts an injected key/model (enables BYOK + tests); never logs the key
+- [x] Accepts an injected key/model (keeps the client testable); never logs the key
 **Verification:**
 - [x] Unit tests (mocked HTTP) cover prompt build, ancestor assembly, response parse
 - [x] `npm test` green
@@ -211,7 +211,7 @@ from root, and the list of existing child branches.
 checks quota server-side, assembles ancestor chain, generates, inserts a child node.
 **Acceptance criteria:**
 - [x] Forking (with or without steer) inserts a child; multiple branches coexist off one node
-- [x] Server-key generation past quota is rejected with a clear message (429; BYOK exempt — exemption stubbed until T12)
+- [x] Generation past quota is rejected with a clear message (429)
 **Verification:**
 - [x] Unit: quota check logic — `tests/quota/quota.test.ts`; createBranch use case — `tests/stories/createBranch.test.ts`
 - [ ] Manual: create two steered branches off one node; both appear (needs live OpenRouter + DB)
@@ -258,7 +258,7 @@ new UI is designed for ~390px first (see CLAUDE.md → Styling & i18n).
 
 ---
 
-### Phase 3: Atlas, Cache Guarantee, BYOK
+### Phase 3: Atlas, Cache Guarantee
 
 ## Task 9: Story Atlas — static render ✅ (pending browser verify)
 **Description:** Compute tidy-tree layout (`d3-hierarchy`) and render SVG nodes/edges,
@@ -289,7 +289,7 @@ reader. Pulled forward while fixing the Atlas cutoff/side-panel layout.
 **Deviation:** selection lives in a shared `StoryWorkspace` client component (lifted `useState`),
 not the planned Zustand `src/store/atlas.ts`. Atlas + Reader are siblings under one parent, so props
 suffice (smallest-thing-that-works); revisit a store if a distant component needs selection or a
-view-transform needs sharing (e.g. BYOK settings, zoom).
+view-transform needs sharing (e.g. zoom).
 **Scope:** M
 
 ## Task 11: Frozen-cache verification ✅
@@ -311,29 +311,18 @@ calls — pure SELECT path. Add a regression test/guard around the read path.
 **Note:** `.tsx` (the behavioral half renders `<Reader>`); the read path is a pure SELECT
 with no generation seam, so the guard targets the source statically + the navigation behavior.
 
-## Task 12: BYOK + model picker ✅ (pending live browser verify)
-**Description:** Settings to enter an OpenRouter key (stored in localStorage) and pick a
-model; branch/root requests pass the key through transiently; BYOK bypasses quota; never
-persisted/logged server-side.
-**Acceptance criteria:**
-- [x] With a BYOK key set, generation uses it + the chosen model and bypasses quota
-  (`resolveGenerationAuth` → routes skip the quota check when `usedServerKey` is false)
-- [x] Key never appears in DB, server logs, or any response body (verified by inspection:
-  no `console.*` in routes; writers persist only `model_used` + `used_server_key`; routes
-  return only ids/errors; the key reaches just the OpenRouter `Authorization` header)
-**Verification:**
-- [x] Unit: `resolveGenerationAuth` — `tests/generation/credentials.test.ts` (6 tests)
-- [ ] Manual: set BYOK, generate past the would-be quota, confirm success (needs live keys)
-- [ ] Grep server logs for the key → absent (needs a live run)
-**Dependencies:** T8 (and T4)
-**Decision:** server key stays pinned to `OPENROUTER_DEFAULT_MODEL`; the model picker only
-takes effect when a BYOK key is set (so the shared key can't be spent on a pricier model).
-Key travels as a JSON body field; settings UI is a header modal.
-**Files:** `src/domains/generation/domain/credentials.ts`, `src/store/settings.ts`,
-`src/components/settings/Byok.tsx`, `src/app/api/stories/route.ts` +
-`src/app/api/stories/[id]/branch/route.ts`, `Reader.tsx` + `CreateStoryForm.tsx` (send key/model),
-header wiring in both `(app)/stories` pages, `messages/{en,pt-BR}.json` (`settings` namespace)
-**Scope:** M
+## Task 12: BYOK + model picker — ❌ REMOVED
+**Originally shipped** (key in localStorage, sent transiently, quota-exempt) but later **removed
+entirely** in favor of a planned "buy credits" model. All generation now runs on the quota-gated
+server key pinned to `OPENROUTER_DEFAULT_MODEL`; there is no client key store, no model picker, and
+no quota exemption. The `nodes.used_server_key` column was dropped (migration `0005`); quota counts
+the user's non-demo nodes in the rolling window.
+
+**Buy-credits direction (planned, not built):** the monthly rolling window stays as the **free
+tier**; users can additionally buy credits that **do not expire** (spend draws from purchased
+credits, falling back to the free window). 1 credit = 1 generation (root and each branch cost the
+same); new users get a **free starter balance**. The payment processor, credit balance/ledger
+tables, spend-then-window fallback, and purchase UI are deferred to a dedicated spec.
 
 ### Checkpoint: Complete (after T9–T12) ✅
 - [x] All 7 SPEC success criteria met
@@ -347,7 +336,7 @@ header wiring in both `(app)/stories` pages, `messages/{en,pt-BR}.json` (`settin
 A hand-built pixel spotlight tour that runs against a seeded, read-only **demo story**
 ("The Drowned Library"). Auto-starts on first sign-in (server-gated on
 `profiles.onboarded_at`), replayable from a `?` help button in both headers. Teaches
-branching, steering, and Atlas/quota/BYOK; the final step routes the user to create their own.
+branching, steering, and Atlas/quota; the final step routes the user to create their own.
 
 ## O1: Data layer ✅
 - `0004_onboarding.sql` (pushed to remote): `profiles.onboarded_at`, `stories.is_demo`.
@@ -389,7 +378,7 @@ branching, steering, and Atlas/quota/BYOK; the final step routes the user to cre
 |------|--------|------------|
 | Atlas layout/interaction is the trickiest UI | Med | Split into T9 (render) / T10 (interaction); fail fast in Phase 3 |
 | Structured passage+summary parsing flaky across models | Med | Strict parse + defensive fallback (derive summary from content); pin default model |
-| BYOK key leakage (log/persist) | High | Server-only pass-through, never store; explicit grep check in T12 verification |
+| Server key leakage (log/bundle) | High | All OpenRouter calls server-side in Route Handlers; key never in a client bundle, response body, or log |
 | Quota race (parallel forks exceed cap) | Low | Server-side count immediately before insert; acceptable slack for MVP |
 | RLS misconfig exposes other users' stories | High | Cross-user read test in T3 verification |
 

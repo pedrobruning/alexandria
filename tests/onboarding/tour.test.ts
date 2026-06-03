@@ -7,13 +7,12 @@ import {
 } from "@/domains/onboarding/domain/tour";
 
 describe("tour step machine", () => {
-  it("orders the steps: branching → steer → atlas → quota → byok → create", () => {
+  it("orders the steps: branching → steer → atlas → quota → create", () => {
     expect(TOUR_STEPS.map((s) => s.id)).toEqual([
       "branching",
       "steer",
       "atlas",
       "quota",
-      "byok",
       "create",
     ]);
   });

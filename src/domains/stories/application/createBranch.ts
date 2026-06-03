@@ -12,7 +12,6 @@ export type BranchWriter = {
     summary: string;
     steer: string | null;
     modelUsed: string;
-    usedServerKey: boolean;
     createdBy: string;
   }): Promise<{ id: string }>;
 };
@@ -24,7 +23,6 @@ export type CreateBranchInput = {
   parentPath: PathNode[];
   userId: string;
   model: string;
-  usedServerKey: boolean;
   steer: string | null;
   generate: (ancestors: AncestorContext, steer: string | null) => Promise<GeneratedPassage>;
   writer: BranchWriter;
@@ -46,7 +44,6 @@ export async function createBranch(input: CreateBranchInput): Promise<CreateBran
     summary: passage.summary,
     steer: input.steer,
     modelUsed: input.model,
-    usedServerKey: input.usedServerKey,
     createdBy: input.userId,
   });
 

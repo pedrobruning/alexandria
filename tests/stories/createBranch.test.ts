@@ -38,7 +38,6 @@ describe("createBranch", () => {
       parentPath,
       userId: "user-1",
       model: "openai/gpt-5.4-nano",
-      usedServerKey: true,
       steer: "but she refuses",
       generate: async (ancestors, steer) => {
         seen = { ancestors, steer };
@@ -65,7 +64,6 @@ describe("createBranch", () => {
         summary: passage.summary,
         steer: "but she refuses",
         modelUsed: "openai/gpt-5.4-nano",
-        usedServerKey: true,
         createdBy: "user-1",
       },
     ]);
@@ -81,7 +79,6 @@ describe("createBranch", () => {
         parentPath,
         userId: "user-1",
         model: "m",
-        usedServerKey: false,
         steer: null,
         generate: async () => {
           throw new Error("generation failed");

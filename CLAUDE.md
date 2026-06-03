@@ -99,10 +99,8 @@ in unit tests, unless there's pure derivation worth isolating.
 
 ## Security invariants (treat as load-bearing)
 
-- **Server-only secrets.** All OpenRouter calls + quota checks live in Route Handlers. Neither
-  the server key nor a BYOK key may ever reach a client bundle, a response body, or a log line.
-- **BYOK is transient.** A user's key arrives per-request, is used server-side, and is **never
-  persisted or logged**. BYOK bypasses the quota; the server key is quota-gated.
+- **Server-only secrets.** All OpenRouter calls + quota checks live in Route Handlers. The
+  server key must never reach a client bundle, a response body, or a log line.
 - **RLS scopes every row to its owner.** Reads/writes use the request-bound server client, so
   RLS is the real authorization boundary — never query with a service-role client from a route
   that serves user data.
@@ -113,7 +111,9 @@ in unit tests, unless there's pure derivation worth isolating.
 
 - Auth: magic link, no passwords.
 - Default model: `OPENROUTER_DEFAULT_MODEL`, locked to `openai/gpt-5.4-nano`.
-- Quota: 20 server-key branches per user per rolling 30-day window; BYOK exempt.
+- Quota: 20 generations per user per rolling 30-day window (free allowance; demo excluded).
+  A paid "buy credits" model is planned to extend this — see `SPEC.md` *Future direction* for
+  the direction. BYOK was removed.
 - Generation language: per-story, chosen at creation (en / pt-BR), persisted on
   `stories.language`; branches inherit it. **Independent** of the UI locale.
 - UI i18n: next-intl, cookie-based (no URL routing), en default with Accept-Language detection.

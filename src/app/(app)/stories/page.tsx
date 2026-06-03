@@ -5,7 +5,6 @@ import { createClient } from "@/lib/supabase/server";
 import { listStories } from "@/domains/stories/infrastructure/supabaseStoryReader";
 import { SignOutButton } from "@/components/auth/SignOutButton";
 import { LocaleSwitcher } from "@/components/i18n/LocaleSwitcher";
-import { SettingsButton } from "@/components/settings/Byok";
 import { Wordmark } from "@/components/pixel/Wordmark";
 import { PixelIcon } from "@/components/pixel/PixelIcon";
 import { HeaderMenu } from "@/components/pixel/HeaderMenu";
@@ -70,7 +69,6 @@ export default async function StoriesPage() {
             <HeaderMenu>
               <LocaleSwitcher />
               <HelpButton />
-              <SettingsButton />
               <Link className="btn" href="/stories/new">
                 <PixelIcon name="plus" size={16} color="#2B2118" /> {t("newStory")}
               </Link>

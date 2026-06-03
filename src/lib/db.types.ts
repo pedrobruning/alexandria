@@ -86,7 +86,6 @@ export type Database = {
           summary: string;
           steer: string | null;
           model_used: string;
-          used_server_key: boolean;
           created_by: string;
           created_at: string;
         };
@@ -99,7 +98,6 @@ export type Database = {
           summary: string;
           steer?: string | null;
           model_used: string;
-          used_server_key?: boolean;
           created_by: string;
           created_at?: string;
         };
@@ -112,7 +110,6 @@ export type Database = {
           summary?: string;
           steer?: string | null;
           model_used?: string;
-          used_server_key?: boolean;
           created_by?: string;
           created_at?: string;
         };

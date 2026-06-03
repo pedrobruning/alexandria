@@ -52,7 +52,7 @@
     "exitReading": "Exit reading mode",
     "forking": "unearthing the next passage…",
     "forkFailed": "The fork would not take. Try again.",
-    "quotaExceeded": "You've reached your branch limit for now. Add your own OpenRouter key to keep going.",
+    "quotaExceeded": "You've used your free passages for now. They'll refresh as your 30-day window rolls forward.",
     "passagesLeft": "{count, plural, one {# free passage left} other {# free passages left}}",
     "generatingSub": "Writing the next passage",
     "generatingMessages": [
@@ -63,22 +63,6 @@
       "The stars rearrange themselves…",
       "A fresh passage takes shape…"
     ]
-  },
-  "settings": {
-    "open": "Use your key",
-    "title": "Bring your own key",
-    "close": "Close settings",
-    "intro": "Bring your own OpenRouter key to generate with your own account and chosen model. With a key set, your branches skip the shared limit.",
-    "keyLabel": "OpenRouter API key",
-    "keyPlaceholder": "sk-or-…",
-    "modelLabel": "Model",
-    "privacy": "Stored only in this browser. Sent straight to OpenRouter for each passage — never saved on our servers or written to a log.",
-    "save": "Save",
-    "saved": "Saved.",
-    "clear": "Clear key",
-    "models": {
-      "default": "App default"
-    }
   },
   "create": {
     "back": "Back to the archive",
@@ -142,11 +126,7 @@
       },
       "quota": {
         "title": "Your branch allowance",
-        "body": "New branches draw on a shared allowance — 20 every 30 days. Revisiting passages you've already written never counts."
-      },
-      "byok": {
-        "title": "Bring your own key",
-        "body": "Want a different model or more headroom? Add an OpenRouter key in Settings. It stays in your browser and skips the shared limit."
+        "body": "New branches draw on a free allowance — 20 every 30 days. Revisiting passages you've already written never counts."
       },
       "create": {
         "title": "Now, your turn",
@@ -191,8 +171,8 @@
       "title": "A library you build, not output you discard.",
       "frozenTitle": "Written once, yours forever",
       "frozenBody": "Revisiting a passage is instant and free — no regeneration, no surprise bills. The story you wrote stays exactly as you left it.",
-      "byokTitle": "Your model, your key",
-      "byokBody": "Use the included allowance, or bring your own OpenRouter key and pick any model. Your key stays in your browser — never stored, never logged.",
+      "allowanceTitle": "A free allowance to begin",
+      "allowanceBody": "Every account comes with a built-in allowance of new passages — enough to grow real timelines before you ever think about cost.",
       "yoursTitle": "Single-player, no noise",
       "yoursBody": "No feeds, no followers, no algorithm. Just you and the tree of everything your story could become."
     },
@@ -201,8 +181,8 @@
       "title": "The short version.",
       "publicQ": "Is it open yet?",
       "publicA": "Alexandria is in public beta. Sign in with a magic link and start writing — no waitlist.",
-      "keyQ": "Do I need an API key?",
-      "keyA": "No. There's a built-in allowance to get you going. Bring your own OpenRouter key only if you want a specific model or more headroom.",
+      "keyQ": "Do I need to pay to start?",
+      "keyA": "No. Every account comes with a free allowance of new passages to get you going — no setup, no card required.",
       "languagesQ": "What languages can I write in?",
       "languagesA": "English or Brazilian Portuguese, chosen per story — independent of the language you read the site in.",
       "oneshotQ": "Is this an AI book generator?",

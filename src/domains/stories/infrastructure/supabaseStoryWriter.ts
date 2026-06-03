@@ -35,7 +35,6 @@ export function supabaseStoryWriter(supabase: SupabaseClient<Database>): StoryWr
           content: input.content,
           summary: input.summary,
           model_used: input.modelUsed,
-          used_server_key: input.usedServerKey,
           created_by: input.createdBy,
         })
         .select("id")
@@ -68,7 +67,6 @@ export function supabaseBranchWriter(supabase: SupabaseClient<Database>): Branch
           summary: input.summary,
           steer: input.steer,
           model_used: input.modelUsed,
-          used_server_key: input.usedServerKey,
           created_by: input.createdBy,
         })
         .select("id")
@@ -79,9 +77,9 @@ export function supabaseBranchWriter(supabase: SupabaseClient<Database>): Branch
   };
 }
 
-// Supabase-backed DemoStoryWriter for onboarding. Demo nodes are marked
-// `used_server_key: false` so they never count against quota, and carry a
-// sentinel `model_used` since no model produced them. Re-seeding (language
+// Supabase-backed DemoStoryWriter for onboarding. Demo nodes carry a sentinel
+// `model_used` since no model produced them, and the quota counter excludes
+// demo stories so they never spend a user's allowance. Re-seeding (language
 // switch) deletes the user's demo story; nodes cascade via the FK because
 // `nodes` has no DELETE policy by design (immutability). RLS scopes every row.
 export function supabaseDemoWriter(supabase: SupabaseClient<Database>): DemoStoryWriter {
@@ -124,7 +122,6 @@ export function supabaseDemoWriter(supabase: SupabaseClient<Database>): DemoStor
           summary: input.summary,
           steer: input.steer,
           model_used: "demo",
-          used_server_key: false,
           created_by: input.createdBy,
         })
         .select("id")

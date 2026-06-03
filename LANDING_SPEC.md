@@ -68,7 +68,7 @@ src/
       TreeNotLine.tsx                  the "a story is a tree, not a line" explainer + visual
       HowItWorks.tsx                   create → read → steer-fork → revisit, as ordered steps
       WhyDifferent.tsx                 the moat/economics in human terms (revisit is free, etc.)
-      Faq.tsx                          a few honest Q&As (early access, BYOK, what it is/isn't)
+      Faq.tsx                          a few honest Q&As (early access, free allowance, what it is/isn't)
       LandingFooter.tsx                wordmark, final CTA, locale switcher, minimal links
       Reveal.tsx         ("use client") small scroll-reveal wrapper (IntersectionObserver)
   app/globals.css                    → add ONLY landing-specific classes if a utility won't do
@@ -98,11 +98,11 @@ noted.
    ~250-word passage → Steer a fork → Revisit any timeline, instantly.* Plain language, pixel
    `seal`/`PixelIcon` accents.
 4. **Why it's different** — translate the moat/economics (`PRD.md` §3, §7) into reader
-   benefits: written passages are **frozen** so revisiting is instant and free; bring your own
-   model (BYOK) or use the included quota; it's a library you build, not a thing you generate
-   and discard. No jargon, no metrics dashboards.
+   benefits: written passages are **frozen** so revisiting is instant and free; every account
+   comes with a **free allowance** of new passages; it's a library you build, not a thing you
+   generate and discard. No jargon, no metrics dashboards.
 5. **FAQ** — 3–5 honest entries: "Is this public yet?" (early access, founder + testers),
-   "Do I need an API key?" (BYOK optional, quota included), "What languages?" (write in English
+   "Do I need to pay to start?" (free allowance included), "What languages?" (write in English
    or Brazilian Portuguese), "What happened to one-shot books?" (we branch instead).
 6. **Footer / final CTA** — `Wordmark`, a repeat **"Begin"** CTA, `LocaleSwitcher`, and a
    tagline. No social links (none exist in this phase).
@@ -201,8 +201,8 @@ UI is verified in the browser, not asserted in unit tests (per `CLAUDE.md`). So:
 
 1. **Hero backdrop:** reuse the existing in-app `AtlasSky` starfield plus a decorative
    branching-tree overlay. Do **not** port the design bundle's `PixelPanorama`.
-2. **Beta framing + BYOK:** the product is positioned as **public beta / early access** (founder
-   + testers, anyone can join). The FAQ may openly mention BYOK as an option.
+2. **Beta framing:** the product is positioned as **public beta / early access** (founder
+   + testers, anyone can join). The FAQ frames cost as a free included allowance.
 3. **Headline:** write a punchier headline than the design bundle's
    *"Every story is a map of the stories it could have been"* (which can survive as a subhead
    or supporting line). Draft 2–3 options in the Plan phase for selection.

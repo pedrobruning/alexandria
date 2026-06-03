@@ -34,13 +34,10 @@ state survives refresh, branching is genuinely engaging to use, and cost is boun
   math; we render the SVG ourselves — no heavyweight graph lib).
 - **Data + Auth:** Supabase (Postgres + Auth). Client uses `@supabase/supabase-js`;
   server uses `@supabase/ssr` for cookie-based sessions in App Router.
-- **Generation:** **OpenRouter** (model-agnostic). Two key modes, both supported:
-  1. **Default (server key):** `OPENROUTER_API_KEY` in server env, gated by a per-user
-     **branch quota** so testers can't run up cost.
-  2. **BYOK:** user supplies their own OpenRouter key + picks a model. Key lives in the
-     **browser** (localStorage), sent over HTTPS with each generate request, used
-     transiently server-side, and **never persisted or logged**. BYOK requests bypass the
-     quota.
+- **Generation:** **OpenRouter** (model-agnostic). All generation runs on the **server key**
+  (`OPENROUTER_API_KEY` in server env), pinned to `OPENROUTER_DEFAULT_MODEL` and gated by a
+  per-user **branch quota** so testers can't run up cost. (BYOK was removed; a "buy credits"
+  model is planned to extend the quota — see *Future direction* below.)
 - **State/data fetching:** Server Components for reads; a thin client store (Zustand) for
   the interactive Atlas/reader selection state. No heavier state lib in MVP.
 
@@ -92,7 +89,6 @@ src/
   components/                        → INTERFACE (UI), grouped by feature
     atlas/                             SVG tree: nodes, edges, current path, fork badges
     reader/                            passage text, breadcrumb, branch list, steer box
-    settings/                          BYOK key + model picker
     ui/                                shared primitives
   lib/                               → cross-cutting shared infra (not a domain)
     supabase/{client,server}.ts        Supabase client factories
@@ -215,14 +211,14 @@ export function buildBranchMessages(
 ## Boundaries
 
 - **Always:** run `npm run typecheck && npm run lint && npm test` before any commit; check
-  quota server-side before generation; keep passages immutable; keep BYOK keys out of the DB
-  and out of logs; enforce RLS on every table.
+  quota server-side before generation; keep passages immutable; keep the server key out of
+  client bundles and out of logs; enforce RLS on every table.
 - **Ask first:** changing the data model / migrations; adding dependencies beyond those named
   here; changing the generation provider away from OpenRouter; anything that touches cost
   (quota size, default model).
-- **Never:** commit secrets or `.env`; log API keys (server or BYOK); persist a BYOK key
-  server-side; add an UPDATE path that regenerates a frozen passage; build sharing/social/
-  discovery features in this phase; ship one-shot full-book generation.
+- **Never:** commit secrets or `.env`; log the server API key; add an UPDATE path that
+  regenerates a frozen passage; build sharing/social/discovery features in this phase; ship
+  one-shot full-book generation.
 
 ## Success Criteria
 
@@ -236,8 +232,8 @@ export function buildBranchMessages(
    (verified via network panel + server logs).
 5. All state persists across refresh and re-login (Supabase), scoped to the owning user by
    RLS.
-6. Generation works in **both** key modes: server default key (quota-gated) and BYOK
-   (user's OpenRouter key + chosen model, never persisted/logged).
+6. Generation runs on the server key (quota-gated), pinned to the default model; the server
+   key never reaches a client bundle or a log line.
 7. `npm run typecheck && npm run lint && npm test` all pass; core `lib/` logic ≥ 80% covered.
 8. **Mobile-first:** every screen (archive, create, reader, Atlas modal) is fully usable on a
    ~390px phone viewport with no horizontal overflow — headers wrap, the Atlas window fills the
@@ -248,8 +244,25 @@ export function buildBranchMessages(
 1. **Auth:** magic link (no passwords).
 2. **Summary:** model returns passage + one-line summary in a single structured response.
 3. **Default model:** `OPENROUTER_DEFAULT_MODEL=openai/gpt-5.4-nano` (env-configurable).
-4. **Quota:** 20 server-key branches per user per **rolling 30-day** window; BYOK bypasses it.
+4. **Quota:** 20 generations per user per **rolling 30-day** window (free allowance; demo
+   excluded). BYOK was removed; the quota gates **every** generation. A "buy credits" model is
+   planned to extend it — see *Future direction* below.
 5. **Steer:** free-text box in the reader panel.
 6. **Architecture:** Domain-Driven, organized by domain with pure `domain/` logic separated
    from `infrastructure/` I/O; Next.js routes/components are a thin interface layer.
 ```
+
+## Future direction — buy-credits model
+
+BYOK (bring-your-own OpenRouter key) was trialled and **removed**: every generation now runs on
+the shared server key, pinned to `OPENROUTER_DEFAULT_MODEL`, and the rolling-window quota is the
+single economic model. The planned replacement for "more headroom" is a **buy-credits** model,
+**not yet built** (no payment processor, balance, ledger, or checkout exists today):
+
+- **Hybrid quota.** The monthly rolling window stays as the **free tier**; users can additionally
+  buy credits that **do not expire**. Spend draws from purchased credits, falling back to the
+  free window.
+- **Unit.** 1 credit = 1 generation — a root passage and each branch cost the same.
+- **Onboarding.** New users get a **free starter balance** so they can try without paying.
+- **Deferred to a dedicated spec:** the payment processor, the credit balance/ledger tables, the
+  spend-then-window fallback logic, and the purchase UI.

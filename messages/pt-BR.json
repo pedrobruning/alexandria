@@ -52,7 +52,7 @@
     "exitReading": "Sair do modo leitura",
     "forking": "desenterrando a próxima passagem…",
     "forkFailed": "A bifurcação não pegou. Tente novamente.",
-    "quotaExceeded": "Você atingiu seu limite de bifurcações por ora. Adicione sua própria chave OpenRouter para continuar.",
+    "quotaExceeded": "Você usou suas passagens grátis por ora. Elas se renovam conforme sua janela de 30 dias avança.",
     "passagesLeft": "{count, plural, one {# passagem grátis restante} other {# passagens grátis restantes}}",
     "generatingSub": "Escrevendo a próxima passagem",
     "generatingMessages": [
@@ -63,22 +63,6 @@
       "As estrelas se reorganizam…",
       "Uma nova passagem toma forma…"
     ]
-  },
-  "settings": {
-    "open": "Usar sua chave",
-    "title": "Use sua própria chave",
-    "close": "Fechar configurações",
-    "intro": "Use sua própria chave do OpenRouter para gerar com sua conta e o modelo que escolher. Com uma chave definida, suas bifurcações ignoram o limite compartilhado.",
-    "keyLabel": "Chave de API do OpenRouter",
-    "keyPlaceholder": "sk-or-…",
-    "modelLabel": "Modelo",
-    "privacy": "Guardada apenas neste navegador. Enviada direto ao OpenRouter a cada passagem — nunca salva em nossos servidores nem registrada em log.",
-    "save": "Salvar",
-    "saved": "Salvo.",
-    "clear": "Limpar chave",
-    "models": {
-      "default": "Padrão do app"
-    }
   },
   "create": {
     "back": "Voltar ao arquivo",
@@ -142,11 +126,7 @@
       },
       "quota": {
         "title": "Seu limite de ramos",
-        "body": "Novos ramos consomem um limite compartilhado — 20 a cada 30 dias. Revisitar passagens que você já escreveu nunca conta."
-      },
-      "byok": {
-        "title": "Use sua própria chave",
-        "body": "Quer outro modelo ou mais folga? Adicione uma chave da OpenRouter nas Configurações. Ela fica no seu navegador e ignora o limite compartilhado."
+        "body": "Novos ramos consomem uma cota grátis — 20 a cada 30 dias. Revisitar passagens que você já escreveu nunca conta."
       },
       "create": {
         "title": "Agora é com você",
@@ -191,8 +171,8 @@
       "title": "Uma biblioteca que você constrói, não um resultado que você descarta.",
       "frozenTitle": "Escrita uma vez, sua para sempre",
       "frozenBody": "Revisitar uma passagem é instantâneo e gratuito — sem regeneração, sem contas surpresa. A história que você escreveu permanece exatamente como você a deixou.",
-      "byokTitle": "Seu modelo, sua chave",
-      "byokBody": "Use a cota inclusa ou traga sua própria chave da OpenRouter e escolha qualquer modelo. Sua chave fica no seu navegador — nunca armazenada, nunca registrada.",
+      "allowanceTitle": "Uma cota grátis para começar",
+      "allowanceBody": "Toda conta vem com uma cota inclusa de novas passagens — o bastante para cultivar linhas do tempo de verdade antes de pensar em custo.",
       "yoursTitle": "Um jogador, sem ruído",
       "yoursBody": "Sem feeds, sem seguidores, sem algoritmo. Só você e a árvore de tudo o que sua história pode se tornar."
     },
@@ -201,8 +181,8 @@
       "title": "A versão curta.",
       "publicQ": "Já está no ar?",
       "publicA": "Alexandria está em beta pública. Entre com um link mágico e comece a escrever — sem lista de espera.",
-      "keyQ": "Preciso de uma chave de API?",
-      "keyA": "Não. Há uma cota inclusa para você começar. Traga sua própria chave da OpenRouter só se quiser um modelo específico ou mais espaço.",
+      "keyQ": "Preciso pagar para começar?",
+      "keyA": "Não. Toda conta vem com uma cota grátis de novas passagens para você começar — sem configuração, sem cartão.",
       "languagesQ": "Em quais idiomas posso escrever?",
       "languagesA": "Inglês ou português do Brasil, escolhido por história — independente do idioma em que você lê o site.",
       "oneshotQ": "Isto é um gerador de livros com IA?",

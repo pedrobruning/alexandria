@@ -41,7 +41,6 @@ describe("createStory", () => {
       story,
       userId: "user-1",
       model: "openai/gpt-5.4-nano",
-      usedServerKey: true,
       generate: async () => passage,
       writer,
     });
@@ -66,7 +65,6 @@ describe("createStory", () => {
         content: passage.content,
         summary: passage.summary,
         modelUsed: "openai/gpt-5.4-nano",
-        usedServerKey: true,
         createdBy: "user-1",
       },
     ]);
@@ -82,7 +80,6 @@ describe("createStory", () => {
         story,
         userId: "user-1",
         model: "m",
-        usedServerKey: false,
         generate: async () => {
           throw new Error("generation failed");
         },

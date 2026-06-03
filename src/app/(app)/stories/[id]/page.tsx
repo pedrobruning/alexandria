@@ -3,11 +3,10 @@ import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
 import { getStory } from "@/domains/stories/infrastructure/supabaseStoryReader";
-import { countServerKeyNodes } from "@/domains/quota/infrastructure/supabaseQuotaCounter";
+import { countQuotaNodes } from "@/domains/quota/infrastructure/supabaseQuotaCounter";
 import { remainingQuota } from "@/domains/quota/domain/quota";
 import { SignOutButton } from "@/components/auth/SignOutButton";
 import { LocaleSwitcher } from "@/components/i18n/LocaleSwitcher";
-import { SettingsButton } from "@/components/settings/Byok";
 import { Wordmark } from "@/components/pixel/Wordmark";
 import { PixelIcon } from "@/components/pixel/PixelIcon";
 import { HeaderMenu } from "@/components/pixel/HeaderMenu";
@@ -25,17 +24,16 @@ export default async function StoryPage({ params }: { params: Promise<{ id: stri
     notFound();
   }
 
-  // Remaining shared-key branches, re-read on every navigation (the reader calls
-  // router.refresh() after a fork, so this stays current). Demo stories never
-  // spend the allowance, so skip the count there.
+  // Remaining branch allowance, re-read on every navigation (the reader calls
+  // router.refresh() after a fork, so this stays current). The counter excludes
+  // demo nodes, so this reflects the real allowance even on the demo story —
+  // which is what the onboarding tour spotlights.
   let quotaRemaining = 0;
-  if (!story.isDemo) {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (user) {
-      quotaRemaining = remainingQuota(await countServerKeyNodes(supabase, user.id));
-    }
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (user) {
+    quotaRemaining = remainingQuota(await countQuotaNodes(supabase, user.id));
   }
 
   return (
@@ -65,7 +63,6 @@ export default async function StoryPage({ params }: { params: Promise<{ id: stri
             <HeaderMenu>
               <LocaleSwitcher />
               <HelpButton />
-              <SettingsButton />
               <SignOutButton />
             </HeaderMenu>
           </div>

@@ -4,7 +4,7 @@ import { Reveal } from "./Reveal";
 
 const POINTS: { key: string; icon: IconName }[] = [
   { key: "frozen", icon: "check" },
-  { key: "byok", icon: "key" },
+  { key: "allowance", icon: "scroll" },
   { key: "yours", icon: "star" },
 ];
 
