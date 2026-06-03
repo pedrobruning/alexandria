@@ -1,11 +1,11 @@
 import { describe, expect, it, vi } from "vitest";
 import { generatePassage } from "@/domains/generation/application/generatePassage";
-import type { OpenRouterCaller } from "@/domains/generation/infrastructure/openrouter";
+import type { ModelCaller } from "@/domains/generation/domain/modelCaller";
 import type { StoryContext } from "@/domains/generation/domain/types";
 
 const story: StoryContext = { premise: "A heist", genre: "thriller", tone: "tense", language: "en" };
 
-function fakeCaller(content: string): OpenRouterCaller {
+function fakeCaller(content: string): ModelCaller {
   return vi.fn(async () => content);
 }
 

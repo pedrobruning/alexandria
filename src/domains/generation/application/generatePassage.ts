@@ -1,7 +1,8 @@
 import { buildBranchMessages, buildRootMessages } from "../domain/buildPrompt";
+import type { ModelCaller } from "../domain/modelCaller";
 import { parseGeneration } from "../domain/parse";
 import type { AncestorContext, GeneratedPassage, StoryContext } from "../domain/types";
-import { callOpenRouter, type OpenRouterCaller } from "../infrastructure/openrouter";
+import { resolveModelCaller } from "../infrastructure/resolveModelCaller";
 
 export type GeneratePassageInput = {
   story: StoryContext;
@@ -11,8 +12,8 @@ export type GeneratePassageInput = {
   ancestors?: AncestorContext;
   steer?: string | null;
   signal?: AbortSignal;
-  // Injectable for tests; defaults to the live OpenRouter client.
-  call?: OpenRouterCaller;
+  // Injectable for tests; defaults to the adapter resolved for `model`.
+  call?: ModelCaller;
 };
 
 // Orchestrates one generation: build messages → call provider → parse result.
@@ -22,7 +23,7 @@ export async function generatePassage(input: GeneratePassageInput): Promise<Gene
     ? buildBranchMessages(input.story, input.ancestors, input.steer ?? null)
     : buildRootMessages(input.story);
 
-  const call = input.call ?? callOpenRouter;
+  const call = input.call ?? resolveModelCaller(input.model);
   const raw = await call({
     apiKey: input.apiKey,
     model: input.model,

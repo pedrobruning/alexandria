@@ -16,6 +16,14 @@ const eslintConfig = defineConfig([
     // Design handoff bundle — reference prototypes, not shipped code.
     "design/**",
   ]),
+  {
+    rules: {
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
+        { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
+      ],
+    },
+  },
 ]);
 
 export default eslintConfig;
