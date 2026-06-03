@@ -29,7 +29,14 @@ export async function updateSession(request: NextRequest) {
   );
 
   // Touch the session so expired tokens get refreshed into the response cookies.
-  await supabase.auth.getUser();
+  // A failed refresh (stale/invalid cookie or a transient Supabase network blip)
+  // must not take the whole request down — degrade to unauthenticated instead of
+  // letting the exception bubble out of middleware and 502 the page.
+  try {
+    await supabase.auth.getUser();
+  } catch {
+    // Intentionally swallowed: proceed as logged-out; the client can re-auth.
+  }
 
   return supabaseResponse;
 }
