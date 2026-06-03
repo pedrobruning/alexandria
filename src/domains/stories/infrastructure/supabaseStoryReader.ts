@@ -7,6 +7,7 @@ import type { StoryDetail, StorySummary } from "../domain/types";
 // `isDemo` lets the branch route reject writes to the read-only demo story.
 export type BranchContext = {
   story: StoryContext;
+  ownerId: string;
   isDemo: boolean;
   nodes: { id: string; parentId: string | null; summary: string; content: string }[];
 };
@@ -116,7 +117,7 @@ export async function getBranchContext(
 ): Promise<BranchContext | null> {
   const { data: story, error } = await supabase
     .from("stories")
-    .select("premise, genre, tone, language, is_demo")
+    .select("user_id, premise, genre, tone, language, is_demo")
     .eq("id", storyId)
     .maybeSingle();
   if (error) throw new Error(`getBranchContext: ${error.message}`);
@@ -135,6 +136,7 @@ export async function getBranchContext(
       tone: story.tone,
       language: story.language,
     },
+    ownerId: story.user_id,
     isDemo: story.is_demo,
     nodes: (nodes ?? []).map((n) => ({
       id: n.id,

@@ -39,18 +39,24 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     return NextResponse.json({ error: "generation is not configured" }, { status: 503 });
   }
 
-  const used = await countQuotaNodes(supabase, user.id);
-  const decision = checkQuota({ used });
-  if (!decision.allowed) {
-    return NextResponse.json({ error: "quota_exceeded", limit: decision.limit }, { status: 429 });
-  }
-
+  // SELECT RLS now exposes others' public/unlisted stories, so reject non-owners
+  // before counting quota or generating — a viewer must fork to branch, and must
+  // never spend a generation on a story they don't own.
   const context = await getBranchContext(supabase, storyId);
   if (!context) {
     return NextResponse.json({ error: "story not found" }, { status: 404 });
   }
+  if (context.ownerId !== user.id) {
+    return NextResponse.json({ error: "not_owner" }, { status: 403 });
+  }
   if (context.isDemo) {
     return NextResponse.json({ error: "demo_readonly" }, { status: 403 });
+  }
+
+  const used = await countQuotaNodes(supabase, user.id);
+  const decision = checkQuota({ used });
+  if (!decision.allowed) {
+    return NextResponse.json({ error: "quota_exceeded", limit: decision.limit }, { status: 429 });
   }
 
   const byId = new Map(context.nodes.map((n) => [n.id, n]));
