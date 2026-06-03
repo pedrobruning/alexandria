@@ -26,3 +26,17 @@ export function windowStart(now: Date, days = QUOTA_WINDOW_DAYS): Date {
 export function remainingQuota(used: number, limit = SERVER_KEY_BRANCH_LIMIT): number {
   return Math.max(0, limit - used);
 }
+
+// Whether a generation may proceed, and whether it must draw on the one-time
+// bonus credit pool. The base window allowance is spent first; only once it is
+// exhausted does a generation consume a referral credit.
+export function decideGeneration(input: {
+  used: number;
+  bonusCredits: number;
+  baseLimit?: number;
+}): { allowed: boolean; spendCredit: boolean } {
+  const baseLimit = input.baseLimit ?? SERVER_KEY_BRANCH_LIMIT;
+  if (input.used < baseLimit) return { allowed: true, spendCredit: false };
+  if (input.bonusCredits > 0) return { allowed: true, spendCredit: true };
+  return { allowed: false, spendCredit: false };
+}
