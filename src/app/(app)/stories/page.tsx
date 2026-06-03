@@ -14,6 +14,7 @@ import { OnboardingAutostart } from "@/components/onboarding/OnboardingAutostart
 
 export default async function StoriesPage() {
   const t = await getTranslations("archive");
+  const te = await getTranslations("explore");
   const supabase = await createClient();
   const {
     data: { user },
@@ -69,6 +70,9 @@ export default async function StoriesPage() {
             <HeaderMenu>
               <LocaleSwitcher />
               <HelpButton />
+              <Link className="chip" href="/explore">
+                <PixelIcon name="eye" size={14} color="var(--sand-light)" /> {te("open")}
+              </Link>
               <Link className="btn" href="/stories/new">
                 <PixelIcon name="plus" size={16} color="#2B2118" /> {t("newStory")}
               </Link>

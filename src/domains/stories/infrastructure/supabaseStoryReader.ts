@@ -1,7 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/lib/db.types";
 import type { StoryContext } from "@/domains/generation/domain/types";
-import type { StoryDetail, StorySummary, Visibility } from "../domain/types";
+import type { ExploreSummary, StoryDetail, StorySummary, Visibility } from "../domain/types";
 import type { ForkSource } from "../application/forkStory";
 
 // Story context plus the minimal node tree needed to branch from a parent.
@@ -49,6 +49,77 @@ export async function listStories(
     passageCount: counts.get(s.id) ?? 0,
     isDemo: s.is_demo,
   }));
+}
+
+export type ExploreSort = "recent" | "starred";
+
+// Lists public stories for the Explore page. Unlisted/private never appear here
+// (the visibility filter is explicit, not just RLS). Star and passage counts and
+// the author handle are batched, then sorted by the requested key. "starred"
+// re-ranks the most-recent working set in memory — fine for the current scale;
+// a denormalized star_count is the path to global ranking later.
+export async function getExploreStories(
+  supabase: SupabaseClient<Database>,
+  sort: ExploreSort = "recent",
+): Promise<ExploreSummary[]> {
+  const { data: stories, error } = await supabase
+    .from("stories")
+    .select("id, user_id, title, genre, tone, created_at")
+    .eq("visibility", "public")
+    .eq("is_demo", false)
+    .order("created_at", { ascending: false })
+    .limit(50);
+  if (error) throw new Error(`getExploreStories: ${error.message}`);
+
+  const storyIds = (stories ?? []).map((s) => s.id);
+  if (storyIds.length === 0) return [];
+
+  const { data: nodes, error: nodesError } = await supabase
+    .from("nodes")
+    .select("story_id")
+    .in("story_id", storyIds);
+  if (nodesError) throw new Error(`getExploreStories: ${nodesError.message}`);
+  const passageCounts = new Map<string, number>();
+  for (const node of nodes ?? []) {
+    passageCounts.set(node.story_id, (passageCounts.get(node.story_id) ?? 0) + 1);
+  }
+
+  const { data: stars, error: starsError } = await supabase
+    .from("stars")
+    .select("story_id")
+    .in("story_id", storyIds);
+  if (starsError) throw new Error(`getExploreStories: ${starsError.message}`);
+  const starCounts = new Map<string, number>();
+  for (const star of stars ?? []) {
+    starCounts.set(star.story_id, (starCounts.get(star.story_id) ?? 0) + 1);
+  }
+
+  const authorIds = [...new Set((stories ?? []).map((s) => s.user_id))];
+  const { data: authors, error: authorsError } = await supabase
+    .from("public_profiles")
+    .select("id, handle")
+    .in("id", authorIds);
+  if (authorsError) throw new Error(`getExploreStories: ${authorsError.message}`);
+  const handles = new Map<string, string | null>();
+  for (const author of authors ?? []) {
+    if (author.id) handles.set(author.id, author.handle);
+  }
+
+  const summaries = (stories ?? []).map((s) => ({
+    id: s.id,
+    title: s.title,
+    genre: s.genre,
+    tone: s.tone,
+    createdAt: s.created_at,
+    passageCount: passageCounts.get(s.id) ?? 0,
+    starCount: starCounts.get(s.id) ?? 0,
+    authorHandle: handles.get(s.user_id) ?? null,
+  }));
+
+  if (sort === "starred") {
+    summaries.sort((a, b) => b.starCount - a.starCount);
+  }
+  return summaries;
 }
 
 // Loads one story with its full node tree for the reader. Returns null when the

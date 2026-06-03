@@ -9,6 +9,19 @@ export type StorySummary = {
   isDemo: boolean;
 };
 
+// A public story as shown in the Explore grid. authorHandle is null when the
+// author hasn't claimed a handle yet (rendered as "anonymous").
+export type ExploreSummary = {
+  id: string;
+  title: string;
+  genre: string | null;
+  tone: string | null;
+  createdAt: string;
+  passageCount: number;
+  starCount: number;
+  authorHandle: string | null;
+};
+
 // A single passage in the reader. parentId === null marks the root.
 export type StoryNode = {
   id: string;

@@ -36,6 +36,18 @@
     "stars": "{count, plural, one {# estrela} other {# estrelas}}",
     "updated": "atualizado {when}"
   },
+  "explore": {
+    "open": "Explorar",
+    "title": "Explorar",
+    "backToArchive": "Arquivo",
+    "newStory": "Nova história",
+    "by": "por {handle}",
+    "anonymous": "anônimo",
+    "sortRecent": "Recentes",
+    "sortStarred": "Mais favoritadas",
+    "emptyTitle": "Nada público ainda.",
+    "emptyBody": "Nenhum arquivista abriu uma história ao público. Torne uma das suas pública e ela aparecerá aqui."
+  },
   "atlas": {
     "label": "Atlas da história — a árvore de linhas do tempo",
     "open": "Atlas",

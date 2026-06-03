@@ -36,6 +36,18 @@
     "stars": "{count, plural, one {# star} other {# stars}}",
     "updated": "updated {when}"
   },
+  "explore": {
+    "open": "Explore",
+    "title": "Explore",
+    "backToArchive": "Archive",
+    "newStory": "New story",
+    "by": "by {handle}",
+    "anonymous": "anonymous",
+    "sortRecent": "Recent",
+    "sortStarred": "Most starred",
+    "emptyTitle": "Nothing public yet.",
+    "emptyBody": "No archivist has opened a story to the public. Make one of yours public and it will surface here."
+  },
   "atlas": {
     "label": "Story atlas — the tree of timelines",
     "open": "Atlas",
