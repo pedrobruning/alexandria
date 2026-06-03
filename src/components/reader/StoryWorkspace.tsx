@@ -28,11 +28,21 @@ export function StoryWorkspace({
   const t = useTranslations("atlas");
   const [selectedId, setSelectedId] = useState(rootId);
   const [atlasOpen, setAtlasOpen] = useState(false);
+  const [pendingId, setPendingId] = useState<string | null>(null);
 
   // After a fork adds nodes, the previous selection still exists; if it somehow
   // doesn't (e.g. stale), fall back to the root so the reader never breaks.
   const exists = nodes.some((n) => n.id === selectedId);
   const activeId = exists ? selectedId : rootId;
+
+  // A fork returns the new node id before router.refresh() has streamed the new
+  // tree in. Wait for the node to actually appear in `nodes`, then jump to it —
+  // selecting it eagerly would hit the activeId fallback and bounce to root.
+  // Render-time adjustment (not an effect) so the jump commits in one pass.
+  if (pendingId && nodes.some((n) => n.id === pendingId)) {
+    setSelectedId(pendingId);
+    setPendingId(null);
+  }
 
   function travel(id: string) {
     setSelectedId(id);
@@ -46,6 +56,7 @@ export function StoryWorkspace({
         nodes={nodes}
         selectedId={activeId}
         onSelect={travel}
+        onForked={setPendingId}
         isDemo={isDemo}
         language={language}
         quotaRemaining={quotaRemaining}

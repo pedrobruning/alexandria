@@ -17,6 +17,7 @@ export function Reader({
   nodes,
   selectedId,
   onSelect,
+  onForked,
   isDemo,
   language,
   quotaRemaining,
@@ -25,6 +26,7 @@ export function Reader({
   nodes: StoryNode[];
   selectedId: string;
   onSelect: (id: string) => void;
+  onForked: (id: string) => void;
   isDemo: boolean;
   language: string;
   quotaRemaining: number;
@@ -115,6 +117,7 @@ export function Reader({
       if (res.status === 429) throw new Error(t("quotaExceeded"));
       if (!res.ok || !data.nodeId) throw new Error(data.error ?? t("forkFailed"));
       setSteer("");
+      onForked(data.nodeId);
       router.refresh();
     } catch (e) {
       setErr(e instanceof Error ? e.message : t("forkFailed"));
