@@ -13,8 +13,13 @@ and forks any passage into alternate timelines — optionally *steering* each br
 instant and triggers **zero** generation calls (the DB *is* the cache).
 
 **Leading fantasy (PRD §4 decision):** *Explorer-first with light authoring.* "I drop
-into a story and fork it myself." Mass-market play, lighter UX. The social layer, shared
-links, and discovery are explicitly **out of scope** for this phase.
+into a story and fork it myself." Mass-market play, lighter UX.
+
+**Social layer (added post-MVP):** a GitHub-style sharing layer now ships on top of the
+core loop — per-story visibility (private / unlisted / public), starring others' public
+stories, forking a visible story into your own private copy, and an Explore page for
+public stories. See `SPEC.social.md` for the full design. (The original Phase-1 scope
+deliberately deferred this; that line is now superseded.)
 
 **Who it's for:** the founder + a handful of testers. The goal of this phase is to prove
 the core loop (create → read → steer-fork → revisit) is *fun and retentive*, per PRD §14
@@ -250,6 +255,10 @@ export function buildBranchMessages(
 5. **Steer:** free-text box in the reader panel.
 6. **Architecture:** Domain-Driven, organized by domain with pure `domain/` logic separated
    from `infrastructure/` I/O; Next.js routes/components are a thin interface layer.
+7. **Social layer:** per-story visibility (`private` default / `unlisted` / `public`), stars
+   on others' visible stories, and forking a visible story into a private copy (a pure I/O
+   copy of frozen passages — `imported` nodes that never spend quota). RLS widens SELECT to
+   public/unlisted while keeping every write owner-only. Full design in `SPEC.social.md`.
 ```
 
 ## Future direction — buy-credits model

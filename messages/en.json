@@ -29,13 +29,26 @@
     "sorted": "sorted · most recent",
     "emptyTitle": "The archive is empty.",
     "emptyBody": "Every dig begins with a single sealed scroll. Unearth your first tale and watch its timelines branch.",
-    "emptyCta": "Unearth your first tale"
+    "emptyCta": "Unearth your first tale",
+    "forksTitle": "Forks"
   },
   "storyCard": {
     "passages": "{count, plural, one {# passage} other {# passages}}",
     "forks": "{count, plural, one {# fork} other {# forks}}",
     "stars": "{count, plural, one {# star} other {# stars}}",
     "updated": "updated {when}"
+  },
+  "explore": {
+    "open": "Explore",
+    "title": "Explore",
+    "backToArchive": "Archive",
+    "newStory": "New story",
+    "by": "by {handle}",
+    "anonymous": "anonymous",
+    "sortRecent": "Recent",
+    "sortStarred": "Most starred",
+    "emptyTitle": "Nothing public yet.",
+    "emptyBody": "No archivist has opened a story to the public. Make one of yours public and it will surface here."
   },
   "atlas": {
     "label": "Story atlas — the tree of timelines",
@@ -49,6 +62,11 @@
     "branchesTitle": "Branches from here",
     "noBranches": "No forks yet. This passage is where the trail ends.",
     "readOnly": "You're reading another archivist's story. Fork it to write your own branches.",
+    "forkStory": "Fork this story",
+    "forkingStory": "copying the timeline…",
+    "forkStoryFailed": "The fork would not take. Try again.",
+    "forkedFrom": "Forked from <link>{title}</link>",
+    "forkedFromUnknown": "Forked from another archivist's story",
     "visibility": {
       "title": "Visibility",
       "private": "Private",

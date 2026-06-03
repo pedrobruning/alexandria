@@ -3,6 +3,7 @@ import type { Database } from "@/lib/db.types";
 import type { StoryWriter } from "../application/createStory";
 import type { BranchWriter } from "../application/createBranch";
 import type { DemoStoryWriter } from "../application/seedDemoStory";
+import type { ForkWriter } from "../application/forkStory";
 
 // Supabase-backed StoryWriter. RLS scopes every row to the authenticated user,
 // so the client must be the request-bound server client.
@@ -136,6 +137,59 @@ export function supabaseDemoWriter(supabase: SupabaseClient<Database>): DemoStor
         .update({ root_node_id: nodeId })
         .eq("id", storyId);
       if (error) throw new Error(`setRootNode: ${error.message}`);
+    },
+  };
+}
+
+// Supabase-backed ForkWriter. The new story is owned by the forker (RLS scopes
+// the insert) and starts private; copied nodes carry explicit remapped ids
+// (preserving the tree), imported=true (quota-exempt), and created_by=forker so
+// the nodes insert policy passes. Nodes must arrive parent-first.
+export function supabaseForkWriter(supabase: SupabaseClient<Database>): ForkWriter {
+  return {
+    async insertStory(input) {
+      const { data, error } = await supabase
+        .from("stories")
+        .insert({
+          user_id: input.userId,
+          title: input.title,
+          premise: input.premise,
+          genre: input.genre,
+          tone: input.tone,
+          language: input.language,
+          visibility: "private",
+          forked_from_story_id: input.forkedFromStoryId,
+        })
+        .select("id")
+        .single();
+      if (error) throw new Error(`fork.insertStory: ${error.message}`);
+      return { id: data.id };
+    },
+
+    async insertNodes(storyId, createdBy, nodes) {
+      if (nodes.length === 0) return;
+      const rows = nodes.map((n) => ({
+        id: n.id,
+        story_id: storyId,
+        parent_id: n.parentId,
+        title: n.title,
+        content: n.content,
+        summary: n.summary,
+        steer: n.steer,
+        model_used: n.modelUsed,
+        created_by: createdBy,
+        imported: true,
+      }));
+      const { error } = await supabase.from("nodes").insert(rows);
+      if (error) throw new Error(`fork.insertNodes: ${error.message}`);
+    },
+
+    async setRootNode(storyId, nodeId) {
+      const { error } = await supabase
+        .from("stories")
+        .update({ root_node_id: nodeId })
+        .eq("id", storyId);
+      if (error) throw new Error(`fork.setRootNode: ${error.message}`);
     },
   };
 }

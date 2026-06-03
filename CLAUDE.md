@@ -12,7 +12,9 @@ coexisting timelines (optionally *steering* a branch). Passages are **frozen onc
 revisiting a node is a pure DB read with **zero** generation calls. This "DB is the cache"
 property is the core economic guarantee, not an optimization.
 
-Phase 1 MVP, founder + a few testers. Social/sharing/discovery are out of scope.
+Phase 1 MVP, founder + a few testers. A GitHub-style social layer now ships on top: per-story
+visibility (private / unlisted / public), stars, forking a visible story into a private copy,
+and an Explore page. See `SPEC.social.md` for its design.
 
 **Stack:** Next.js 16 (App Router) + TypeScript · Supabase (Postgres + Auth, RLS) ·
 OpenRouter (model-agnostic generation) · Tailwind + a custom pixel design system ·
@@ -46,17 +48,22 @@ src/
       application/       generatePassage  (orchestrates build → call → parse)
       infrastructure/    openrouter  (the ONLY place the OpenRouter HTTP client lives)
     stories/           the story aggregate: a tree of immutable passages
-      domain/            types (StorySummary, StoryNode, StoryDetail)
-      application/       createStory  (use cases; depend on ports, not Supabase)
+      domain/            types (StorySummary, StoryNode, StoryDetail, ExploreSummary, Visibility), fork (pure tree remap)
+      application/       createStory, forkStory  (use cases; depend on ports, not Supabase)
       infrastructure/    supabaseStoryReader / supabaseStoryWriter  (the ONLY place Supabase is touched)
+    social/            stars on others' visible stories
+      application/       toggleStar  (port + use case)
+      infrastructure/    supabaseStarStore
+    quota/             rolling-window generation allowance
     identity/          application/bootstrapProfile
   app/                 INTERFACE (thin): routes/pages call application services
-    (auth)/login, (app)/stories, (app)/stories/[id], api/stories[/[id]/branch], api/auth/callback
-  components/          INTERFACE (UI), grouped by feature: reader/, stories/, pixel/, i18n/, auth/, atlas/(later)
+    (auth)/login, (app)/stories, (app)/stories/[id], (app)/explore, (auth)/callback
+    api/stories, api/stories/[id] (PATCH visibility), api/stories/[id]/{branch,fork,star}
+  components/          INTERFACE (UI), grouped by feature: reader/, stories/, pixel/, i18n/, auth/, atlas/
   lib/                 cross-cutting infra, NOT a domain: supabase/{client,server}, db.types, tree/path
   store/               Zustand client selection state (arrives with the Atlas, T10)
   i18n/                next-intl config; messages live in /messages/{en,pt-BR}.json
-supabase/migrations/   SQL: profiles, stories, nodes + RLS
+supabase/migrations/   SQL: profiles, stories, nodes, stars + RLS; public_profiles view
 tests/                 vitest, mirrors src/domains + src/lib paths
 ```
 

@@ -29,13 +29,26 @@
     "sorted": "ordenado · mais recentes",
     "emptyTitle": "O arquivo está vazio.",
     "emptyBody": "Toda escavação começa com um único pergaminho selado. Desenterre sua primeira história e veja suas linhas do tempo se ramificarem.",
-    "emptyCta": "Desenterre sua primeira história"
+    "emptyCta": "Desenterre sua primeira história",
+    "forksTitle": "Bifurcações"
   },
   "storyCard": {
     "passages": "{count, plural, one {# passagem} other {# passagens}}",
     "forks": "{count, plural, one {# bifurcação} other {# bifurcações}}",
     "stars": "{count, plural, one {# estrela} other {# estrelas}}",
     "updated": "atualizado {when}"
+  },
+  "explore": {
+    "open": "Explorar",
+    "title": "Explorar",
+    "backToArchive": "Arquivo",
+    "newStory": "Nova história",
+    "by": "por {handle}",
+    "anonymous": "anônimo",
+    "sortRecent": "Recentes",
+    "sortStarred": "Mais favoritadas",
+    "emptyTitle": "Nada público ainda.",
+    "emptyBody": "Nenhum arquivista abriu uma história ao público. Torne uma das suas pública e ela aparecerá aqui."
   },
   "atlas": {
     "label": "Atlas da história — a árvore de linhas do tempo",
@@ -49,6 +62,11 @@
     "branchesTitle": "Bifurcações a partir daqui",
     "noBranches": "Nenhuma bifurcação ainda. Esta passagem é onde a trilha termina.",
     "readOnly": "Você está lendo a história de outro arquivista. Bifurque-a para escrever suas próprias ramificações.",
+    "forkStory": "Bifurcar esta história",
+    "forkingStory": "copiando a linha do tempo…",
+    "forkStoryFailed": "A bifurcação não funcionou. Tente novamente.",
+    "forkedFrom": "Bifurcada de <link>{title}</link>",
+    "forkedFromUnknown": "Bifurcada da história de outro arquivista",
     "visibility": {
       "title": "Visibilidade",
       "private": "Privada",
