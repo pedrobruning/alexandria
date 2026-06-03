@@ -2,6 +2,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/lib/db.types";
 import type { StoryContext } from "@/domains/generation/domain/types";
 import type { StoryDetail, StorySummary, Visibility } from "../domain/types";
+import type { ForkSource } from "../application/forkStory";
 
 // Story context plus the minimal node tree needed to branch from a parent.
 // `isDemo` lets the branch route reject writes to the read-only demo story.
@@ -87,6 +88,19 @@ export async function getStory(
     .maybeSingle();
   if (viewerError) throw new Error(`getStory: ${viewerError.message}`);
 
+  // Resolve the source title for attribution. RLS returns null if the source
+  // is no longer visible to the caller, leaving an unlinked "forked from" note.
+  let forkedFromTitle: string | null = null;
+  if (story.forked_from_story_id) {
+    const { data: source, error: sourceError } = await supabase
+      .from("stories")
+      .select("title")
+      .eq("id", story.forked_from_story_id)
+      .maybeSingle();
+    if (sourceError) throw new Error(`getStory: ${sourceError.message}`);
+    forkedFromTitle = source?.title ?? null;
+  }
+
   return {
     id: story.id,
     title: story.title,
@@ -95,6 +109,7 @@ export async function getStory(
     isOwner: story.user_id === userId,
     visibility: story.visibility as Visibility,
     forkedFromStoryId: story.forked_from_story_id,
+    forkedFromTitle,
     starCount: starCount ?? 0,
     viewerStarred: !!viewerStar,
     language: story.language,
@@ -164,6 +179,47 @@ export async function getBranchContext(
       parentId: n.parent_id,
       summary: n.summary,
       content: n.content,
+    })),
+  };
+}
+
+// Loads a story and its full tree for forking — including steer + model so the
+// copy is faithful. Returns null when the story isn't visible to the caller
+// (RLS allows owner + public/unlisted). The demo story is never forkable.
+export async function getForkSource(
+  supabase: SupabaseClient<Database>,
+  storyId: string,
+): Promise<ForkSource | null> {
+  const { data: story, error } = await supabase
+    .from("stories")
+    .select("user_id, title, premise, genre, tone, language, is_demo")
+    .eq("id", storyId)
+    .maybeSingle();
+  if (error) throw new Error(`getForkSource: ${error.message}`);
+  if (!story || story.is_demo) return null;
+
+  const { data: nodes, error: nodesError } = await supabase
+    .from("nodes")
+    .select("id, parent_id, title, content, summary, steer, model_used")
+    .eq("story_id", storyId);
+  if (nodesError) throw new Error(`getForkSource: ${nodesError.message}`);
+
+  return {
+    storyId,
+    ownerId: story.user_id,
+    title: story.title,
+    premise: story.premise,
+    genre: story.genre,
+    tone: story.tone,
+    language: story.language,
+    nodes: (nodes ?? []).map((n) => ({
+      id: n.id,
+      parentId: n.parent_id,
+      title: n.title,
+      content: n.content,
+      summary: n.summary,
+      steer: n.steer,
+      modelUsed: n.model_used,
     })),
   };
 }

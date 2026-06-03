@@ -48,6 +48,11 @@
     "branchesTitle": "Branches from here",
     "noBranches": "No forks yet. This passage is where the trail ends.",
     "readOnly": "You're reading another archivist's story. Fork it to write your own branches.",
+    "forkStory": "Fork this story",
+    "forkingStory": "copying the timeline…",
+    "forkStoryFailed": "The fork would not take. Try again.",
+    "forkedFrom": "Forked from <link>{title}</link>",
+    "forkedFromUnknown": "Forked from another archivist's story",
     "visibility": {
       "title": "Visibility",
       "private": "Private",

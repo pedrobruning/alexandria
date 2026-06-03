@@ -48,6 +48,11 @@
     "branchesTitle": "Bifurcações a partir daqui",
     "noBranches": "Nenhuma bifurcação ainda. Esta passagem é onde a trilha termina.",
     "readOnly": "Você está lendo a história de outro arquivista. Bifurque-a para escrever suas próprias ramificações.",
+    "forkStory": "Bifurcar esta história",
+    "forkingStory": "copiando a linha do tempo…",
+    "forkStoryFailed": "A bifurcação não funcionou. Tente novamente.",
+    "forkedFrom": "Bifurcada de <link>{title}</link>",
+    "forkedFromUnknown": "Bifurcada da história de outro arquivista",
     "visibility": {
       "title": "Visibilidade",
       "private": "Privada",

@@ -81,6 +81,8 @@ export default async function StoryPage({ params }: { params: Promise<{ id: stri
           visibility={story.visibility}
           starCount={story.starCount}
           viewerStarred={story.viewerStarred}
+          forkedFromStoryId={story.forkedFromStoryId}
+          forkedFromTitle={story.forkedFromTitle}
           language={story.language}
           quotaRemaining={quotaRemaining}
         />

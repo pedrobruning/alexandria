@@ -7,6 +7,8 @@ import { Reader } from "@/components/reader/Reader";
 import { PixelIcon } from "@/components/pixel/PixelIcon";
 import { VisibilityControl } from "@/components/stories/VisibilityControl";
 import { StarButton } from "@/components/stories/StarButton";
+import { ForkButton } from "@/components/stories/ForkButton";
+import Link from "next/link";
 import type { StoryNode, Visibility } from "@/domains/stories/domain/types";
 
 // Owns the selected-node state shared between the Atlas (opened as a modal) and
@@ -21,6 +23,8 @@ export function StoryWorkspace({
   visibility,
   starCount,
   viewerStarred,
+  forkedFromStoryId,
+  forkedFromTitle,
   language,
   quotaRemaining,
 }: {
@@ -32,10 +36,13 @@ export function StoryWorkspace({
   visibility: Visibility;
   starCount: number;
   viewerStarred: boolean;
+  forkedFromStoryId: string | null;
+  forkedFromTitle: string | null;
   language: string;
   quotaRemaining: number;
 }) {
   const t = useTranslations("atlas");
+  const tr = useTranslations("reader");
   const [selectedId, setSelectedId] = useState(rootId);
   const [atlasOpen, setAtlasOpen] = useState(false);
   const [pendingId, setPendingId] = useState<string | null>(null);
@@ -67,6 +74,21 @@ export function StoryWorkspace({
         </div>
       )}
 
+      {forkedFromStoryId && (
+        <p className="caption" style={{ maxWidth: 760, margin: "0 auto 12px" }}>
+          {forkedFromTitle ? (
+            tr.rich("forkedFrom", {
+              title: forkedFromTitle,
+              link: (chunks) => (
+                <Link href={`/stories/${forkedFromStoryId}`}>{chunks}</Link>
+              ),
+            })
+          ) : (
+            tr("forkedFromUnknown")
+          )}
+        </p>
+      )}
+
       {!isOwner && (
         <div
           className="row center wrap gap-2"
@@ -77,6 +99,7 @@ export function StoryWorkspace({
             initialStarred={viewerStarred}
             initialCount={starCount}
           />
+          {!isDemo && <ForkButton storyId={storyId} />}
         </div>
       )}
 

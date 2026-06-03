@@ -30,6 +30,7 @@ export type StoryDetail = {
   isOwner: boolean;
   visibility: Visibility;
   forkedFromStoryId: string | null;
+  forkedFromTitle: string | null;
   starCount: number;
   viewerStarred: boolean;
   language: string;
