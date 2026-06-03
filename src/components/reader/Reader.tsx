@@ -222,24 +222,6 @@ export function Reader({
         </article>
       </div>
 
-      {reading && !isDemo && (
-        <div className="row center" style={{ marginTop: 22 }}>
-          {forking ? (
-            <PixSpinner label={t("forking")} />
-          ) : (
-            <button className="btn" type="button" onClick={fork}>
-              <PixelIcon name="fork" size={16} color="#2B2118" /> {t("fork")}
-            </button>
-          )}
-        </div>
-      )}
-      {reading && err && (
-        <p className="hint hint--err" style={{ marginTop: 12, textAlign: "center" }}>
-          {err}
-        </p>
-      )}
-
-      {!reading && (
       <section
         className="frame frame--basalt"
         data-tour="steer"
@@ -297,7 +279,6 @@ export function Reader({
           </div>
         )}
       </section>
-      )}
 
       <section data-tour="branches" style={{ marginTop: 26 }}>
         <h2 className="node-title" style={{ color: "var(--muted)", marginBottom: 12 }}>
