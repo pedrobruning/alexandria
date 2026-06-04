@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { REFERRAL_COOKIE, isReferralCode } from "@/domains/referrals/domain/referrals";
+import { appBaseUrl } from "@/lib/appUrl";
 
 export const runtime = "nodejs";
 
@@ -9,7 +10,7 @@ export const runtime = "nodejs";
 export async function GET(request: Request, { params }: { params: Promise<{ code: string }> }) {
   const { code } = await params;
   const { origin } = new URL(request.url);
-  const response = NextResponse.redirect(`${origin}/login`);
+  const response = NextResponse.redirect(`${appBaseUrl(origin)}/login`);
 
   const normalized = code.trim().toUpperCase();
   if (isReferralCode(normalized)) {

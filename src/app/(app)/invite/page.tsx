@@ -10,9 +10,10 @@ import { PixelIcon } from "@/components/pixel/PixelIcon";
 import { HeaderMenu } from "@/components/pixel/HeaderMenu";
 import { InviteLink } from "@/components/invite/InviteLink";
 import { REFERRAL_REWARD_CREDITS, REFERRAL_QUALIFY_NODES } from "@/domains/referrals/domain/referrals";
+import { appBaseUrl } from "@/lib/appUrl";
 
-// The app's public origin, taken from the proxied request headers so invite
-// links are correct in every environment without a configured base-URL env var.
+// The app's public origin. Prefer the configured base URL; fall back to the
+// proxied request headers so invite links still resolve in local dev.
 async function originFromHeaders(): Promise<string> {
   const h = await headers();
   const host = h.get("x-forwarded-host") ?? h.get("host") ?? "";
@@ -96,7 +97,7 @@ export default async function InvitePage() {
         <div className="frame" style={{ padding: 18, marginBottom: 22 }}>
           <span className="label">{t("linkLabel")}</span>
           {profile?.referral_code ? (
-            <InviteLink link={`${await originFromHeaders()}/r/${profile.referral_code}`} />
+            <InviteLink link={`${appBaseUrl(await originFromHeaders())}/r/${profile.referral_code}`} />
           ) : (
             <p className="caption">{t("noCode")}</p>
           )}
