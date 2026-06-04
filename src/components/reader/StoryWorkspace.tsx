@@ -27,6 +27,7 @@ export function StoryWorkspace({
   forkedFromTitle,
   language,
   quotaRemaining,
+  bonusCredits,
 }: {
   storyId: string;
   nodes: StoryNode[];
@@ -40,6 +41,7 @@ export function StoryWorkspace({
   forkedFromTitle: string | null;
   language: string;
   quotaRemaining: number;
+  bonusCredits: number;
 }) {
   const t = useTranslations("atlas");
   const tr = useTranslations("reader");
@@ -113,6 +115,7 @@ export function StoryWorkspace({
         isOwner={isOwner}
         language={language}
         quotaRemaining={quotaRemaining}
+        bonusCredits={bonusCredits}
       />
 
       <button

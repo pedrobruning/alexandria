@@ -24,6 +24,7 @@
     "title": "O Arquivo",
     "archivist": "arquivista",
     "newStory": "Nova história",
+    "invite": "Convidar",
     "count": "{count, plural, one {# escavação} other {# escavações}}",
     "sorted": "ordenado · mais recentes",
     "emptyTitle": "O arquivo está vazio.",
@@ -86,6 +87,7 @@
     "forkFailed": "A bifurcação não pegou. Tente novamente.",
     "quotaExceeded": "Você usou suas passagens grátis por ora. Elas se renovam conforme sua janela de 30 dias avança.",
     "passagesLeft": "{count, plural, one {# passagem grátis restante} other {# passagens grátis restantes}}",
+    "bonusCredits": "{count, plural, one {+# crédito bônus} other {+# créditos bônus}}",
     "generatingSub": "Escrevendo a próxima passagem",
     "generatingMessages": [
       "Consultando o céu noturno…",
@@ -128,6 +130,19 @@
     "generating": "abrindo o primeiro pergaminho…",
     "submit": "Abrir a primeira página",
     "failed": "O pergaminho não quis abrir. Tente novamente."
+  },
+  "invite": {
+    "back": "Arquivo",
+    "title": "Convide outros arquivistas",
+    "intro": "Compartilhe seu link. Quando alguém que você convidar escrever a {nodes}ª passagem, você ganha {reward} créditos bônus — passagens avulsas que somam à sua cota grátis.",
+    "linkLabel": "Seu link de convite",
+    "noCode": "Seu link de convite está sendo preparado. Atualize em um instante.",
+    "copy": "Copiar",
+    "copied": "Copiado",
+    "creditsLabel": "Créditos bônus ganhos",
+    "statInvited": "convidados",
+    "statQualified": "qualificados",
+    "statCapped": "no limite"
   },
   "onboarding": {
     "skip": "Pular",

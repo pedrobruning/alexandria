@@ -5,7 +5,8 @@ import { createBranch } from "@/domains/stories/application/createBranch";
 import { supabaseBranchWriter } from "@/domains/stories/infrastructure/supabaseStoryWriter";
 import { getBranchContext } from "@/domains/stories/infrastructure/supabaseStoryReader";
 import { countQuotaNodes } from "@/domains/quota/infrastructure/supabaseQuotaCounter";
-import { checkQuota } from "@/domains/quota/domain/quota";
+import { readBonusCredits, consumeCredit } from "@/domains/quota/infrastructure/credits";
+import { decideGeneration, SERVER_KEY_BRANCH_LIMIT } from "@/domains/quota/domain/quota";
 import { pathFromRoot, type TreeNode } from "@/lib/tree/path";
 
 export const runtime = "nodejs";
@@ -54,9 +55,13 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
   }
 
   const used = await countQuotaNodes(supabase, user.id);
-  const decision = checkQuota({ used });
+  const bonusCredits = await readBonusCredits(supabase, user.id);
+  const decision = decideGeneration({ used, bonusCredits });
   if (!decision.allowed) {
-    return NextResponse.json({ error: "quota_exceeded", limit: decision.limit }, { status: 429 });
+    return NextResponse.json(
+      { error: "quota_exceeded", limit: SERVER_KEY_BRANCH_LIMIT },
+      { status: 429 },
+    );
   }
 
   const byId = new Map(context.nodes.map((n) => [n.id, n]));
@@ -87,6 +92,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
         }),
       writer: supabaseBranchWriter(supabase),
     });
+    if (decision.spendCredit) await consumeCredit(supabase);
     return NextResponse.json(result, { status: 201 });
   } catch (err) {
     console.error("createBranch route failed", err);

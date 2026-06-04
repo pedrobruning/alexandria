@@ -75,6 +75,9 @@ export default async function StoriesPage() {
               <Link className="chip" href="/explore">
                 <PixelIcon name="eye" size={14} color="var(--sand-light)" /> {te("open")}
               </Link>
+              <Link className="chip" href="/invite">
+                <PixelIcon name="share" size={14} color="var(--sand-light)" /> {t("invite")}
+              </Link>
               <Link className="btn" href="/stories/new">
                 <PixelIcon name="plus" size={16} color="#2B2118" /> {t("newStory")}
               </Link>

@@ -3,6 +3,7 @@ import {
   QUOTA_WINDOW_DAYS,
   SERVER_KEY_BRANCH_LIMIT,
   checkQuota,
+  decideGeneration,
   remainingQuota,
   windowStart,
 } from "@/domains/quota/domain/quota";
@@ -43,6 +44,44 @@ describe("remainingQuota", () => {
 
   it("honors a custom limit", () => {
     expect(remainingQuota(2, 5)).toBe(3);
+  });
+});
+
+describe("decideGeneration", () => {
+  it("allows below the base limit without spending a credit", () => {
+    expect(decideGeneration({ used: 0, bonusCredits: 0 })).toEqual({
+      allowed: true,
+      spendCredit: false,
+    });
+    expect(
+      decideGeneration({ used: SERVER_KEY_BRANCH_LIMIT - 1, bonusCredits: 7 }),
+    ).toEqual({ allowed: true, spendCredit: false });
+  });
+
+  it("draws on a bonus credit once the base limit is reached", () => {
+    expect(
+      decideGeneration({ used: SERVER_KEY_BRANCH_LIMIT, bonusCredits: 1 }),
+    ).toEqual({ allowed: true, spendCredit: true });
+    expect(
+      decideGeneration({ used: SERVER_KEY_BRANCH_LIMIT + 4, bonusCredits: 3 }),
+    ).toEqual({ allowed: true, spendCredit: true });
+  });
+
+  it("denies when the base limit is reached and no credits remain", () => {
+    expect(
+      decideGeneration({ used: SERVER_KEY_BRANCH_LIMIT, bonusCredits: 0 }),
+    ).toEqual({ allowed: false, spendCredit: false });
+  });
+
+  it("honors a custom base limit", () => {
+    expect(decideGeneration({ used: 5, bonusCredits: 2, baseLimit: 5 })).toEqual({
+      allowed: true,
+      spendCredit: true,
+    });
+    expect(decideGeneration({ used: 4, bonusCredits: 0, baseLimit: 5 })).toEqual({
+      allowed: true,
+      spendCredit: false,
+    });
   });
 });
 

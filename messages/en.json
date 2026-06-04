@@ -24,6 +24,7 @@
     "title": "The Archive",
     "archivist": "archivist",
     "newStory": "New story",
+    "invite": "Invite",
     "count": "{count, plural, one {# excavation} other {# excavations}}",
     "sorted": "sorted · most recent",
     "emptyTitle": "The archive is empty.",
@@ -86,6 +87,7 @@
     "forkFailed": "The fork would not take. Try again.",
     "quotaExceeded": "You've used your free passages for now. They'll refresh as your 30-day window rolls forward.",
     "passagesLeft": "{count, plural, one {# free passage left} other {# free passages left}}",
+    "bonusCredits": "{count, plural, one {+# bonus credit} other {+# bonus credits}}",
     "generatingSub": "Writing the next passage",
     "generatingMessages": [
       "Consulting the night sky…",
@@ -128,6 +130,19 @@
     "generating": "unsealing the first scroll…",
     "submit": "Open the first page",
     "failed": "The scroll would not open. Try again."
+  },
+  "invite": {
+    "back": "Archive",
+    "title": "Invite fellow archivists",
+    "intro": "Share your link. When someone you invite writes their {nodes}th passage, you earn {reward} bonus credits — one-time passages that top up your free allowance.",
+    "linkLabel": "Your invite link",
+    "noCode": "Your invite link is being prepared. Refresh in a moment.",
+    "copy": "Copy",
+    "copied": "Copied",
+    "creditsLabel": "Bonus credits earned",
+    "statInvited": "invited",
+    "statQualified": "qualified",
+    "statCapped": "capped"
   },
   "onboarding": {
     "skip": "Skip",

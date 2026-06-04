@@ -4,6 +4,7 @@ import { getTranslations } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
 import { getStory } from "@/domains/stories/infrastructure/supabaseStoryReader";
 import { countQuotaNodes } from "@/domains/quota/infrastructure/supabaseQuotaCounter";
+import { readBonusCredits } from "@/domains/quota/infrastructure/credits";
 import { remainingQuota } from "@/domains/quota/domain/quota";
 import { SignOutButton } from "@/components/auth/SignOutButton";
 import { LocaleSwitcher } from "@/components/i18n/LocaleSwitcher";
@@ -37,6 +38,9 @@ export default async function StoryPage({ params }: { params: Promise<{ id: stri
   const quotaRemaining = story.isOwner
     ? remainingQuota(await countQuotaNodes(supabase, user.id))
     : 0;
+  // Bonus credits extend the allowance past the window cap; surface them so a
+  // user at zero remaining still sees they can keep branching.
+  const bonusCredits = story.isOwner ? await readBonusCredits(supabase, user.id) : 0;
 
   return (
     <div className="screen scroll-y" style={{ background: "var(--basalt)" }}>
@@ -85,6 +89,7 @@ export default async function StoryPage({ params }: { params: Promise<{ id: stri
           forkedFromTitle={story.forkedFromTitle}
           language={story.language}
           quotaRemaining={quotaRemaining}
+          bonusCredits={bonusCredits}
         />
         <OnboardingHost />
       </main>
