@@ -101,6 +101,7 @@ export type Database = {
           bonus_credits: number
           created_at: string
           default_model: string | null
+          demo_branch_used_at: string | null
           handle: string | null
           id: string
           invited_by: string | null
@@ -111,6 +112,7 @@ export type Database = {
           bonus_credits?: number
           created_at?: string
           default_model?: string | null
+          demo_branch_used_at?: string | null
           handle?: string | null
           id: string
           invited_by?: string | null
@@ -121,6 +123,7 @@ export type Database = {
           bonus_credits?: number
           created_at?: string
           default_model?: string | null
+          demo_branch_used_at?: string | null
           handle?: string | null
           id?: string
           invited_by?: string | null

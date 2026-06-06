@@ -6,6 +6,7 @@ import { supabaseBranchWriter } from "@/domains/stories/infrastructure/supabaseS
 import { getBranchContext } from "@/domains/stories/infrastructure/supabaseStoryReader";
 import { countQuotaNodes } from "@/domains/quota/infrastructure/supabaseQuotaCounter";
 import { readBonusCredits, consumeCredit } from "@/domains/quota/infrastructure/credits";
+import { claimDemoFork, releaseDemoFork } from "@/domains/onboarding/infrastructure/demoFork";
 import { decideGeneration, SERVER_KEY_BRANCH_LIMIT } from "@/domains/quota/domain/quota";
 import { pathFromRoot, type TreeNode } from "@/lib/tree/path";
 
@@ -50,19 +51,6 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
   if (context.ownerId !== user.id) {
     return NextResponse.json({ error: "not_owner" }, { status: 403 });
   }
-  if (context.isDemo) {
-    return NextResponse.json({ error: "demo_readonly" }, { status: 403 });
-  }
-
-  const used = await countQuotaNodes(supabase, user.id);
-  const bonusCredits = await readBonusCredits(supabase, user.id);
-  const decision = decideGeneration({ used, bonusCredits });
-  if (!decision.allowed) {
-    return NextResponse.json(
-      { error: "quota_exceeded", limit: SERVER_KEY_BRANCH_LIMIT },
-      { status: 429 },
-    );
-  }
 
   const byId = new Map(context.nodes.map((n) => [n.id, n]));
   if (!byId.has(parentId)) {
@@ -73,6 +61,31 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     const node = byId.get(n.id)!;
     return { summary: node.summary, content: node.content };
   });
+
+  // The onboarding demo grants exactly one free, quota-exempt generation so the
+  // newcomer feels a branch being born from their own steer. Claiming the
+  // allowance is atomic; once spent, the demo is read-only. Demo nodes live on
+  // the demo story, which the quota counter already excludes, so no allowance is
+  // spent and no credit is consumed below. Claim only after the parent is known
+  // valid, so a bad request never burns the freebie.
+  let spendCredit = false;
+  if (context.isDemo) {
+    const claimed = await claimDemoFork(supabase, user.id);
+    if (!claimed) {
+      return NextResponse.json({ error: "demo_spent" }, { status: 403 });
+    }
+  } else {
+    const used = await countQuotaNodes(supabase, user.id);
+    const bonusCredits = await readBonusCredits(supabase, user.id);
+    const decision = decideGeneration({ used, bonusCredits });
+    if (!decision.allowed) {
+      return NextResponse.json(
+        { error: "quota_exceeded", limit: SERVER_KEY_BRANCH_LIMIT },
+        { status: 429 },
+      );
+    }
+    spendCredit = decision.spendCredit;
+  }
 
   try {
     const result = await createBranch({
@@ -92,9 +105,12 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
         }),
       writer: supabaseBranchWriter(supabase),
     });
-    if (decision.spendCredit) await consumeCredit(supabase);
+    if (spendCredit) await consumeCredit(supabase);
     return NextResponse.json(result, { status: 201 });
   } catch (err) {
+    // The demo claim happened before generation; hand the freebie back so a
+    // failed call doesn't burn the newcomer's one free branch.
+    if (context.isDemo) await releaseDemoFork(supabase, user.id);
     console.error("createBranch route failed", err);
     return NextResponse.json({ error: "generation failed" }, { status: 502 });
   }

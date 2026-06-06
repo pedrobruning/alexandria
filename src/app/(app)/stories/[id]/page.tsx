@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getStory } from "@/domains/stories/infrastructure/supabaseStoryReader";
 import { countQuotaNodes } from "@/domains/quota/infrastructure/supabaseQuotaCounter";
 import { readBonusCredits } from "@/domains/quota/infrastructure/credits";
+import { readDemoForkUsed } from "@/domains/onboarding/infrastructure/demoFork";
 import { remainingQuota } from "@/domains/quota/domain/quota";
 import { SignOutButton } from "@/components/auth/SignOutButton";
 import { LocaleSwitcher } from "@/components/i18n/LocaleSwitcher";
@@ -41,6 +42,9 @@ export default async function StoryPage({ params }: { params: Promise<{ id: stri
   // Bonus credits extend the allowance past the window cap; surface them so a
   // user at zero remaining still sees they can keep branching.
   const bonusCredits = story.isOwner ? await readBonusCredits(supabase, user.id) : 0;
+  // The demo grants one free, quota-exempt branch; once spent it goes read-only.
+  const demoForkAvailable =
+    story.isDemo && story.isOwner ? !(await readDemoForkUsed(supabase, user.id)) : false;
 
   return (
     <div className="screen scroll-y" style={{ background: "var(--basalt)" }}>
@@ -90,6 +94,7 @@ export default async function StoryPage({ params }: { params: Promise<{ id: stri
           language={story.language}
           quotaRemaining={quotaRemaining}
           bonusCredits={bonusCredits}
+          demoForkAvailable={demoForkAvailable}
         />
         <OnboardingHost />
       </main>
