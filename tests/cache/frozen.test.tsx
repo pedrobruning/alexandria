@@ -1,5 +1,6 @@
 import { readFileSync } from "node:fs";
-import { resolve } from "node:path";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import { describe, expect, it, vi, beforeEach } from "vitest";
 import { fireEvent, render, screen, waitFor, cleanup } from "@testing-library/react";
 
@@ -15,7 +16,7 @@ vi.mock("@/components/reader/GeneratingStars", () => ({ GeneratingStars: () => n
 
 import { Reader } from "@/components/reader/Reader";
 
-const ROOT = "/Users/pedrosierrastudio/Projects/alexandria";
+const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const src = (rel: string) => readFileSync(resolve(ROOT, rel), "utf8");
 
 // Importing the generation TYPES is fine; invoking the generation RUNTIME from a
@@ -55,7 +56,7 @@ describe("frozen cache — revisiting issues no generation request", () => {
   it("selecting an existing child calls onSelect without fetching", () => {
     const onSelect = vi.fn();
     render(
-      <Reader storyId="s1" nodes={nodes} selectedId="r" onSelect={onSelect} onForked={vi.fn()} isDemo={false} isOwner={true} language="en" quotaRemaining={20} bonusCredits={0} />,
+      <Reader storyId="s1" nodes={nodes} selectedId="r" onSelect={onSelect} onForked={vi.fn()} isDemo={false} isOwner={true} language="en" quotaRemaining={20} bonusCredits={0} demoForkAvailable={false} />,
     );
 
     fireEvent.click(screen.getByText("Branch One"));
@@ -66,7 +67,7 @@ describe("frozen cache — revisiting issues no generation request", () => {
 
   it("forking — the write path — does hit the branch endpoint (guard discriminates)", async () => {
     render(
-      <Reader storyId="s1" nodes={nodes} selectedId="r" onSelect={vi.fn()} onForked={vi.fn()} isDemo={false} isOwner={true} language="en" quotaRemaining={20} bonusCredits={0} />,
+      <Reader storyId="s1" nodes={nodes} selectedId="r" onSelect={vi.fn()} onForked={vi.fn()} isDemo={false} isOwner={true} language="en" quotaRemaining={20} bonusCredits={0} demoForkAvailable={false} />,
     );
 
     fireEvent.click(screen.getByRole("button", { name: "fork" }));

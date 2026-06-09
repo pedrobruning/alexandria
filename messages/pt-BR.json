@@ -165,7 +165,7 @@
       },
       "steer": {
         "title": "Conduza a próxima passagem",
-        "body": "Antes de bifurcar, sussurre um rumo aqui — \"mas ela recusa a oferta\" — e o novo ramo cresce na direção que você apontar."
+        "body": "Sussurre um rumo aqui — \"mas ela recusa a oferta\" — e então bifurque. Nesta demo a sua primeira bifurcação é real: escreva uma direção e veja uma nova linha do tempo nascer."
       },
       "atlas": {
         "title": "Abra o Atlas",
@@ -182,7 +182,8 @@
     },
     "demo": {
       "badge": "Demo",
-      "readonly": "Uma demonstração guiada — bifurcar está desativado aqui. Troque o idioma abaixo, ou comece a sua própria história.",
+      "tryIt": "Uma demonstração guiada — e esta primeira bifurcação é real. Escreva uma direção acima e veja um novo ramo nascer.",
+      "spent": "Seu ramo da demo cresceu. Troque o idioma abaixo, ou comece a sua própria história.",
       "switchLabel": "Idioma da demo"
     }
   },

@@ -28,6 +28,7 @@ export function StoryWorkspace({
   language,
   quotaRemaining,
   bonusCredits,
+  demoForkAvailable,
 }: {
   storyId: string;
   nodes: StoryNode[];
@@ -42,6 +43,7 @@ export function StoryWorkspace({
   language: string;
   quotaRemaining: number;
   bonusCredits: number;
+  demoForkAvailable: boolean;
 }) {
   const t = useTranslations("atlas");
   const tr = useTranslations("reader");
@@ -116,6 +118,7 @@ export function StoryWorkspace({
         language={language}
         quotaRemaining={quotaRemaining}
         bonusCredits={bonusCredits}
+        demoForkAvailable={demoForkAvailable}
       />
 
       <button

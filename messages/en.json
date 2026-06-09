@@ -165,7 +165,7 @@
       },
       "steer": {
         "title": "Steer the next passage",
-        "body": "Before you fork, whisper a nudge here — \"but she refuses the offer\" — and the new branch grows the way you point."
+        "body": "Whisper a nudge here — \"but she refuses the offer\" — then fork. Your first branch in this demo is real: write a direction and watch a new timeline be born."
       },
       "atlas": {
         "title": "Open the Atlas",
@@ -182,7 +182,8 @@
     },
     "demo": {
       "badge": "Demo",
-      "readonly": "A guided demo — forking is off here. Switch its language below, or begin your own story.",
+      "tryIt": "A guided demo — and this first fork is real. Write a direction above and watch a new branch be born.",
+      "spent": "Your demo branch has grown. Switch its language below, or begin your own story.",
       "switchLabel": "Demo language"
     }
   },

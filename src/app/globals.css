@@ -431,6 +431,13 @@ html[data-reading] .app-header { display: none; }
   padding: 10px 12px;
 }
 
+/* Steer & fork box. On desktop it sits inline below the passage; on phones it
+   becomes a fixed bottom bar (see the max-width:640px block) so the "write a
+   direction → fork" CTA is always reachable without scrolling past a full
+   ~250-word passage. Hidden in reading mode, like the rest of the chrome. */
+.reader-steer { margin-top: 22px; padding: 20px 22px; }
+html[data-reading] .reader-steer { display: none; }
+
 /* dark backdrop behind the modal. Sits above the tour overlay (z 200) so the
    Atlas/Settings open fully lit when explored mid-tour, instead of under its
    scrim. */
@@ -702,7 +709,19 @@ html[data-reading] .app-header { display: none; }
      above, so only the wordmark + toggle remain — they fit comfortably. */
   .app-header__bar { padding: 11px 14px; gap: 10px; flex-wrap: nowrap; }
   .app-content { padding: 18px 14px 48px; }
-  .app-main { padding: 18px 14px 96px; }
+  /* Extra bottom room so the branch list clears the fixed steer bar below. */
+  .app-main { padding: 18px 14px 240px; }
+
+  /* Steer & fork pinned to the bottom of the viewport — the CTA stays in reach
+     without scrolling past the passage. Scrolls internally if it grows tall
+     (the demo's language switch). */
+  .reader-steer {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 80;
+    margin: 0; border-radius: 0;
+    max-height: 56vh; overflow-y: auto;
+    padding: 12px 14px calc(12px + env(safe-area-inset-bottom));
+    box-shadow: 0 -4px 0 0 rgba(0,0,0,.45);
+  }
 
   .btn { padding: 10px 14px; font-size: 14px; }
   .btn--lg { font-size: 16px; padding: 14px 18px; }
@@ -717,7 +736,7 @@ html[data-reading] .app-header { display: none; }
   .atlas-overlay { padding: 8px; }
   .atlas-modal { width: 100%; height: 100%; }
   .settings-panel { width: 100%; max-height: 100%; }
-  .atlas-fab { bottom: 16px; right: 16px; padding: 11px 14px; }
+  .atlas-fab { bottom: 16px; right: 16px; padding: 11px 14px; z-index: 95; }
 }
 
 /* reduced motion */

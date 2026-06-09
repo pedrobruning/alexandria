@@ -22,6 +22,7 @@ export function Reader({
   language,
   quotaRemaining,
   bonusCredits,
+  demoForkAvailable,
 }: {
   storyId: string;
   nodes: StoryNode[];
@@ -33,6 +34,7 @@ export function Reader({
   language: string;
   quotaRemaining: number;
   bonusCredits: number;
+  demoForkAvailable: boolean;
 }) {
   const t = useTranslations("reader");
   const td = useTranslations("onboarding");
@@ -101,6 +103,8 @@ export function Reader({
   const trail = pathFromRoot(nodes, selectedId);
   const current = trail[trail.length - 1];
   const children = childrenOf(nodes, selectedId);
+  // The demo allows one real, quota-exempt fork; after that it's read-only.
+  const demoLocked = isDemo && !demoForkAvailable;
 
   // Re-seed the demo in another language. The old demo is deleted server-side,
   // so the story id changes — replace (not push) the URL to avoid a dead back
@@ -125,7 +129,7 @@ export function Reader({
   }
 
   async function fork() {
-    if (isDemo) return;
+    if (demoLocked) return;
     setForking(true);
     setErr(null);
     try {
@@ -222,11 +226,7 @@ export function Reader({
       </div>
 
       {isOwner && (
-      <section
-        className="frame frame--basalt"
-        data-tour="steer"
-        style={{ marginTop: 22, padding: "20px 22px" }}
-      >
+      <section className="frame frame--basalt reader-steer" data-tour="steer">
         <label className="label" htmlFor="steer">
           {t("steerLabel")}
         </label>
@@ -237,15 +237,19 @@ export function Reader({
           value={steer}
           onChange={(e) => setSteer(e.target.value)}
           placeholder={t("steerPlaceholder")}
-          disabled={forking || isDemo}
+          disabled={forking || demoLocked}
         />
         {err && <p className="hint hint--err">{err}</p>}
-        {isDemo && <p className="caption" style={{ marginTop: 10 }}>{td("demo.readonly")}</p>}
+        {isDemo && (
+          <p className="caption" style={{ marginTop: 10 }}>
+            {demoForkAvailable ? td("demo.tryIt") : td("demo.spent")}
+          </p>
+        )}
         <div style={{ marginTop: 14 }}>
           {forking ? (
             <PixSpinner label={t("forking")} />
           ) : (
-            <button className="btn" type="button" data-tour="fork" onClick={fork} disabled={isDemo}>
+            <button className="btn" type="button" data-tour="fork" onClick={fork} disabled={demoLocked}>
               <PixelIcon name="fork" size={16} color="#2B2118" /> {t("fork")}
             </button>
           )}
